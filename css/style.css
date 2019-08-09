@@ -365,7 +365,7 @@ body {
 #logo,
 #subtitle {
   text-decoration: none;
-  color: #fff;
+  color: #000;
   font-weight: 300;
   text-shadow: 0 1px 4px rgba(0,0,0,0.3);
 }
@@ -389,7 +389,7 @@ body {
 .nav-icon,
 .main-nav-link {
   float: left;
-  color: #fff;
+  color: #000;
   opacity: 0.6;
   text-decoration: none;
   text-shadow: 0 1px rgba(0,0,0,0.2);
