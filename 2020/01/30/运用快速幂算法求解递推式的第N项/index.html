@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  
+  <title>运用快速幂算法求解递推式的第N项 | uint128&#39;s Blog</title>
+  <meta name="description" content>
+  <meta name="keywords" content>
+  <meta name="HandheldFriendly" content="True">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <link rel="shortcut icon" href="/">
+  <link rel="alternate" href="/atom.xml" title="uint128's Blog">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="将递推式转化为矩阵式，并使用矩阵快速幂算法求解矩阵幂运算，从而解得原递推式的第N项值。">
+<meta name="keywords" content="C++,算法">
+<meta property="og:type" content="article">
+<meta property="og:title" content="运用快速幂算法求解递推式的第N项">
+<meta property="og:url" content="https://uint128.com/2020/01/30/运用快速幂算法求解递推式的第N项/index.html">
+<meta property="og:site_name" content="uint128&#39;s Blog">
+<meta property="og:description" content="将递推式转化为矩阵式，并使用矩阵快速幂算法求解矩阵幂运算，从而解得原递推式的第N项值。">
+<meta property="og:locale" content="zh-cn">
+<meta property="og:updated_time" content="2020-01-30T00:03:32.509Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="运用快速幂算法求解递推式的第N项">
+<meta name="twitter:description" content="将递推式转化为矩阵式，并使用矩阵快速幂算法求解矩阵幂运算，从而解得原递推式的第N项值。">
+    
+  <link href="https://fonts.googleapis.com/css?family=Inconsolata|Titillium+Web" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Roboto+Mono" rel="stylesheet">
+  <link href="//cdn.bootcss.com/node-waves/0.7.5/waves.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="/style.css">
+  <script>
+    function setLoadingBarProgress(num) {
+      document.getElementById('loading-bar').style.width=num+"%";
+    }
+  </script>
+  <script src="/js/md5.js"></script>
+<link rel="alternate" href="/atom.xml" title="uint128's Blog" type="application/atom+xml"><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+</head>
+</html>
+<body>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div id="loading-bar-wrapper">
+  <div id="loading-bar"></div>
+</div>
+
+
+  <script>setLoadingBarProgress(20)</script> 
+  <header class="l_header">
+	<div class='wrapper'>
+		<div class="nav-main container container--flex">
+			<a class="logo flat-box" href='/' >
+				uint128's Blog
+			</a>
+			<div class='menu'>
+				<ul class='h-list'>
+					
+						<li>
+							<a class='flat-box nav-home' href='/'>
+								Home
+							</a>
+						</li>
+					
+						<li>
+							<a class='flat-box nav-archives' href='/archives'>
+								Archives
+							</a>
+						</li>
+					
+						<li>
+							<a class='flat-box nav-about' href='/about'>
+								About
+							</a>
+						</li>
+					
+				</ul>
+				<div class='underline'></div>
+			</div>
+			
+				<div class="m_search">
+					<form name="searchform" class="form u-search-form">
+						<input type="text" class="input u-search-input" placeholder="Search" />
+						<span class="icon icon-search"></span>
+					</form>
+				</div>
+			
+			<ul class='switcher h-list'>
+				
+					<li class='s-search'><a href='javascript:void(0)'><span class="icon icon-search flat-box"></span></a></li>
+				
+				<li class='s-menu'><a href='javascript:void(0)'><span class="icon icon-menu flat-box"></span></a></li>
+			</ul>
+		</div>
+		
+		<div class='nav-sub container container--flex'>
+			<a class="logo" class="flat-box" href='javascript:void(0)'>
+				Word of Forks
+			</a>
+
+			<ul class='switcher h-list'>
+				<li class='s-comment'><a href='javascript:void(0)'><span class="icon icon-chat_bubble_outline flat-box"></span></a></li>
+				<li class='s-top'><a href='javascript:void(0)'><span class="icon icon-arrow_upward flat-box"></span></a></li>
+				<li class='s-toc'><a href='javascript:void(0)'><span class="icon icon-format_list_numbered flat-box"></span></a></li>
+			</ul>
+		</div>
+	</div>
+</header>
+<aside class="menu-phone">
+	<nav>
+		
+			<a href="/" class="nav-home nav">
+				Home
+			</a>
+		
+			<a href="/archives" class="nav-archives nav">
+				Archives
+			</a>
+		
+			<a href="/about" class="nav-about nav">
+				About
+			</a>
+		
+	</nav>
+</aside>
+
+    <script>setLoadingBarProgress(40);</script>
+  <div class="l_body">
+    <div class='container clearfix'>
+      <div class='l_main'>
+        <article id="post-运用快速幂算法求解递推式的第N项"
+  class="post white-box article-type-post"
+  itemscope itemprop="blogPost">
+	<section class='meta'>
+	<h2 class="title">
+  	<a href="/2020/01/30/运用快速幂算法求解递推式的第N项/">
+    	运用快速幂算法求解递推式的第N项
+    </a>
+  </h2>
+	<time>
+	  1月 30, 2020
+	</time>
+	
+	</section>
+	
+		<section class="toc-wrapper"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#算法题目"><span class="toc-number">1.</span> <span class="toc-text">算法题目</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#问题分析"><span class="toc-number">2.</span> <span class="toc-text">问题分析</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#斐波那契数列的矩阵式"><span class="toc-number">3.</span> <span class="toc-text">斐波那契数列的矩阵式</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#快速幂算法"><span class="toc-number">4.</span> <span class="toc-text">快速幂算法</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#题目的矩阵式推导"><span class="toc-number">5.</span> <span class="toc-text">题目的矩阵式推导</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#参考文献"><span class="toc-number">6.</span> <span class="toc-text">参考文献</span></a></li></ol></section>
+	
+	<section class="article typo">
+  	<div class="article-entry" itemprop="articleBody">
+    	<p>将递推式转化为矩阵式，并使用矩阵快速幂算法求解矩阵幂运算，从而解得原递推式的第N项值。</p>
+<a id="more"></a>
+
+<h1 id="算法题目"><a href="#算法题目" class="headerlink" title="算法题目"></a>算法题目</h1><p>这是一道来自蓝桥杯的题目。<br><strong>问题描述</strong><br>已知递推式：</p>
+<p>$$<br>\begin{aligned}<br>    F(n,1) &amp;= F(n-1,2) + 2F(n-3,1) + 5    \\<br>    F(n,2) &amp;= F(n-1,1) + 3F(n-3,1) + 2F(n-3,2) + 3<br>\end{aligned}<br>$$</p>
+<p>初始值为：\( F(1,1) = 2 \) , \( F(1,2) = 3 \) , \( F(2,1) = 1 \) , \( F(2,2) = 4 \) , \( F(3,1) = 6 \) , \( F(3,2) = 5 \)。<br>输入 \( N \)，输出 \( F(n,1) \) 和 \( F(n,2) \) ，由于答案可能很大，你只需要输出答案除以 <strong>99999999</strong> 的余数。<br><strong>输入格式</strong><br>输入第一行包括一个整数 \( N \)。<br><strong>输出格式</strong><br>输出两行，第一行为 \( F(n,1) \) 除以 <strong>99999999</strong> 的余数，第二行为 \( F(n,2) \) 除以 <strong>99999999</strong> 的余数。<br><strong>样例输入</strong><br>4<br><strong>样例输出</strong><br>14<br>21<br><strong>数据规模和约定</strong><br>\( 1 \leqslant N \leqslant 10^{18} \)</p>
+<h1 id="问题分析"><a href="#问题分析" class="headerlink" title="问题分析"></a>问题分析</h1><p>&emsp;&emsp;这个题目数据量很大，如果是简单地递归，肯定会栈溢出或者超时。即使把递归改成循环，也只能避免栈溢出，难逃超时的命运。<br>&emsp;&emsp;递推式主要涉及加法运算，必须从头到尾把每一项都计算出来才可以得到答案，很难再做出优化。将递推式改为矩阵式，则涉及到矩阵的幂运算，而幂运算可以用 <strong>快速幂算法</strong> 优化，只需做 <strong>log(N)</strong> 次乘法运算就可以得到答案。</p>
+<h1 id="斐波那契数列的矩阵式"><a href="#斐波那契数列的矩阵式" class="headerlink" title="斐波那契数列的矩阵式"></a>斐波那契数列的矩阵式</h1><p>&emsp;&emsp;我没有找到这个题目矩阵式推导的详细过程，所以只能自己琢磨。我知道一个很经典的递推式子，即斐波那契数列的递推式。研究怎么推导斐波那契数列的矩阵式，也许就能知道怎么推导这个蓝桥杯题目中的递推式的矩阵式。<br>&emsp;&emsp;以下是我整理的斐波那契数列矩阵式的推导过程。</p>
+<p>已知斐波那契数列的递推式</p>
+<p>$$<br>F_n = F_{n-1} + F_{n-2}  \quad n \geqslant 2<br>\tag{1}<br>\label{1}<br>$$</p>
+<p>初始值为</p>
+<p>$$<br>F_0 = 0, \quad F_1 = 1<br>$$</p>
+<p>设有矩阵 \( M  \)，使得下式成立</p>
+<p>$$<br>\begin{bmatrix}<br>    F_n \\<br>    F_{n-1}<br>\end{bmatrix}<br>=<br>M<br>\begin{bmatrix}<br>    F_{n-1} \\<br>    F_{n-2}<br>\end{bmatrix}<br>\tag{2}<br>\label{2}<br>$$</p>
+<p>不妨设矩阵 \( M \)为</p>
+<p>$$<br>M =<br>\begin{bmatrix}<br>    A&amp;B \\<br>    C&amp;D<br>\end{bmatrix}<br>$$</p>
+<p>则由公式 \( \eqref{2} \) 可得</p>
+<p>$$<br>\begin{aligned}<br>F_n &amp;= AF_{n-1} + BF_{n-2}       \\<br>F_{n-1} &amp;= CF_{n-1} + DF{n-2}<br>\end{aligned}<br>$$</p>
+<p>显然，\( C=1,D=0 \)。由公式 \( \eqref{1} \) 可知 \( A = B = 1 \)。<br>所以矩阵 \( M\) 为</p>
+<p>$$<br>M =<br>\begin{bmatrix}<br>    1&amp;1 \\<br>    1&amp;0<br>\end{bmatrix}<br>$$</p>
+<p>于是公式 \( \eqref{2} \) 可以写为</p>
+<p>$$<br>\begin{bmatrix}<br>    F_n \\<br>    F_{n-1}<br>\end{bmatrix}<br>=<br>\begin{bmatrix}<br>    1&amp;1 \\<br>    1&amp;0<br>\end{bmatrix}<br>\begin{bmatrix}<br>    F_{n-1} \\<br>    F_{n-2}<br>\end{bmatrix}<br>$$</p>
+<p>将 \( F_{n-1},F_{n-2} \) 部分也替换为矩阵式，则有</p>
+<p>$$<br>\begin{bmatrix}<br>    F_n \\<br>    F_{n-1}<br>\end{bmatrix}<br>=<br>\begin{bmatrix}<br>    1&amp;1 \\<br>    1&amp;0<br>\end{bmatrix}<br>^2<br>\begin{bmatrix}<br>    F_{n-2} \\<br>    F_{n-3}<br>\end{bmatrix}<br>$$</p>
+<p>进一步可以得到斐波那契数列的矩阵式</p>
+<p>$$<br>\begin{bmatrix}<br>    F_n \\<br>    F_{n-1}<br>\end{bmatrix}<br>=<br>\begin{bmatrix}<br>    1&amp;1 \\<br>    1&amp;0<br>\end{bmatrix}<br>^{n}<br>\begin{bmatrix}<br>    F_1 \\<br>    F_0<br>\end{bmatrix}<br>=<br>\begin{bmatrix}<br>    1&amp;1 \\<br>    1&amp;0<br>\end{bmatrix}<br>^{n}<br>\begin{bmatrix}<br>    1 \\<br>    0<br>\end{bmatrix}<br>\tag{3}<br>\label{3}<br>$$</p>
+<h1 id="快速幂算法"><a href="#快速幂算法" class="headerlink" title="快速幂算法"></a>快速幂算法</h1><p>&emsp;&emsp;使用矩阵式来计算斐波那契数列的第 \( n \) 项，关键在于计算矩阵 \( M \) 的 \( n \) 次方。<br>&emsp;&emsp;最简单地方法是连续做  \( n-1 \) 次乘法。考虑到这里其实是对矩阵进行幂运算，所以可以使用一种叫 <strong>快速幂</strong> 的算法来加速运算，只需要做 <strong>log(N)</strong> 次乘法运算就能得到结果。</p>
+<p>&emsp;&emsp;快速幂算法的思想是，把指数部分用 <strong>二进制</strong> 表示，分割出更小的任务。<br>&emsp;&emsp;举个例子(这里直接使用了 <strong>OJ-Wiki.org</strong> 中的例子)</p>
+<p>$$<br>3^{13} = 3^{(1101)_2} = 3^{(2^3 \cdot 1 + 2^2 \cdot 1 + 2^1 \cdot 0 + 2^0 \cdot 1)} = 3^8 \cdot 3^4 \cdot 3^1<br>\tag{1}<br>\label{11}<br>$$</p>
+<p>&emsp;&emsp;因为 \( n \) 有 \( \lfloor \log_2 n \rfloor + 1 \) 个二进制位，因此当知道了 \( a^1,a^2,a^4,a^8,\cdots,a^{2 \lfloor \log_2 n \rfloor} \)后，就可以只计算 \( \Theta(\log n) \) 次乘法得到 \( a^n \)。</p>
+<p>&emsp;&emsp;由等式 \( \eqref{11} \) 可知，要计算 \( 3^{13} \)，只需要将指数对应二进制位为 \( 1 \) 的整系数幂乘起来就可以了。</p>
+<p>&emsp;&emsp;循环求整数快速幂的代码实现</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">long</span> <span class="keyword">long</span> <span class="title">binpow</span><span class="params">(<span class="keyword">long</span> <span class="keyword">long</span> a, <span class="keyword">long</span> <span class="keyword">long</span> b)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">long</span> <span class="keyword">long</span> res = <span class="number">1</span>;</span><br><span class="line">  <span class="keyword">while</span> (b &gt; <span class="number">0</span>) &#123;</span><br><span class="line">    <span class="comment">// 如果当前二进制位为1，把系数幂乘进答案</span></span><br><span class="line">    <span class="keyword">if</span> (b &amp; <span class="number">1</span>) res = res * a;</span><br><span class="line">    <span class="comment">// 求a^n</span></span><br><span class="line">    a = a * a;</span><br><span class="line">    <span class="comment">// 整体右移，则最低位为下一个二进制位</span></span><br><span class="line">    b &gt;&gt;= <span class="number">1</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> res;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>&emsp;&emsp;对于矩阵的快速幂算法，只需要把 <strong>long long</strong> 替换为自己的矩阵类，把整数乘法替换为矩阵乘法，把 <strong>res</strong> 的初始值替换为单位矩阵就可以了。<br>&emsp;&emsp;未完全实现的矩阵快速幂：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 矩阵类为简单实现，都为 maxn X maxn 的方阵</span></span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> maxn = <span class="number">8</span>;</span><br><span class="line"><span class="comment">// 矩阵快速幂</span></span><br><span class="line"><span class="function">Matrix <span class="title">quickPow</span><span class="params">(Matrix M, <span class="keyword">int</span> e)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="comment">// 初始化ans为单位矩阵，eye()返回一个单位矩阵</span></span><br><span class="line">	Matrix ans = eye(),base = M;</span><br><span class="line">    <span class="comment">// 快速幂运算</span></span><br><span class="line">	<span class="keyword">while</span> (e &gt; <span class="number">0</span>)</span><br><span class="line">	&#123;</span><br><span class="line">        <span class="comment">// MatrixMul 是对两个矩阵做乘法运算的函数</span></span><br><span class="line">		<span class="keyword">if</span> (e &amp; <span class="number">1</span>) ans = MatrixMul(ans, base);</span><br><span class="line">		base = MatrixMul(base, base);</span><br><span class="line">		e &gt;&gt;= <span class="number">1</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> ans;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>&emsp;&emsp;有了矩阵快速幂算法，那么使用矩阵式来计算斐波那契数列的第 <strong>N</strong> 项已经不是问题了。</p>
+<h1 id="题目的矩阵式推导"><a href="#题目的矩阵式推导" class="headerlink" title="题目的矩阵式推导"></a>题目的矩阵式推导</h1><p>&emsp;&emsp;回到最开始的题目。题目中的递推式比斐波那契数列的递推式复杂的多，但是推导它的矩阵式并没有难多少。<br>同样地，假设存在矩阵 \( M \)，使得下式成立</p>
+<p>$$<br>\begin{bmatrix}<br>F(n,1)   \\<br>F(n,2)   \\<br>F(n-1,1) \\<br>F(n-1,2) \\<br>F(n-2,1) \\<br>F(n-2,2) \\<br>5        \\<br>3        \\<br>\end{bmatrix}<br>=<br>M<br>\begin{bmatrix}<br>F(n-1,1) \\<br>F(n-1,2) \\<br>F(n-2,1) \\<br>F(n-2,2) \\<br>F(n-3,1) \\<br>F(n-3,2) \\<br>5        \\<br>3        \\<br>\end{bmatrix}<br>\tag{1}<br>\label{21}<br>$$</p>
+<p>(注意：因为原 <strong>递推式</strong> 的右边存在 \( F(n-1,1),F(n-1,2),F(n-3,1),F(n-3,2),5,3 \) ，所以矩阵式的右边也会出现它们，将矩阵式右边的下标统统加 <strong>1</strong>，就得到了矩阵式的左边。)</p>
+<p>设 \( M \) 为</p>
+<p>$$<br>M =<br>\begin{bmatrix}<br>a_{11}  &amp;  a_{12}  &amp; \cdots\ &amp; a_{18}    \\<br>a_{21}  &amp;  a_{22}  &amp; \cdots\ &amp; a_{28}    \\<br>\vdots  &amp; \vdots &amp; \ddots  &amp; \vdots      \\<br>a_{81} &amp; a_{82}  &amp; \cdots\ &amp; a_{88}      \\<br>\end{bmatrix}<br>$$</p>
+<p>由等式 \( \eqref{21} \) 可得一系列关系式，再结合递推式，可得矩阵 \( M \)为</p>
+<p>$$<br>M =<br>\begin{bmatrix}<br>0&amp;1&amp;0&amp;0&amp;2&amp;0&amp;1&amp;0    \\<br>1&amp;0&amp;0&amp;0&amp;3&amp;2&amp;0&amp;1    \\<br>1&amp;0&amp;0&amp;0&amp;0&amp;0&amp;0&amp;0    \\<br>0&amp;1&amp;0&amp;0&amp;0&amp;0&amp;0&amp;0    \\<br>0&amp;0&amp;1&amp;0&amp;0&amp;0&amp;0&amp;0    \\<br>0&amp;0&amp;0&amp;1&amp;0&amp;0&amp;0&amp;0    \\<br>0&amp;0&amp;0&amp;0&amp;0&amp;0&amp;1&amp;0    \\<br>0&amp;0&amp;0&amp;0&amp;0&amp;0&amp;0&amp;1    \\<br>\end{bmatrix}<br>$$</p>
+<p>……<br>(懒得写推导过程了，和斐波那契数列真的几乎一样)</p>
+<h1 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h1><p>[1] 快速幂 - OI Wiki. <a href="https://oi-wiki.org/math/quick-pow/" target="_blank" rel="noopener">https://oi-wiki.org/math/quick-pow/</a></p>
+
+  	</div>
+	  
+	  <div class="article-tags tags">
+      
+        <a href="/tags/C/">C++</a>
+      
+        <a href="/tags/算法/">算法</a>
+      
+	  </div>
+    
+		
+	
+		<div class="art-item-footer">
+				
+				
+					<span class="art-item-right">next：<a href="/2020/01/21/2048-游戏AI的实现思路/" rel="next"  title="2048 游戏AI的实现思路">
+						2048 游戏AI的实现思路
+					</a><i class="icon icon-chevron-thin-right"></i></span>
+				
+		</div>
+	
+	</section>
+
+
+	
+
+</article>
+
+
+	<div id="gitalk-container"></div>
+	<link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+ <script type="text/javascript">
+      var gitalk = new Gitalk({
+        clientID: '53e3c578fcb7b7b1a4da',
+        clientSecret: '74433ee77d6e13fd635b82add519e143ac791726',
+        repo: 'cyanray.github.io',
+        owner: 'cyanray',
+        admin: ['cyanray'],
+        id: CryptoJS.MD5(location.pathname).toString(),
+        labels: ['Gitalk'],
+        perPage: 15,
+        pagerDirection: 'last',
+        createIssueManually: true,
+        distractionFreeMode: false
+      })
+
+      gitalk.render('gitalk-container')
+ </script>
+
+
+<script>
+	window.subData = {
+		title: '运用快速幂算法求解递推式的第N项',
+		tools: true
+	}
+</script>
+
+      </div>
+      <aside class='l_side'>
+        
+  <section class='m_widget about'>
+    
+            <div class='header'>
+                uint128.com
+            </div>
+            <div class='content'>
+                <div class='desc'>uint128, unsigned int.</div>
+            </div>
+</section>
+
+  <section class='m_widget links'>
+<div class='header'>Links</div>
+<div class='content'>
+    <ul class="entry">
+    
+        <li><a class="flat-box" target="_blank" href="https://github.com/cyanray">
+            <div class='name'>My Github</div>
+        </a></li>
+    
+        <li><a class="flat-box" target="_blank" href="http://www.cqjtujx.club/">
+            <div class='name'>重交计算机协会</div>
+        </a></li>
+    
+        <li><a class="flat-box" target="_blank" href="http://www.h13studio.com/">
+            <div class='name'>H13-Studio</div>
+        </a></li>
+    
+    </ul>
+</div>
+</section>
+
+      </aside>
+      <script>setLoadingBarProgress(60);</script>
+    </div>
+  </div>
+  <footer id="footer" class="clearfix">
+
+	<div class="social-wrapper">
+  	
+      
+        <a href="https://github.com/cyanray" class="social github"
+          target="_blank" rel="external">
+          <span class="icon icon-github"></span>
+        </a>
+      
+    
+  </div>
+  
+  <div>Theme <a href='https://github.com/stkevintan/hexo-theme-material-flow' class="codename">MaterialFlow</a> designed by <a href="http://keyin.me/" target="_blank">Kevin Tan</a>.</div>
+  
+</footer>
+
+
+  <script>setLoadingBarProgress(80);</script>
+  
+
+<script src="//apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+<script src='//cdn.bootcss.com/node-waves/0.7.5/waves.min.js'></script>
+<script src="//cdn.bootcss.com/scrollReveal.js/3.3.2/scrollreveal.min.js"></script>
+<script src="/js/jquery.fitvids.js"></script>
+<script>
+	var GOOGLE_CUSTOM_SEARCH_API_KEY = "";
+	var GOOGLE_CUSTOM_SEARCH_ENGINE_ID = "";
+	var ALGOLIA_API_KEY = "";
+	var ALGOLIA_APP_ID = "";
+	var ALGOLIA_INDEX_NAME = "";
+  var AZURE_SERVICE_NAME = "";
+  var AZURE_INDEX_NAME = "";
+  var AZURE_QUERY_KEY = "";
+  var BAIDU_API_ID = "";
+  var SEARCH_SERVICE = "hexo";
+  var ROOT = "/"||"/";
+  if(!ROOT.endsWith('/'))ROOT += '/';
+</script>
+<script src="/js/search.js"></script>
+<script src="/js/app.js"></script>
+
+
+  <script>setLoadingBarProgress(100);</script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config("");
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+</body>
+</html>
