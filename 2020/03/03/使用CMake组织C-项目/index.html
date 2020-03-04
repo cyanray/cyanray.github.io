@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  
+  <title>使用CMake组织C++项目 | uint128&#39;s Blog</title>
+  <meta name="description" content>
+  <meta name="keywords" content>
+  <meta name="HandheldFriendly" content="True">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <link rel="shortcut icon" href="/">
+  <link rel="alternate" href="/atom.xml" title="uint128's Blog">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="使用CMake组织C++项目">
+<meta property="og:type" content="article">
+<meta property="og:title" content="使用CMake组织C++项目">
+<meta property="og:url" content="https://uint128.com/2020/03/03/使用CMake组织C-项目/index.html">
+<meta property="og:site_name" content="uint128&#39;s Blog">
+<meta property="og:description" content="使用CMake组织C++项目">
+<meta property="og:locale" content="zh-cn">
+<meta property="og:updated_time" content="2020-03-04T15:19:02.663Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="使用CMake组织C++项目">
+<meta name="twitter:description" content="使用CMake组织C++项目">
+    
+  <link href="https://fonts.googleapis.com/css?family=Inconsolata|Titillium+Web" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Roboto+Mono" rel="stylesheet">
+  <link href="//cdnjs.cloudflare.com/ajax/libs/node-waves/0.7.5/waves.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="/style.css">
+  <script>
+    function setLoadingBarProgress(num) {
+      document.getElementById('loading-bar').style.width=num+"%";
+    }
+  </script>
+  <script src="/js/md5.js"></script>
+<link rel="alternate" href="/atom.xml" title="uint128's Blog" type="application/atom+xml"><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+</head>
+</html>
+<body>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div id="loading-bar-wrapper">
+  <div id="loading-bar"></div>
+</div>
+
+
+  <script>setLoadingBarProgress(20)</script> 
+  <header class="l_header">
+	<div class='wrapper'>
+		<div class="nav-main container container--flex">
+			<a class="logo flat-box" href='/' >
+				uint128's Blog
+			</a>
+			<div class='menu'>
+				<ul class='h-list'>
+					
+						<li>
+							<a class='flat-box nav-home' href='/'>
+								Home
+							</a>
+						</li>
+					
+						<li>
+							<a class='flat-box nav-archives' href='/archives'>
+								Archives
+							</a>
+						</li>
+					
+						<li>
+							<a class='flat-box nav-about' href='/about'>
+								About
+							</a>
+						</li>
+					
+				</ul>
+				<div class='underline'></div>
+			</div>
+			
+				<div class="m_search">
+					<form name="searchform" class="form u-search-form">
+						<input type="text" class="input u-search-input" placeholder="Search" />
+						<span class="icon icon-search"></span>
+					</form>
+				</div>
+			
+			<ul class='switcher h-list'>
+				
+					<li class='s-search'><a href='javascript:void(0)'><span class="icon icon-search flat-box"></span></a></li>
+				
+				<li class='s-menu'><a href='javascript:void(0)'><span class="icon icon-menu flat-box"></span></a></li>
+			</ul>
+		</div>
+		
+		<div class='nav-sub container container--flex'>
+			<a class="logo" class="flat-box" href='javascript:void(0)'>
+				Word of Forks
+			</a>
+
+			<ul class='switcher h-list'>
+				<li class='s-comment'><a href='javascript:void(0)'><span class="icon icon-chat_bubble_outline flat-box"></span></a></li>
+				<li class='s-top'><a href='javascript:void(0)'><span class="icon icon-arrow_upward flat-box"></span></a></li>
+				<li class='s-toc'><a href='javascript:void(0)'><span class="icon icon-format_list_numbered flat-box"></span></a></li>
+			</ul>
+		</div>
+	</div>
+</header>
+<aside class="menu-phone">
+	<nav>
+		
+			<a href="/" class="nav-home nav">
+				Home
+			</a>
+		
+			<a href="/archives" class="nav-archives nav">
+				Archives
+			</a>
+		
+			<a href="/about" class="nav-about nav">
+				About
+			</a>
+		
+	</nav>
+</aside>
+
+    <script>setLoadingBarProgress(40);</script>
+  <div class="l_body">
+    <div class='container clearfix'>
+      <div class='l_main'>
+        <article id="post-使用CMake组织C-项目"
+  class="post white-box article-type-post"
+  itemscope itemprop="blogPost">
+	<section class='meta'>
+	<h2 class="title">
+  	<a href="/2020/03/03/使用CMake组织C-项目/">
+    	使用CMake组织C++项目
+    </a>
+  </h2>
+	<time>
+	  3月 3, 2020
+	</time>
+	
+	</section>
+	
+		<section class="toc-wrapper"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#前言"><span class="toc-number">1.</span> <span class="toc-text">前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#快速入门"><span class="toc-number">2.</span> <span class="toc-text">快速入门</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#常用的-CMake-命令"><span class="toc-number">3.</span> <span class="toc-text">常用的 CMake 命令</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#常用的项目结构"><span class="toc-number">4.</span> <span class="toc-text">常用的项目结构</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#结语"><span class="toc-number">5.</span> <span class="toc-text">结语</span></a></li></ol></section>
+	
+	<section class="article typo">
+  	<div class="article-entry" itemprop="articleBody">
+    	<p>使用CMake组织C++项目</p>
+<a id="more"></a>
+
+<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>如果你使用过 Visual Studio 或者其他 IDE，那么应该能体验到这些 IDE 在组织 C++ 项目源代码时的便利。使用 Visual Studio 创建的项目往往依赖于一个 sln 文件，只要用 Visual Studio 打开这个 sln 文件，就能打开一个文件结构清晰的 C++ 项目。哪些文件应该被包括到项目中，哪些排除在外，都被 Visual Studio 记录得很好。</p>
+<p>大多数情况下，使用 Visual Studio 来组织 C++ 源代码很方便，但也有一些例外的情况。比如 sln 文件有自己的版本，使用新版 Visual Studio 创建的 sln 文件在旧版 Visual Studio 有可能打不开。直接分享 Visual Studio 项目的体验可能不会很好，因为不是所有人装上 Visual Studio 都能直接打开你的项目。</p>
+<p>接下来我想介绍的是 CMake 。虽然 CMake 不是专门用来解决上面说的这个问题，但是借助 Visual Studio 或者其他 IDE 管理项目的方式，可以很快理解 CMake 是怎么组织 C++ 项目的。</p>
+<p>CMake 是一个工具，它用一些命令(有点像函数)来描述一个项目的安装/编译过程。CMake 描述的内容包括有哪些头文件、源代码文件、依赖哪些第三方库等等。</p>
+<p>Cmake 并不直接建构出最终的软件，而是产生标准的建构档（如 Unix 的 Makefile 或 Windows Visual C++ 的 projects/workspaces），然后再依一般的建构方式使用。</p>
+<h2 id="快速入门"><a href="#快速入门" class="headerlink" title="快速入门"></a>快速入门</h2><p>下面借助 <em>Hello World</em> 项目来说明 CMake 是如何工作的。这个项目非常简单，只有一个源文件 <strong>main.cpp</strong>，没有头文件。使用 CMake 来描述编译 main.cpp 的过程，需要把描述编译过程的 CMake 命令放在 CMakeLists.txt 文件里。因此一个使用 CMake 管理的项目（以下简称 CMake 项目）可能会像这样：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">.</span><br><span class="line">├── CMakeLists.txt</span><br><span class="line">└── main.cpp</span><br></pre></td></tr></table></figure>
+
+<p>main.cpp：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"Hello World!"</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>CMakeLists.txt：</p>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">project</span>(hello-world)</span><br><span class="line"><span class="keyword">add_executable</span>(<span class="variable">$&#123;PROJECT_NAME&#125;</span> main.cpp)</span><br></pre></td></tr></table></figure>
+
+<p>正如使用 Visual Studio 创建的项目一样，CMake 项目也有项目名称，项目类型等概念。在 CMakeLists.txt 文件中，命令 <code>project(hello-world)</code> 描述该 CMake 项目的名字是 <strong>hello-world</strong>。而命令 <code>add_executable(${PROJECT_NAME} main.cpp)</code>，则描述该 CMake 项目有一个可执行文件，名字是 <code>${PROJECT_NAME}</code>，源文件有一个，是在当前目录下的 <strong>main.cpp</strong>。</p>
+<p>可以用变量的方式理解 <code>${PROJECT_NAME}</code>，因此它的内容就是由 <code>project</code> 命令定义的 <strong>hello-world</strong>。</p>
+<p>使用 Visual Studio 2019 (好像有的旧版 Visual Studio 也能打开 CMake 项目) 打开 CMake 项目所在的文件夹，按照 VS 的提示就可以编译运行了。</p>
+<h2 id="常用的-CMake-命令"><a href="#常用的-CMake-命令" class="headerlink" title="常用的 CMake 命令"></a>常用的 CMake 命令</h2><p>以下介绍一些常见 CMake 命令的简单用法。之所以是简单的用法，是因为这些命令非常灵活，一篇文章难以介绍全面，了解他们的最好的方式是阅读 <a href="https://cmake.org/documentation/" target="_blank" rel="noopener"><strong>官方文档</strong></a>。</p>
+<ol>
+<li>创建可执行文件项目</li>
+</ol>
+<p>使用 <code>add_executable(&lt;project name&gt; &lt;src&gt;)</code> 命令可以创建一个可执行程序项目。</p>
+<p>使用方法：</p>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 简单写法</span></span><br><span class="line"><span class="keyword">add_executable</span>(hello-world main.cpp)</span><br><span class="line"><span class="comment"># 稍微复杂点的写法</span></span><br><span class="line"><span class="keyword">add_executable</span>(<span class="variable">$&#123;PROJECT_NAME&#125;</span> main.cpp)</span><br><span class="line"><span class="comment"># 如果有多个源文件</span></span><br><span class="line"><span class="keyword">add_executable</span>(<span class="variable">$&#123;PROJECT_NAME&#125;</span> a.cpp b.cpp c.cpp)</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>让CMake找到我的源文件</li>
+</ol>
+<p>如果源文件太多了，可以把源文件都放到一个目录里。比如把所有的源文件都放在了 <strong>src</strong> 目录里。</p>
+<p>使用 <code>aux_source_directory(&lt;src_dir&gt; &lt;var_name&gt;)</code> 命令把 <em>src_dir</em> 目录下的所有源文件都放到 <em>var_name</em> 变量里。</p>
+<p>使用方法：</p>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">aux_source_directory</span>(./src <span class="variable">$&#123;SRCS&#125;</span>)</span><br><span class="line"><span class="comment"># 可执行程序</span></span><br><span class="line"><span class="keyword">add_executable</span>(<span class="variable">$&#123;PROJECT_NAME&#125;</span> <span class="variable">$&#123;SRCS&#125;</span>)</span><br><span class="line"><span class="comment"># 静态链接库</span></span><br><span class="line"><span class="keyword">add_library</span>(<span class="variable">$&#123;PROJECT_NAME&#125;</span> STATIC <span class="variable">$&#123;SRCS&#125;</span>)</span><br></pre></td></tr></table></figure>
+
+<p>注意：<code>aux_source_directory</code> 不会递归包含子目录，而且在源代码目录新增源文件后，要刷新 CMake 缓存才能生效。</p>
+<ol start="3">
+<li>让CMake找到我的头文件</li>
+</ol>
+<p>用 <code>include_directories(&lt;dir&gt; [dir2] [dir3] ...)</code> 命令设置头文件目录，告诉 CMake 应该到哪些目录里寻找头文件。如果用 <code>target_link_libraries()</code> 让构建目标链接一个库，可以不对这个库的头文件目录使用这个命令，具体参考下文。</p>
+<p>使用方法：</p>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">include_directories</span>(./<span class="keyword">include</span>)</span><br></pre></td></tr></table></figure>
+
+<ol start="4">
+<li>创建库项目</li>
+</ol>
+<p>使用 <code>add_library(&lt;project name&gt; &lt;type&gt; &lt;src&gt;)</code> 命令可以创建一个库项目。</p>
+<p>使用 <code>target_include_directories(&lt;project name&gt; &lt;INTERFACE|PUBLIC|PRIVATE&gt; &lt;include_dir&gt;)</code> 设置库的头文件目录。为了让链接本库的项目能够正常使用，一般设置 PUBLIC 属性。</p>
+<p>使用方法：</p>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 静态链接库</span></span><br><span class="line"><span class="keyword">add_library</span>(<span class="variable">$&#123;PROJECT_NAME&#125;</span> STATIC a.cpp b.cpp c.cpp)</span><br><span class="line"><span class="keyword">target_include_directories</span>(<span class="variable">$&#123;PROJECT_NAME&#125;</span> PUBLIC ./<span class="keyword">include</span>)</span><br><span class="line"><span class="comment"># 或者：</span></span><br><span class="line"><span class="keyword">add_library</span>(<span class="variable">$&#123;PROJECT_NAME&#125;</span> STATIC <span class="variable">$&#123;SRCS&#125;</span>)</span><br><span class="line"><span class="keyword">target_include_directories</span>(<span class="variable">$&#123;PROJECT_NAME&#125;</span> PUBLIC ./<span class="keyword">include</span>)</span><br><span class="line"><span class="comment"># 动态链接库</span></span><br><span class="line"><span class="keyword">add_library</span>(<span class="variable">$&#123;PROJECT_NAME&#125;</span> SHARED <span class="variable">$&#123;SRCS&#125;</span>)</span><br><span class="line"><span class="keyword">target_include_directories</span>(<span class="variable">$&#123;PROJECT_NAME&#125;</span> PUBLIC ./<span class="keyword">include</span>)</span><br><span class="line"><span class="comment"># Header-Only 库</span></span><br><span class="line"><span class="keyword">add_library</span>(<span class="variable">$&#123;PROJECT_NAME&#125;</span> INTERFACE)</span><br><span class="line"><span class="keyword">target_include_directories</span>(<span class="variable">$&#123;PROJECT_NAME&#125;</span> PUBLIC ./<span class="keyword">include</span>)</span><br></pre></td></tr></table></figure>
+
+<h2 id="常用的项目结构"><a href="#常用的项目结构" class="headerlink" title="常用的项目结构"></a>常用的项目结构</h2><p>上面介绍了几个常用的 CMake 命令，接下来结合实际项目常用的结构，谈一谈 CMakeLists.txt 的写法。</p>
+<ol>
+<li>简单的可执行文件项目</li>
+</ol>
+<p>简单的可执行项目，包括一些头文件、一些 C++ 源文件，其文件结构大致如下：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">.</span><br><span class="line">├── CMakeLists.txt</span><br><span class="line">├── include</span><br><span class="line">│   └── hello.h</span><br><span class="line">└── src</span><br><span class="line">    └── main.cpp</span><br></pre></td></tr></table></figure>
+
+<p>CMakeLists.txt:</p>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 项目名称 hello-world</span></span><br><span class="line"><span class="keyword">project</span>(hello-world)</span><br><span class="line"><span class="comment"># 从 src 目录搜索源文件</span></span><br><span class="line"><span class="keyword">aux_source_directory</span>(./src <span class="variable">$&#123;SRCS&#125;</span>)</span><br><span class="line"><span class="comment"># 创建可执行文件项目</span></span><br><span class="line"><span class="keyword">add_executable</span>(<span class="variable">$&#123;PROJECT_NAME&#125;</span> <span class="variable">$&#123;SRCS&#125;</span>)</span><br><span class="line"><span class="comment"># 从 include 目录里查找头文件</span></span><br><span class="line"><span class="keyword">include_directories</span>(./<span class="keyword">include</span>)</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>带有 examples 的库项目</li>
+</ol>
+<p>对于库项目，我个人一般会写一些 examples。这样可以方便实时执行库代码，同时顺便写了使用样例，方便给别人参考。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">.</span><br><span class="line">├── CMakeLists.txt</span><br><span class="line">├── examples</span><br><span class="line">│   ├── CMakeLists.txt</span><br><span class="line">│   ├── A.cpp</span><br><span class="line">│   └── B.cpp</span><br><span class="line">├── include</span><br><span class="line">│   └── hello.h</span><br><span class="line">└── src</span><br><span class="line">    └── hello.cpp</span><br></pre></td></tr></table></figure>
+
+<p>./CMakeLists.txt:</p>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 项目名称 hello-world</span></span><br><span class="line"><span class="keyword">project</span>(hello-world)</span><br><span class="line"><span class="comment"># 从 src 目录搜索源文件</span></span><br><span class="line"><span class="keyword">aux_source_directory</span>(./src <span class="variable">$&#123;SRCS&#125;</span>)</span><br><span class="line"><span class="comment"># 创建静态库项目(也可以改成 SHARED 变成动态库)</span></span><br><span class="line"><span class="keyword">add_library</span>(<span class="variable">$&#123;PROJECT_NAME&#125;</span> STATIC <span class="variable">$&#123;SRCS&#125;</span>)</span><br><span class="line"><span class="comment"># 设置使用库文件所需要的头文件</span></span><br><span class="line"><span class="keyword">target_include_directories</span>(<span class="variable">$&#123;PROJECT_NAME&#125;</span> PUBLIC ./<span class="keyword">include</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 这个命令让 CMake 进入到指定子目录进行项目构建，这个目录也得有 CMakeLists.txt 文件</span></span><br><span class="line"><span class="keyword">add_subdirectory</span>(examples)</span><br></pre></td></tr></table></figure>
+
+<p>./examples/CMakeLists.txt:</p>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 项目名称，因为这个是库的样例项目，不是库的一部分，所以另取一个名字</span></span><br><span class="line"><span class="keyword">project</span>(hello-world-examples)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 创建一个宏来快速创建可执行文件</span></span><br><span class="line"><span class="keyword">macro</span>(api_exe <span class="keyword">target</span>)</span><br><span class="line">    <span class="keyword">add_executable</span>(<span class="variable">$&#123;PROJECT_NAME&#125;</span>-<span class="variable">$&#123;target&#125;</span></span><br><span class="line">            <span class="variable">$&#123;target&#125;</span>.cpp</span><br><span class="line">            )</span><br><span class="line">    <span class="comment"># 注意这里要设置对库的链接</span></span><br><span class="line">    <span class="keyword">target_link_libraries</span>(<span class="variable">$&#123;PROJECT_NAME&#125;</span>-<span class="variable">$&#123;target&#125;</span> hello-world)</span><br><span class="line"><span class="keyword">endmacro</span>()</span><br><span class="line"></span><br><span class="line"><span class="comment"># 使用宏来快速创建可执行文件</span></span><br><span class="line">api_exe(exampleA)</span><br><span class="line">api_exe(exampleB)</span><br><span class="line">api_exe(exampleC)</span><br></pre></td></tr></table></figure>
+
+<h2 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h2><p>这篇文章只是简略地总结了 CMake 的大概用法，没有细致地讲解 CMake 以及其命令。关于 CMake 更详细地用法，推荐读者结合官方文档以及其他文章慢慢探索。阅读开源项目的 CMakeLists.txt 也是个好做法，不过那些文件经过多年积累，内容多且复杂，读不懂也不要灰心(读不懂的还有我😭)。</p>
+
+  	</div>
+	  
+		
+	
+		<div class="art-item-footer">
+				
+					<span class="art-item-left"><i class="icon icon-chevron-thin-left"></i>prev：<a href="/2020/03/04/可乐/" rel="prev"  title="可乐">
+						可乐 
+					</a></span>
+				
+				
+					<span class="art-item-right">next：<a href="/2020/01/30/运用快速幂算法求解递推式的第N项/" rel="next"  title="运用快速幂算法求解递推式的第N项">
+						运用快速幂算法求解递推式的第N项
+					</a><i class="icon icon-chevron-thin-right"></i></span>
+				
+		</div>
+	
+	</section>
+
+
+	
+
+</article>
+
+
+	<div id="gitalk-container"></div>
+	<link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+ <script type="text/javascript">
+      var gitalk = new Gitalk({
+        clientID: '53e3c578fcb7b7b1a4da',
+        clientSecret: '74433ee77d6e13fd635b82add519e143ac791726',
+        repo: 'cyanray.github.io',
+        owner: 'cyanray',
+        admin: ['cyanray'],
+        id: CryptoJS.MD5(location.pathname).toString(),
+        labels: ['Gitalk'],
+        perPage: 15,
+        pagerDirection: 'last',
+        createIssueManually: true,
+        distractionFreeMode: false
+      })
+
+      gitalk.render('gitalk-container')
+ </script>
+
+
+<script>
+	window.subData = {
+		title: '使用CMake组织C++项目',
+		tools: true
+	}
+</script>
+
+      </div>
+      <aside class='l_side'>
+        
+  <section class='m_widget about'>
+    
+            <div class='header'>
+                uint128.com
+            </div>
+            <div class='content'>
+                <div class='desc'>uint128, unsigned int.</div>
+            </div>
+</section>
+
+  <section class='m_widget links'>
+<div class='header'>Links</div>
+<div class='content'>
+    <ul class="entry">
+    
+        <li><a class="flat-box" target="_blank" href="https://github.com/cyanray">
+            <div class='name'>My Github</div>
+        </a></li>
+    
+        <li><a class="flat-box" target="_blank" href="http://www.cqjtujx.club/">
+            <div class='name'>重交计算机协会</div>
+        </a></li>
+    
+        <li><a class="flat-box" target="_blank" href="http://www.h13studio.com/">
+            <div class='name'>H13-Studio</div>
+        </a></li>
+    
+        <li><a class="flat-box" target="_blank" href="http://quosimodo.cn/">
+            <div class='name'>卡西莫多の礼物</div>
+        </a></li>
+    
+    </ul>
+</div>
+</section>
+
+      </aside>
+      <script>setLoadingBarProgress(60);</script>
+    </div>
+  </div>
+  <footer id="footer" class="clearfix">
+
+	<div class="social-wrapper">
+  	
+      
+        <a href="https://github.com/cyanray" class="social github"
+          target="_blank" rel="external">
+          <span class="icon icon-github"></span>
+        </a>
+      
+    
+  </div>
+  
+  <div>Theme <a href='https://github.com/stkevintan/hexo-theme-material-flow' class="codename">MaterialFlow</a> designed by <a href="http://keyin.me/" target="_blank">Kevin Tan</a>.</div>
+  
+</footer>
+
+
+  <script>setLoadingBarProgress(80);</script>
+  
+
+<script src="//apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+<script src='//cdnjs.cloudflare.com/ajax/libs/node-waves/0.7.5/waves.min.js'></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/scrollReveal.js/3.3.2/scrollreveal.min.js"></script>
+<script src="/js/jquery.fitvids.js"></script>
+<script>
+	var GOOGLE_CUSTOM_SEARCH_API_KEY = "";
+	var GOOGLE_CUSTOM_SEARCH_ENGINE_ID = "";
+	var ALGOLIA_API_KEY = "";
+	var ALGOLIA_APP_ID = "";
+	var ALGOLIA_INDEX_NAME = "";
+  var AZURE_SERVICE_NAME = "";
+  var AZURE_INDEX_NAME = "";
+  var AZURE_QUERY_KEY = "";
+  var BAIDU_API_ID = "";
+  var SEARCH_SERVICE = "hexo";
+  var ROOT = "/"||"/";
+  if(!ROOT.endsWith('/'))ROOT += '/';
+</script>
+<script src="/js/search.js"></script>
+<script src="/js/app.js"></script>
+
+
+  <script>setLoadingBarProgress(100);</script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config("");
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+</body>
+</html>
