@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  
+  <title>数值积分辛普森法的推导以及MATLAB实现 | uint128&#39;s Blog</title>
+  <meta name="description" content="uint128&#39;s blog">
+  <meta name="keywords" content="uint128,uint128&#39;s blog,uint128.com">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <link rel="shortcut icon" href="/">
+  <link rel="alternate" href="/atom.xml" title="uint128's Blog">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="数值积分在船体计算中很常用。以前只会用, 花点时间搞明白它近似计算的原理。(我没有完全搞懂, 本文可能有错误)">
+<meta name="keywords" content="数学,MATLAB">
+<meta property="og:type" content="article">
+<meta property="og:title" content="数值积分辛普森法的推导以及MATLAB实现">
+<meta property="og:url" content="https://uint128.com/2020/04/13/数值积分辛普森法的推导以及MATLAB实现/index.html">
+<meta property="og:site_name" content="uint128&#39;s Blog">
+<meta property="og:description" content="数值积分在船体计算中很常用。以前只会用, 花点时间搞明白它近似计算的原理。(我没有完全搞懂, 本文可能有错误)">
+<meta property="og:locale" content="zh-cn">
+<meta property="og:updated_time" content="2020-04-14T07:55:38.198Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="数值积分辛普森法的推导以及MATLAB实现">
+<meta name="twitter:description" content="数值积分在船体计算中很常用。以前只会用, 花点时间搞明白它近似计算的原理。(我没有完全搞懂, 本文可能有错误)">
+    
+  <link href="https://fonts.googleapis.com/css?family=Inconsolata|Titillium+Web" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Roboto+Mono" rel="stylesheet">
+  <link href="//cdnjs.cloudflare.com/ajax/libs/node-waves/0.7.5/waves.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="/style.css">
+  <script>
+    function setLoadingBarProgress(num) {
+      document.getElementById('loading-bar').style.width=num+"%";
+    }
+  </script>
+  <script src="/js/md5.js"></script>
+<link rel="alternate" href="/atom.xml" title="uint128's Blog" type="application/atom+xml"><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+</head>
+</html>
+<body>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div id="loading-bar-wrapper">
+  <div id="loading-bar"></div>
+</div>
+
+
+  <script>setLoadingBarProgress(20)</script> 
+  <header class="l_header">
+	<div class='wrapper'>
+		<div class="nav-main container container--flex">
+			<a class="logo flat-box" href='/' >
+				uint128's Blog
+			</a>
+			<div class='menu'>
+				<ul class='h-list'>
+					
+						<li>
+							<a class='flat-box nav-home' href='/'>
+								Home
+							</a>
+						</li>
+					
+						<li>
+							<a class='flat-box nav-archives' href='/archives'>
+								Archives
+							</a>
+						</li>
+					
+						<li>
+							<a class='flat-box nav-about' href='/about'>
+								About
+							</a>
+						</li>
+					
+				</ul>
+				<div class='underline'></div>
+			</div>
+			
+				<div class="m_search">
+					<form name="searchform" class="form u-search-form">
+						<input type="text" class="input u-search-input" placeholder="Search" />
+						<span class="icon icon-search"></span>
+					</form>
+				</div>
+			
+			<ul class='switcher h-list'>
+				
+					<li class='s-search'><a href='javascript:void(0)'><span class="icon icon-search flat-box"></span></a></li>
+				
+				<li class='s-menu'><a href='javascript:void(0)'><span class="icon icon-menu flat-box"></span></a></li>
+			</ul>
+		</div>
+		
+		<div class='nav-sub container container--flex'>
+			<a class="logo" class="flat-box" href='javascript:void(0)'>
+				Word of Forks
+			</a>
+
+			<ul class='switcher h-list'>
+				<li class='s-comment'><a href='javascript:void(0)'><span class="icon icon-chat_bubble_outline flat-box"></span></a></li>
+				<li class='s-top'><a href='javascript:void(0)'><span class="icon icon-arrow_upward flat-box"></span></a></li>
+				<li class='s-toc'><a href='javascript:void(0)'><span class="icon icon-format_list_numbered flat-box"></span></a></li>
+			</ul>
+		</div>
+	</div>
+</header>
+<aside class="menu-phone">
+	<nav>
+		
+			<a href="/" class="nav-home nav">
+				Home
+			</a>
+		
+			<a href="/archives" class="nav-archives nav">
+				Archives
+			</a>
+		
+			<a href="/about" class="nav-about nav">
+				About
+			</a>
+		
+	</nav>
+</aside>
+
+    <script>setLoadingBarProgress(40);</script>
+  <div class="l_body">
+    <div class='container clearfix'>
+      <div class='l_main'>
+        <article id="post-数值积分辛普森法的推导以及MATLAB实现"
+  class="post white-box article-type-post"
+  itemscope itemprop="blogPost">
+	<section class='meta'>
+	<h2 class="title">
+  	<a href="/2020/04/13/数值积分辛普森法的推导以及MATLAB实现/">
+    	数值积分辛普森法的推导以及MATLAB实现
+    </a>
+  </h2>
+	<time>
+	  4月 13, 2020
+	</time>
+	
+	</section>
+	
+		<section class="toc-wrapper"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#数值积分的一般形式"><span class="toc-number">1.</span> <span class="toc-text">数值积分的一般形式</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#梯形法"><span class="toc-number">1.1.</span> <span class="toc-text">梯形法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#辛普森一法"><span class="toc-number">1.2.</span> <span class="toc-text">辛普森一法</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#MATLAB-程序实现"><span class="toc-number">2.</span> <span class="toc-text">MATLAB 程序实现</span></a></li></ol></section>
+	
+	<section class="article typo">
+  	<div class="article-entry" itemprop="articleBody">
+    	<p>数值积分在船体计算中很常用。以前只会用, 花点时间搞明白它近似计算的原理。(我没有完全搞懂, 本文可能有错误)<br><a id="more"></a></p>
+<p>我个人理解的数值积分, 就是把原函数 \( f(x) \) 在 \( f(0) \) 处用麦克劳林级数展开, 用多项式来拟合原函数。多项式的次数为\( 1 \) 时, 就是梯形法; 为 \( 2 \) 时就是辛普森一法; 为 \( 3 \) 时就是辛普森二法。 多项式的次数越高, 拟合精度越高。</p>
+<h1 id="数值积分的一般形式"><a href="#数值积分的一般形式" class="headerlink" title="数值积分的一般形式"></a>数值积分的一般形式</h1><p>对于函数 \( f(x) \) 在区间 \( [a,b] \) 上的积分有</p>
+<script type="math/tex; mode=display">
+A = \int_0^L f(x) dx = \int_0^L y dx
+
+\tag{1}
+\label{1}</script><p>假定用 \( n \) 次多项式曲线对 \( f(x) \) 进行拟合。将该多项式曲线在 \( f(0) \) 处用麦克劳林级数展开, 则得</p>
+<script type="math/tex; mode=display">
+f(x) \approx \sum_{i = 0}^{n} \frac{1}{i!} f^{(i)}(0) x^i
+
+\tag{2}
+\label{2}</script><p>将式 \( \eqref{2} \) 代入式 \( \eqref{1} \) 可得</p>
+<script type="math/tex; mode=display">
+\begin{aligned}
+    A &= \int_0^L f(x) dx                               \\\\
+      &\approx  \frac{1}{0!} f(0)     \int_0^L   dx + 
+                \frac{1}{1!} f^{'}(0) \int_0^L x dx +
+                \cdots                              +
+                \frac{1}{n!} f^{(n)}(0) \int_0^Lx^ndx   \\\\
+      &= \sum_{i = 0}^{n} \frac{L^{i+1} }{(i+1)!}f^{(i)}(0)
+\end{aligned}
+
+\tag{3}
+\label{3}</script><p>令面积 \( A \) 为</p>
+<script type="math/tex; mode=display">
+A = \sum_{i = 0}^{n} k_iy_i
+
+\tag{4}
+\label{4}</script><p>上式中的 \( y_i \) 可由式 \( \eqref{2} \) 得到</p>
+<script type="math/tex; mode=display">
+\begin{aligned}
+y_0 &= f(0)                                                               \\\\
+y_1 &= f(0) + f^{'}(0)x_1 + \cdots + \frac{1}{n!} f^{(n)}(0)x_1^n         \\\\
+& \cdots \cdots                                                             \\\\
+y_n &= f(0) + f^{'}(0)x_n + \cdots + \frac{1}{n!} f^{(n)}(0)x_n^n         
+\end{aligned}
+
+\tag{5}
+\label{5}</script><p>将式 \( \eqref{5} \) 代入式 \( \eqref{4} \), 得 <em>(注意:如果看不出来, 可以先在式 \( \eqref{5} \) 左右同时乘以\( k_i \) 然后再把 \( f^{(i)}(0) \) 提出来 )</em></p>
+<script type="math/tex; mode=display">
+A = (k_0 + k_1 + \cdots + k_n)f(0) +    \\\\
+    \frac{1}{1!} (k_1x_1 + k_2x_2 + \cdots + k_nx_n) f^{'}(0) + \\\\
+    \cdots + \\\\
+    \frac{1}{n!} (k_1x_1^n + k_2x_2^n + \cdots + k_nx_n^n) f^{(n)}(0) 
+
+\tag{6}
+\label{6}</script><p>将式 \( \eqref{6} \) 与式 \( \eqref{3} \) 相比较, 可以得到</p>
+<script type="math/tex; mode=display">
+
+    k_0 + k_1 + \cdots + k_n = L                      \\\\
+    k_1x_1 + k_2x_2 + \cdots + k_nx_n = \frac{L^2}{2} \\\\
+    \cdots                                              \\\\
+    k_1x_1^n + k_2x_2^n + \cdots + k_nx_n^n = \frac{L^{n+1}}{n+1} \\\\
+
+\tag{7}
+\label{7}</script><p>至此得到了数值积分的一般形式。通过式 \( \eqref{7} \) 解得 \( k \) 的值, 再通过式 \( \eqref{4} \) 就可以求得面积 \( A \) , 即数值积分。</p>
+<h2 id="梯形法"><a href="#梯形法" class="headerlink" title="梯形法"></a>梯形法</h2><p>取 \( n = 1 \) , 以直线段近似地代替 \( y = f(x) \) 的曲线, 坐标值只有 \( y_0 \) 和 \( y_1 \) , 区间长度 \( L = x_1 - x_0 \) , 且 \( x_1 = L \)。</p>
+<p>由式 \( \eqref{7} \) , 可得 </p>
+<script type="math/tex; mode=display">
+\left\{
+    \begin{array}{l}
+        k_0 + k_1 = L    \\\\
+        k_1x_1 = \frac{L^2}{2}  
+    \end{array}
+\right.</script><p>解得</p>
+<script type="math/tex; mode=display">
+\left\{
+    \begin{array}{l}
+    k_0 = \frac{L}{2}   \\\\
+    k_1 = \frac{L}{2}
+    \end{array}
+\right.</script><p>代入式 \( \eqref{4} \) , 可得</p>
+<script type="math/tex; mode=display">
+A = \frac{L}{2} (y_0 + y_1)</script><h2 id="辛普森一法"><a href="#辛普森一法" class="headerlink" title="辛普森一法"></a>辛普森一法</h2><p>步骤和梯形法一样。取 \( n = 2 \) , 以二次抛物线近似地代替 \( y = f(x) \) 的曲线, 坐标值有 \( y_0 \) 、 \( y_1 \) 和 \( y_2 \) , 区间长度 \( L = x_2 - x_0 \) , 且 \( x_1 = L/2 , x_2 = L \)。</p>
+<p>由式 \( \eqref{7} \) , 可得 </p>
+<script type="math/tex; mode=display">
+\left\{
+    \begin{array}{l}
+        k_0 + k_1 + k_2= L    \\\\
+        k_1x_1 + k_2x_2 = \frac{L^2}{2}  \\\\
+        k_1x_1^2 + k_2x_2^2 = \frac{L^3}{3}
+    \end{array}
+\right.</script><p>解得</p>
+<script type="math/tex; mode=display">
+\left\{
+    \begin{array}{l}
+    k_0 = \frac{L}{6}   \\\\
+    k_1 = \frac{4L}{6}  \\\\
+    k_2 = \frac{L}{6}
+    \end{array}
+\right.</script><p>代入式 \( \eqref{4} \) , 可得</p>
+<script type="math/tex; mode=display">
+A = \frac{L}{6} (y_0 + 4y_1 + y_2)</script><p>一般使用的时候, 会把积分区间等分为偶数份, 每三个点用一次辛普森一法。</p>
+<h1 id="MATLAB-程序实现"><a href="#MATLAB-程序实现" class="headerlink" title="MATLAB 程序实现"></a>MATLAB 程序实现</h1><p>MATLAB 中的 <strong>trapz</strong> 函数是梯形法的实现, 但是对于辛普森法没有对应的函数。<strong>quad</strong> 函数采用自适应辛普森法, 但是好像只能对函数对象进行积分, 而不能对离散的函数值进行积分。<br>所以我自己实现了一个 <strong>simpson</strong> 函数, 用法和 <strong>trapz</strong> 函数类似。但是多了个使用限制, 即必须把函数等分成偶数份 (输入的 <strong>y_vec</strong> 必须有奇数个值), 这个限制是为了方便生成辛普森系数。</p>
+<p>使用方法: </p>
+<figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">clear;clc;</span><br><span class="line"><span class="comment">% 辛普森一法</span></span><br><span class="line">res1 = <span class="number">10</span> * simpson([<span class="number">1</span> <span class="number">2</span> <span class="number">3</span> <span class="number">4</span> <span class="number">5</span>].^<span class="number">2</span>);</span><br><span class="line"><span class="comment">% 梯形法</span></span><br><span class="line">res2 = <span class="number">10</span> * trapz([<span class="number">1</span> <span class="number">2</span> <span class="number">3</span> <span class="number">4</span> <span class="number">5</span>].^<span class="number">2</span>);</span><br><span class="line"><span class="comment">% 自适应数值积分</span></span><br><span class="line">res3 = <span class="number">10</span> * integral(@(x)x.^<span class="number">2</span> ,<span class="number">1</span>,<span class="number">5</span>);</span><br><span class="line">fprintf(<span class="string">'辛普森一法结果: %.2f \n'</span>, res1);</span><br><span class="line">fprintf(<span class="string">'梯形法结果: %.2f \n'</span>, res2);</span><br><span class="line">fprintf(<span class="string">'自适应数值积分结果: %.2f \n'</span>, res3);</span><br><span class="line"><span class="comment">% 执行结果: </span></span><br><span class="line"><span class="comment">% 辛普森一法结果: 413.33 </span></span><br><span class="line"><span class="comment">% 梯形法结果: 420.00 </span></span><br><span class="line"><span class="comment">% 自适应数值积分结果: 413.33</span></span><br></pre></td></tr></table></figure>
+<p>simpson 函数的实现: </p>
+<figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="params">[ result ]</span> = <span class="title">simpson</span><span class="params">( y_vec , d_num)</span></span></span><br><span class="line"><span class="comment">%SIMPSON 适用于离散数据的辛普森一法</span></span><br><span class="line"><span class="comment">%   y_vec : 等间距 y 值向量</span></span><br><span class="line"><span class="comment">%   d_num : 间距大小 (默认为 1)</span></span><br><span class="line"></span><br><span class="line"><span class="comment">%% 适用条件判断</span></span><br><span class="line"><span class="keyword">if</span> (nargin == <span class="number">1</span>)</span><br><span class="line">    d_num = <span class="number">1</span>;</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"><span class="keyword">if</span> <span class="built_in">length</span>(y_vec) &lt; <span class="number">3</span></span><br><span class="line">    error(<span class="string">'y_vec 的长度太小了'</span>);</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"><span class="keyword">if</span> <span class="built_in">mod</span>(<span class="built_in">length</span>(y_vec),<span class="number">2</span>) == <span class="number">0</span></span><br><span class="line">    error(<span class="string">'y_vec 的长度必须是奇数'</span>);</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"><span class="keyword">if</span> d_num &lt;= <span class="number">0</span></span><br><span class="line">    error(<span class="string">'d_num 必须大于0'</span>);</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="comment">%% 常用量</span></span><br><span class="line"><span class="comment">% y_vec 的长度</span></span><br><span class="line">Len = <span class="built_in">length</span>(y_vec);</span><br><span class="line"></span><br><span class="line"><span class="comment">%% 生成系数向量 M</span></span><br><span class="line">M = <span class="built_in">zeros</span>(<span class="number">1</span>,Len);</span><br><span class="line"><span class="keyword">if</span> d_num == <span class="number">3</span></span><br><span class="line">    M = [<span class="number">1</span> <span class="number">4</span> <span class="number">1</span>];</span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">    M(<span class="number">1</span>) = <span class="number">1</span>;</span><br><span class="line">    M(<span class="number">2</span>) = <span class="number">4</span>;</span><br><span class="line">    <span class="keyword">for</span> <span class="built_in">i</span> = <span class="number">1</span>: (Len - <span class="number">4</span>)</span><br><span class="line">        <span class="keyword">if</span> <span class="built_in">mod</span>(<span class="built_in">i</span>,<span class="number">2</span>) == <span class="number">1</span></span><br><span class="line">            M(<span class="number">2</span> + <span class="built_in">i</span>) = <span class="number">2</span>;</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">            M(<span class="number">2</span> + <span class="built_in">i</span>) = <span class="number">4</span>;</span><br><span class="line">        <span class="keyword">end</span></span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line">    M(Len - <span class="number">1</span>) = <span class="number">4</span>;</span><br><span class="line">    M(Len) = <span class="number">1</span>;</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="comment">%% 计算结果</span></span><br><span class="line">t = y_vec .* M;</span><br><span class="line">result = (<span class="number">1</span>/<span class="number">3</span>) * sum(t(:)) * d_num;</span><br><span class="line"></span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+  	</div>
+	  
+	  <div class="article-tags tags">
+      
+        <a href="/tags/数学/">数学</a>
+      
+        <a href="/tags/MATLAB/">MATLAB</a>
+      
+	  </div>
+    
+		
+	
+		<div class="art-item-footer">
+				
+				
+					<span class="art-item-right">next：<a href="/2020/04/06/玩一玩泛域名解析/" rel="next"  title="玩一玩泛域名解析">
+						玩一玩泛域名解析
+					</a><i class="icon icon-chevron-thin-right"></i></span>
+				
+		</div>
+	
+	</section>
+
+
+	
+
+</article>
+
+
+	<div id="gitalk-container"></div>
+	<link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+ <script type="text/javascript">
+      var gitalk = new Gitalk({
+        clientID: '53e3c578fcb7b7b1a4da',
+        clientSecret: '74433ee77d6e13fd635b82add519e143ac791726',
+        repo: 'cyanray.github.io',
+        owner: 'cyanray',
+        admin: ['cyanray'],
+        id: CryptoJS.MD5(location.pathname).toString(),
+        labels: ['Gitalk'],
+        perPage: 15,
+        pagerDirection: 'last',
+        createIssueManually: true,
+        distractionFreeMode: false
+      })
+
+      gitalk.render('gitalk-container')
+ </script>
+
+
+<script>
+	window.subData = {
+		title: '数值积分辛普森法的推导以及MATLAB实现',
+		tools: true
+	}
+</script>
+
+      </div>
+      <aside class='l_side'>
+        
+  <section class='m_widget about'>
+    
+            <div class='header'>
+                uint128.com
+            </div>
+            <div class='content'>
+                <div class='desc'>uint128, unsigned int.<br>Uint128 Is Not a Type with 128 bits.</div>
+            </div>
+</section>
+
+  <section class='m_widget links'>
+<div class='header'>Links</div>
+<div class='content'>
+    <ul class="entry">
+    
+        <li><a class="flat-box" target="_blank" href="https://github.com/cyanray">
+            <div class='name'>My Github</div>
+        </a></li>
+    
+        <li><a class="flat-box" target="_blank" href="http://www.cqjtujx.club/">
+            <div class='name'>重交计算机协会</div>
+        </a></li>
+    
+        <li><a class="flat-box" target="_blank" href="http://www.h13studio.com/">
+            <div class='name'>H13-Studio</div>
+        </a></li>
+    
+        <li><a class="flat-box" target="_blank" href="http://quosimodo.cn/">
+            <div class='name'>卡西莫多の礼物</div>
+        </a></li>
+    
+    </ul>
+</div>
+</section>
+
+      </aside>
+      <script>setLoadingBarProgress(60);</script>
+    </div>
+  </div>
+  <footer id="footer" class="clearfix">
+
+	<div class="social-wrapper">
+  	
+      
+        <a href="https://github.com/cyanray" class="social github"
+          target="_blank" rel="external">
+          <span class="icon icon-github"></span>
+        </a>
+      
+    
+  </div>
+  
+  <div>Theme <a href='https://github.com/stkevintan/hexo-theme-material-flow' class="codename">MaterialFlow</a> designed by <a href="http://keyin.me/" target="_blank">Kevin Tan</a>.</div>
+  
+</footer>
+
+
+  <script>setLoadingBarProgress(80);</script>
+  
+
+<script src="//apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+<script src='//cdnjs.cloudflare.com/ajax/libs/node-waves/0.7.5/waves.min.js'></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/scrollReveal.js/3.3.2/scrollreveal.min.js"></script>
+<script src="/js/jquery.fitvids.js"></script>
+<script>
+	var GOOGLE_CUSTOM_SEARCH_API_KEY = "";
+	var GOOGLE_CUSTOM_SEARCH_ENGINE_ID = "";
+	var ALGOLIA_API_KEY = "";
+	var ALGOLIA_APP_ID = "";
+	var ALGOLIA_INDEX_NAME = "";
+  var AZURE_SERVICE_NAME = "";
+  var AZURE_INDEX_NAME = "";
+  var AZURE_QUERY_KEY = "";
+  var BAIDU_API_ID = "";
+  var SEARCH_SERVICE = "hexo";
+  var ROOT = "/"||"/";
+  if(!ROOT.endsWith('/'))ROOT += '/';
+</script>
+<script src="/js/search.js"></script>
+<script src="/js/app.js"></script>
+
+
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+          tex2jax: {
+            inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+            processEscapes: true
+          }
+        });
+      </script>
+    
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+            tex2jax: {
+              skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+            }
+          });
+      </script>
+    
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+              var all = MathJax.Hub.getAllJax(), i;
+              for(i=0; i < all.length; i += 1) {
+                  all[i].SourceElement().parentNode.className += ' has-jax';
+              }
+          });
+      </script>
+    
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-MML-AM_CHTML">
+    </script>
+    
+  <script>setLoadingBarProgress(100);</script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config("");
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+</body>
+</html>

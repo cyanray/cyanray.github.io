@@ -5,8 +5,8 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   
   <title>2048 游戏AI的实现思路 | uint128&#39;s Blog</title>
-  <meta name="description" content>
-  <meta name="keywords" content>
+  <meta name="description" content="uint128&#39;s blog">
+  <meta name="keywords" content="uint128,uint128&#39;s blog,uint128.com">
   <meta name="HandheldFriendly" content="True">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <link rel="shortcut icon" href="/">
@@ -149,20 +149,24 @@
 	
 	<section class="article typo">
   	<div class="article-entry" itemprop="articleBody">
-    	<p>2048 游戏AI的实现思路</p>
-<a id="more"></a>
-<p>&emsp;&emsp;最近玩2048玩上瘾了，一玩就停不下来。<br>&emsp;&emsp;觉得这样玩个不停太浪费时间了，于是就想做个AI帮我玩2048。<br>&emsp;&emsp;首先要做一个2048游戏，这个游戏的规则和玩法很简单，所以实现起来不复杂。(要注意的是，<strong>2</strong> 和 <strong>4</strong> 的出现概率分别是 <strong>0.1</strong> 和 <strong>0.9</strong>。)<br>&emsp;&emsp;关键是如何实现AI！</p>
+    	<p>2048 游戏AI的实现思路<br><a id="more"></a><br>&emsp;&emsp;最近玩2048玩上瘾了，一玩就停不下来。<br>&emsp;&emsp;觉得这样玩个不停太浪费时间了，于是就想做个AI帮我玩2048。<br>&emsp;&emsp;首先要做一个2048游戏，这个游戏的规则和玩法很简单，所以实现起来不复杂。(要注意的是，<strong>2</strong> 和 <strong>4</strong> 的出现概率分别是 <strong>0.1</strong> 和 <strong>0.9</strong>。)<br>&emsp;&emsp;关键是如何实现AI！</p>
 <h2 id="游戏规律"><a href="#游戏规律" class="headerlink" title="游戏规律"></a>游戏规律</h2><p>&emsp;&emsp;这个游戏想要通关(合成出2048)还是很简单的，只要让最大的那些数字按照从大到小的顺序始终呆在一个角落就可以了。<br>&emsp;&emsp;比如 <strong>图1</strong> 中的这种情况，我只需要在现在这个 <strong>32</strong> 旁边再合成出一个 <strong>32</strong>，这两个 <strong>32</strong> 就能合并成一个 <strong>64</strong>。然后新合成的 <strong>64</strong> 和原来就有的 <strong>64</strong> 将会是挨在一起的，所以让这两个 <strong>64</strong> 合并就很轻松。合并之后得到一个 <strong>128</strong>，所以剩下的主要数字就是 <strong>2048、512、256、128</strong>。而且它们还都是挨在一起，按照从大到小的顺序排列的。游戏的下一步就是我再合成一个 <strong>128</strong>，这样就能一口气把 <strong>512、256、128</strong> 合成为一个 <strong>1024</strong>。</p>
 <p><img src="./img-1.png" alt></p>
 <p>&emsp;&emsp;那么，要如何让 <strong>AI</strong> 按照这样的规律来游戏呢？</p>
 <p>&emsp;&emsp;这个游戏的操作很简单，只有上移、下移、左移、右移这四种操作。而我的思路是让 <strong>AI</strong> 在当前局面的基础上，对这四种操作移动后的结果打分，返回分数最高的一种操作。</p>
 <p>&emsp;&emsp;现在，问题的关键在于如何评分。</p>
-<h2 id="位置加权评分方案"><a href="#位置加权评分方案" class="headerlink" title="位置加权评分方案"></a>位置加权评分方案</h2><p>&emsp;&emsp;一种思路是把棋盘的每个位置都设置一定的权重 \( w_{xy} \)，那么评分 \( S \) 为各位置数值 \( v_{xy} \) 的加权求和:<br>$$<br>S = \sum_{x,y=1}^{x,y=4} w_{xy} \cdot v_{xy}<br>$$</p>
-<p>&emsp;&emsp;可以预知 <strong>AI</strong> 会让大权重位置上的数值尽可能地大。实际的运行结果也是符合预想。</p>
+<h2 id="位置加权评分方案"><a href="#位置加权评分方案" class="headerlink" title="位置加权评分方案"></a>位置加权评分方案</h2><p>&emsp;&emsp;一种思路是把棋盘的每个位置都设置一定的权重 \( w<em>{xy} \)，那么评分 \( S \) 为各位置数值 \( v</em>{xy} \) 的加权求和:</p>
+<script type="math/tex; mode=display">
+S = \sum_{x,y=1}^{x,y=4} w_{xy} \cdot v_{xy}</script><p>&emsp;&emsp;可以预知 <strong>AI</strong> 会让大权重位置上的数值尽可能地大。实际的运行结果也是符合预想。</p>
 <p><img src="./img-2.png" alt></p>
 <p>&emsp;&emsp;接下来谈谈权重的值要怎么取。为了方便说明，我先给出经过测试效果比较好的一种权重取值。</p>
-<p>$$<br>\begin{bmatrix}<br>        255  &amp;  127  &amp;  63  &amp;  63   \\<br>        11  &amp;  17  &amp;  15  &amp;  19     \\<br>        0  &amp;  0  &amp;  0  &amp;  0         \\<br>        -3  &amp;  -5  &amp;  -7  &amp;  -9<br>\end{bmatrix}<br>$$</p>
-<p>&emsp;&emsp;第一行的权重给的最高，而且从左往右递减。为了让数值大的值尽量呆在这一行，所以这一行各个位置的权重都远远大于其他位置的权重。而又为了让数值最大的那个数字固定于角落不移动，所以这一行最左边位置的权重又远大于所有其他位置的权重。</p>
+<script type="math/tex; mode=display">
+\begin{bmatrix}
+        255  &  127  &  63  &  63   \\\\
+        11  &  17  &  15  &  19     \\\\
+        0  &  0  &  0  &  0         \\\\
+        -3  &  -5  &  -7  &  -9  
+\end{bmatrix}</script><p>&emsp;&emsp;第一行的权重给的最高，而且从左往右递减。为了让数值大的值尽量呆在这一行，所以这一行各个位置的权重都远远大于其他位置的权重。而又为了让数值最大的那个数字固定于角落不移动，所以这一行最左边位置的权重又远大于所有其他位置的权重。</p>
 <p>&emsp;&emsp;第二行的权重比第一行小得多，而且不呈递增或递减。这是因为这一行的数字最终要和上一行合并，如果权重呈现递增或者递减，会导致这一行的数字不常移动。如果这一行的数字不常移动，就难以保证相同的数字处于同一列，因此会出现如 <strong>图3</strong> 这样的效果。(注意：图片中展示程序的行和列与本文权重的行和列相反。上文给出的权重应当会让数值大的数字在第一行，而图中数值最大的数字正好在第一列。)</p>
 <p><img src="./img-3.png" alt></p>
 <p>&emsp;&emsp;可以看出各行数值最大的数字堆积于各行权重最大的位置，迟迟无法合并导致游戏失败。</p>
@@ -172,7 +176,6 @@
 <p>&emsp;&emsp;设置权重可以让数值大的数字尽量靠近一个角落，也可以让第二行的数字往第一行合并。但是合并的前提是，两行相同数值的数字要在同一列，而光靠设置权重则很难保证相邻两行的同数值数字能够并列。因此需要设置算法鼓励能够让相同数值的数字并列的操作。</p>
 <h2 id="让数值相同的数字在同一列"><a href="#让数值相同的数字在同一列" class="headerlink" title="让数值相同的数字在同一列"></a>让数值相同的数字在同一列</h2><p>&emsp;&emsp;这个思路实现起来不难，针对棋盘上每一列，统计其相邻且相同的数字的数目，折算后加入评分即可。这里给出一个算法：</p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> (<span class="keyword">int</span> y = <span class="number">0</span>; y &lt; <span class="number">4</span>; y++)</span><br><span class="line">&#123;</span><br><span class="line">	<span class="keyword">int</span> maxt = <span class="number">0</span>, t = <span class="number">0</span>, i = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">for</span> (<span class="keyword">int</span> x = <span class="number">0</span>; x &lt; <span class="number">4</span> - <span class="number">1</span>; x++)</span><br><span class="line">	&#123;</span><br><span class="line">		i = x + <span class="number">1</span>;</span><br><span class="line">		<span class="keyword">while</span> (board[i++][y] == board[x][y]) ++t;</span><br><span class="line">		maxt = max(maxt, t);</span><br><span class="line">		x += t;</span><br><span class="line">	&#125;</span><br><span class="line">	result += <span class="number">1.0e2</span> * t;    <span class="comment">// 1.0e2为折算因子，数值越大则该项评分的“影响力”越大</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
 <h2 id="鼓励增加棋盘上的空位"><a href="#鼓励增加棋盘上的空位" class="headerlink" title="鼓励增加棋盘上的空位"></a>鼓励增加棋盘上的空位</h2><p>&emsp;&emsp;如果本次操作能够增加棋盘上的空位，有助于游戏的继续，则加一点点优势分。<br>&emsp;&emsp;经过测试，这个评分项目似乎能让 <strong>AI</strong> 的发挥更稳定。统计棋盘上空位的数目，折算后加入评分即可。</p>
 <h2 id="测试代码以及结果"><a href="#测试代码以及结果" class="headerlink" title="测试代码以及结果"></a>测试代码以及结果</h2><p>&emsp;&emsp;测试代码已经上传到 <strong>GitHub</strong> : <a href="https://github.com/cyanray/Game_2048_AI" target="_blank" rel="noopener">https://github.com/cyanray/Game_2048_AI</a></p>
 <p>&emsp;&emsp;这个 <strong>AI</strong> 能够稳定地合成出 <strong>512</strong> 这个数字，偶尔运气好能合成出 <strong>1024</strong>，但是更好的成绩就没能做到了。</p>
@@ -325,6 +328,36 @@
 <script src="/js/app.js"></script>
 
 
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+          tex2jax: {
+            inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+            processEscapes: true
+          }
+        });
+      </script>
+    
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+            tex2jax: {
+              skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+            }
+          });
+      </script>
+    
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+              var all = MathJax.Hub.getAllJax(), i;
+              for(i=0; i < all.length; i += 1) {
+                  all[i].SourceElement().parentNode.className += ' has-jax';
+              }
+          });
+      </script>
+    
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-MML-AM_CHTML">
+    </script>
+    
   <script>setLoadingBarProgress(100);</script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
 <script type="text/x-mathjax-config">
   MathJax.Hub.Config("");

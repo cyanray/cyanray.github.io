@@ -5,8 +5,8 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   
   <title>将UTF8转换成GB18030的疲倦过程 | uint128&#39;s Blog</title>
-  <meta name="description" content>
-  <meta name="keywords" content>
+  <meta name="description" content="uint128&#39;s blog">
+  <meta name="keywords" content="uint128,uint128&#39;s blog,uint128.com">
   <meta name="HandheldFriendly" content="True">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <link rel="shortcut icon" href="/">
@@ -151,8 +151,7 @@
 	
 	<section class="article typo">
   	<div class="article-entry" itemprop="articleBody">
-    	<p>将UTF8转换成GB18030的疲倦过程</p>
-<a id="more"></a>
+    	<p>将UTF8转换成GB18030的疲倦过程<br><a id="more"></a></p>
 <blockquote>
 <p>编码问题是个很恶心人的问题。—— 鲁迅没说过这句话</p>
 </blockquote>
@@ -176,12 +175,10 @@
 <p><img src="./img-5.png" alt></p>
 <p>&emsp;&emsp;继续查资料发现，编译boost::locale的时候可以指定使用ICU实现。而且vcpkg就可以做到个性化编译。那这就好办了！删掉原来的boost之后，直接执行:</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./vcpkg install boost-locale[icu]</span><br></pre></td></tr></table></figure>
-
 <p>&emsp;&emsp;然而事情并没有那么简单。使用了这个所谓的指定使用 <strong>[icu]</strong> 实现的boost::locale有同样的问题、而且一样调用了Win32 API，和之前没有任何变化。</p>
 <p>&emsp;&emsp;找不到原因，不知道是vcpkg的问题还是boost的问题。没办法，只能暂时放弃使用boost，然后寻找到了同样有编码转换功能的 <strong>libiconv</strong> 。</p>
 <p>&emsp;&emsp;使用 libiconv 的过程异常顺利。贴一下测试用的代码：</p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="built_in">string</span> <span class="title">utf8_to_gb18030</span><span class="params">(<span class="keyword">const</span> <span class="built_in">string</span>&amp; uStr)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">iconv_t</span> conv = iconv_open(<span class="string">"GB18030"</span>, <span class="string">"UTF-8"</span>);</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> (conv == (<span class="keyword">iconv_t</span>)<span class="number">-1</span>) &#123;</span><br><span class="line">		iconv_close(conv);</span><br><span class="line">		<span class="keyword">throw</span> <span class="string">"An error occurred in iconv_open."</span>;</span><br><span class="line">		<span class="keyword">return</span> <span class="string">""</span>;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="built_in">string</span> ret;</span><br><span class="line">	ret.resize(uStr.size() * <span class="number">2</span>, <span class="string">'\0'</span>);		<span class="comment">// 不知道转码之后的字符串长度是多少，直接扩容两倍防止溢出</span></span><br><span class="line"></span><br><span class="line">	<span class="keyword">size_t</span> inbytes = uStr.size();</span><br><span class="line">	<span class="keyword">size_t</span> outbytes = ret.size();</span><br><span class="line">	<span class="keyword">char</span>* inPtr = <span class="keyword">const_cast</span>&lt;<span class="keyword">char</span>*&gt;(uStr.c_str());</span><br><span class="line">	<span class="keyword">char</span>* outPtr = <span class="keyword">const_cast</span>&lt;<span class="keyword">char</span>*&gt;(ret.c_str());</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> (iconv(conv, &amp;inPtr, &amp;inbytes, &amp;outPtr, &amp;outbytes) == (<span class="keyword">size_t</span>)<span class="number">-1</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		iconv_close(conv);</span><br><span class="line">		<span class="keyword">throw</span> <span class="string">"An error occurred in iconv."</span>;</span><br><span class="line">		<span class="keyword">return</span> <span class="string">""</span>;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	iconv_close(conv);</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> ret;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
 <p>&emsp;&emsp;算是暂时解决的编码转换的问题。 libiconv 毕竟是个C语言库，传入的数组指针需要自己分配数组的空间。但是我并不知道转换之后的内容会占用多大的空间，为了防止越界直接设置为原大小的两倍，方法很暴力但是很有效。</p>
 <blockquote>
 <p>[1] 让编写的应用在使用酷Q API时支持Unicode文本, <a href="https://cqp.cc/t/38233" target="_blank" rel="noopener">https://cqp.cc/t/38233</a></p>
@@ -334,6 +331,53 @@
 <script src="/js/app.js"></script>
 
 
-  <script>setLoadingBarProgress(100);</script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+          tex2jax: {
+            inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+            processEscapes: true
+          }
+        });
+      </script>
+    
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+            tex2jax: {
+              skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+            }
+          });
+      </script>
+    
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+              var all = MathJax.Hub.getAllJax(), i;
+              for(i=0; i < all.length; i += 1) {
+                  all[i].SourceElement().parentNode.className += ' has-jax';
+              }
+          });
+      </script>
+    
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-MML-AM_CHTML">
+    </script>
+    
+  <script>setLoadingBarProgress(100);</script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config("");
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
 </body>
 </html>

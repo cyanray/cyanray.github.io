@@ -5,21 +5,22 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   
   <title>玩一玩泛域名解析 | uint128&#39;s Blog</title>
-  <meta name="description" content>
-  <meta name="keywords" content>
+  <meta name="description" content="uint128&#39;s blog">
+  <meta name="keywords" content="uint128,uint128&#39;s blog,uint128.com">
   <meta name="HandheldFriendly" content="True">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <link rel="shortcut icon" href="/">
   <link rel="alternate" href="/atom.xml" title="uint128's Blog">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="description" content="玩一玩泛域名解析">
+<meta name="keywords" content="无聊了,C#">
 <meta property="og:type" content="article">
 <meta property="og:title" content="玩一玩泛域名解析">
 <meta property="og:url" content="https://uint128.com/2020/04/06/玩一玩泛域名解析/index.html">
 <meta property="og:site_name" content="uint128&#39;s Blog">
 <meta property="og:description" content="玩一玩泛域名解析">
 <meta property="og:locale" content="zh-cn">
-<meta property="og:updated_time" content="2020-04-05T20:12:14.396Z">
+<meta property="og:updated_time" content="2020-04-13T03:12:29.060Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="玩一玩泛域名解析">
 <meta name="twitter:description" content="玩一玩泛域名解析">
@@ -144,24 +145,33 @@
 	
 	<section class="article typo">
   	<div class="article-entry" itemprop="articleBody">
-    	<p>玩一玩泛域名解析</p>
-<a id="more"></a>
-
+    	<p>玩一玩泛域名解析<br><a id="more"></a></p>
 <p>先看看作品的最终效果。访问 <strong><a href="http://XXX.我喜欢你.top:521/" target="_blank" rel="noopener">http://XXX.我喜欢你.top:521/</a></strong> 会返回字符串 <strong>一直都很喜欢 XXX 呢</strong>。<br>其中 <strong>“XXX”</strong> 可以改为任意字符(中文也可以)。</p>
 <p>实现原理其实很简单。首先是<strong>泛域名解析</strong>。泛域名解析就是把某一级子域名全部解析到同一IP(A记录)。<br>比如将 <strong>*.test.uint128.com</strong> 解析到 <strong>127.0.0.1</strong>。<br>这样访问 <strong>任意字符.test.uint128.com</strong> 都会指向 <strong>127.0.0.1</strong>。</p>
 <p>那么, 服务器怎么知道用户是从哪个域名访问过来的呢？<br>这里利用了 HTTP 协议头部的 Host 字段。<br>Host 字段记录了域名, 使得服务器可以分辨用户访问服务器时使用的域名。<br>这个字段就是用来实现一台服务器部署多个网站的效果。<br>比如把 <strong>baidu.com</strong> 和 <strong>jd.com</strong> 都部署到 <strong>1.1.1.1</strong> 这台服务器上。<br>为了区分两个网站, 浏览器在发出请求时, 要在 Host 字段上记录域名。<br>服务器在分析 HTTP 协议头部的时候, 就能正确地把请求转发给不同网站的程序。<br>所以只要分析 HTTP 请求的头部, 读取 Host 字段的值, 就能知道请求是通过哪个域名发来的了。</p>
 <p>最后一个技术点, 就是让 URL 支持中文。请求参数部分如果要支持中文, 一般使用 <strong>百分号编码</strong> (Percent-encoding, 有时候也叫 URL 编码)。这种编码就是把 GBK 编码或者 UTF-8 编码的字符串, 用 16 进制表示, 再加上百分号。比如 <code>%C4%E3%BA%C3%CA%C0%BD</code>。</p>
-<p>但是域名部分要支持中文, 可就不能用百分号编码了, DNS 服务器不认识。域名部分要支持非 ASCII 字符, 一般用 Punycode (国际化域名编码)。<br>它长得像这样 <code>xn--rhq34a65tw32a</code>, 一般以 <strong>“xn–”</strong> 开头, 中间是ASCII 字符。</p>
+<p>但是域名部分要支持中文, 可就不能用百分号编码了, DNS 服务器不认识。域名部分要支持非 ASCII 字符, 一般用 Punycode (国际化域名编码)。<br>它长得像这样 <code>xn--rhq34a65tw32a</code>, 一般以 <strong>“xn—“</strong> 开头, 中间是ASCII 字符。</p>
 <p>虽然上面说了很多, 但是实现这个小作品非常简单: 买个域名、泛域名解析、写个程序。<br>这个程序的工作也很简单: 读取 HTTP 请求头部的 Host 字段, 返回相应的欢迎文本。<br>我这个程序用 C# 来实现, 代码如下: </p>
 <figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">[<span class="meta">HttpGet</span>]</span><br><span class="line"><span class="function"><span class="keyword">public</span> IActionResult <span class="title">Home</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="comment">// idnMapping 用于将 Punycode 转化为 Unicode 字符串</span></span><br><span class="line">    IdnMapping idn = <span class="keyword">new</span> IdnMapping();</span><br><span class="line">    <span class="comment">// 读取 HTTP请求头部的 Host 字段</span></span><br><span class="line">    <span class="keyword">string</span> rawHost = Request.Headers[<span class="string">"host"</span>];</span><br><span class="line">    <span class="comment">// 将 Punycode 转化为 Unicode 字符串</span></span><br><span class="line">    <span class="keyword">string</span> host = idn.GetUnicode(rawHost);</span><br><span class="line">    <span class="comment">// 使用正则表达式匹配域名中的姓名</span></span><br><span class="line">    Regex regex = <span class="keyword">new</span> Regex(<span class="string">@"([^.]+)(.*?)"</span>);</span><br><span class="line">    Match match = regex.Match(host);</span><br><span class="line">    <span class="keyword">string</span> info_name = match.Groups[<span class="number">1</span>].Value;</span><br><span class="line">    <span class="comment">// 返回对应的欢迎文本</span></span><br><span class="line">    <span class="keyword">string</span> text = <span class="string">$"一直都很喜欢 <span class="subst">&#123;info_name&#125;</span> 呢!"</span>;</span><br><span class="line">    <span class="keyword">return</span> Ok(text);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
 <p>枯燥。</p>
 
   	</div>
 	  
+	  <div class="article-tags tags">
+      
+        <a href="/tags/无聊了/">无聊了</a>
+      
+        <a href="/tags/C/">C#</a>
+      
+	  </div>
+    
 		
 	
 		<div class="art-item-footer">
+				
+					<span class="art-item-left"><i class="icon icon-chevron-thin-left"></i>prev：<a href="/2020/04/13/数值积分辛普森法的推导以及MATLAB实现/" rel="prev"  title="数值积分辛普森法的推导以及MATLAB实现">
+						数值积分辛普森法的推导以及MATLAB实现 
+					</a></span>
 				
 				
 					<span class="art-item-right">next：<a href="/2020/03/28/随着音乐跳动的电平灯/" rel="next"  title="随着音乐跳动的电平灯">
@@ -294,6 +304,53 @@
 <script src="/js/app.js"></script>
 
 
-  <script>setLoadingBarProgress(100);</script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+          tex2jax: {
+            inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+            processEscapes: true
+          }
+        });
+      </script>
+    
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+            tex2jax: {
+              skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+            }
+          });
+      </script>
+    
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+              var all = MathJax.Hub.getAllJax(), i;
+              for(i=0; i < all.length; i += 1) {
+                  all[i].SourceElement().parentNode.className += ' has-jax';
+              }
+          });
+      </script>
+    
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-MML-AM_CHTML">
+    </script>
+    
+  <script>setLoadingBarProgress(100);</script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config("");
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
 </body>
 </html>
