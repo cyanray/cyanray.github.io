@@ -4,7 +4,7 @@
   <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   
-  <title>Archives | uint128&#39;s Blog</title>
+  <title>构造函数语义学(The Semantics of Constructors) | uint128&#39;s Blog</title>
   <meta name="description" content="uint128&#39;s blog">
   <meta name="keywords" content="uint128,uint128&#39;s blog,uint128.com">
   <meta name="HandheldFriendly" content="True">
@@ -12,17 +12,18 @@
   <link rel="shortcut icon" href="/">
   <link rel="alternate" href="/atom.xml" title="uint128's Blog">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="uint128&apos;s blog">
-<meta name="keywords" content="uint128,uint128&#39;s blog,uint128.com">
-<meta property="og:type" content="website">
-<meta property="og:title" content="uint128&#39;s Blog">
-<meta property="og:url" content="https://uint128.com/archives/index.html">
+  <meta name="description" content="《深度探索C++对象模型》读书笔记 1">
+<meta name="keywords" content="C++">
+<meta property="og:type" content="article">
+<meta property="og:title" content="构造函数语义学(The Semantics of Constructors)">
+<meta property="og:url" content="https://uint128.com/2020/07/19/构造函数语义学-The-Semantics-of-Constructors/index.html">
 <meta property="og:site_name" content="uint128&#39;s Blog">
-<meta property="og:description" content="uint128&apos;s blog">
+<meta property="og:description" content="《深度探索C++对象模型》读书笔记 1">
 <meta property="og:locale" content="zh-cn">
+<meta property="og:updated_time" content="2020-07-19T16:08:09.062Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="uint128&#39;s Blog">
-<meta name="twitter:description" content="uint128&apos;s blog">
+<meta name="twitter:title" content="构造函数语义学(The Semantics of Constructors)">
+<meta name="twitter:description" content="《深度探索C++对象模型》读书笔记 1">
     
   <link href="https://fonts.googleapis.com/css?family=Inconsolata|Titillium+Web" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css?family=Roboto+Mono" rel="stylesheet">
@@ -125,149 +126,96 @@
   <div class="l_body">
     <div class='container clearfix'>
       <div class='l_main'>
-        
-  <article id="archive-page" class="post article white-box">
-    <section class='meta'>
-      <h2 class="title">
-        <a href="javascript:void(0)">
-          Archives
-        </a>
-      </h2>
-    </section>
-    <section class="archive">
+        <article id="post-构造函数语义学-The-Semantics-of-Constructors"
+  class="post white-box article-type-post"
+  itemscope itemprop="blogPost">
+	<section class='meta'>
+	<h2 class="title">
+  	<a href="/2020/07/19/构造函数语义学-The-Semantics-of-Constructors/">
+    	构造函数语义学(The Semantics of Constructors)
+    </a>
+  </h2>
+	<time>
+	  7月 19, 2020
+	</time>
+	
+	</section>
+	
+		<section class="toc-wrapper"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#默认构造函数-Default-Constructor"><span class="toc-number">1.</span> <span class="toc-text">默认构造函数 (Default Constructor)</span></a></li></ol></section>
+	
+	<section class="article typo">
+  	<div class="article-entry" itemprop="articleBody">
+    	<p>《深度探索C++对象模型》读书笔记 1<br><a id="more"></a></p>
+<h2 id="默认构造函数-Default-Constructor"><a href="#默认构造函数-Default-Constructor" class="headerlink" title="默认构造函数 (Default Constructor)"></a>默认构造函数 (Default Constructor)</h2><p>在《Effective C++》这本书有提到，C++编译器会在没有声明定义任何构造函数的情况下为 class 生成一个构造函数。在《深度探索C++对象模型》这本书里，对编译器何时生成构造函数做了更详细的讨论。</p>
+<p>默认构造函数可以认为有两种，一种是 trivial（浅薄而无能，没什么用的） constructor ，一种是 nontrivial constructor。如果一个类的成员全都是内建类型（built-in type），也就是没有任何成员对象，那么产生的 default constructor 就是 trivial constructor。因为由编译器产生的 default constructor 是不会自动初始化内建类型的成员的，所以这个由编译器产生的构造函数其实什么都没做。</p>
+<p>而 nontrivial constructor 会在<strong>编译器需要</strong>的时候被编译器产生出来。对于下面这一段代码，Foo 没有构造函数，程序也需要 bar’s members 都被清零，但是编译器不会为 Foo 生成默认构造函数。因为这里的需要，指的是编译器的需要，而不是程序员的需要。程序员的需要，应该由程序员来保证，这里应该让 class Foo 的作者负责。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Foo</span> &#123;</span> <span class="keyword">public</span>: <span class="keyword">int</span> val; Foo *pnext; &#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">foo_bar</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="comment">// 程序要求 bar's members 都被清零</span></span><br><span class="line">    Foo bar;</span><br><span class="line">    <span class="keyword">if</span> (bar.val || bar.pnext)</span><br><span class="line">        <span class="comment">// do something</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>有 4 种情况会产生 nontrivial constructor：</p>
+<ol>
+<li>类中有一个或多个成员对象（即Member Class Object），并且它们都有 Default Constructor</li>
+<li>派生自某个基类，并且该基类带有 Default Constructor</li>
+<li>该类带有 Virtual Function</li>
+<li>该类虚继承于基类(A Class with Virtual Base Class)</li>
+</ol>
+<p>第 1 种情况和第 2 种情况强调了成员对象或基类都要有 Default Constructor，如果没有，是无法通过编译的。（不展开，需要理解）当然，成员对象或基类的 Default Constructor，并没有限制必须是用户声明的（user-declared），也可以是编译器生成的。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 未完待续...</span></span><br></pre></td></tr></table></figure>
+  	</div>
+	  
+	  <div class="article-tags tags">
       
-            <div class="archive-item archive-year mark">
-              <a id="archive-year-2020" href='/archives/2020/' >
-                2020
-              </a>
-            </div>
+        <a href="/tags/C/">C++</a>
       
-          <div class="archive-item archive-post mark">
-            <a href="/2020/07/19/构造函数语义学-The-Semantics-of-Constructors/">
-              <time>07-19</time>
-              <span class="title"><span>构造函数语义学(The Semantics of Constructors)</span></span>
-            </a>
-          </div>
-      
-          <div class="archive-item archive-post mark">
-            <a href="/2020/07/18/翻译-控制台、终端和Shell的区别是什么？/">
-              <time>07-18</time>
-              <span class="title"><span>[翻译]控制台、终端和Shell的区别是什么？</span></span>
-            </a>
-          </div>
-      
-          <div class="archive-item archive-post mark">
-            <a href="/2020/04/18/开源安卓QQ协议库-mirai-使用教程/">
-              <time>04-18</time>
-              <span class="title"><span>开源安卓QQ协议库 mirai 使用教程</span></span>
-            </a>
-          </div>
-      
-          <div class="archive-item archive-post mark">
-            <a href="/2020/04/13/数值积分辛普森法的推导以及MATLAB实现/">
-              <time>04-13</time>
-              <span class="title"><span>数值积分辛普森法的推导以及MATLAB实现</span></span>
-            </a>
-          </div>
-      
-          <div class="archive-item archive-post mark">
-            <a href="/2020/04/06/玩一玩泛域名解析/">
-              <time>04-06</time>
-              <span class="title"><span>玩一玩泛域名解析</span></span>
-            </a>
-          </div>
-      
-          <div class="archive-item archive-post mark">
-            <a href="/2020/03/28/随着音乐跳动的电平灯/">
-              <time>03-28</time>
-              <span class="title"><span>随着音乐跳动的电平灯</span></span>
-            </a>
-          </div>
-      
-          <div class="archive-item archive-post mark">
-            <a href="/2020/03/04/可乐/">
-              <time>03-04</time>
-              <span class="title"><span>可乐</span></span>
-            </a>
-          </div>
-      
-          <div class="archive-item archive-post mark">
-            <a href="/2020/03/03/使用CMake组织C-项目/">
-              <time>03-03</time>
-              <span class="title"><span>使用CMake组织C++项目</span></span>
-            </a>
-          </div>
-      
-          <div class="archive-item archive-post mark">
-            <a href="/2020/01/30/运用快速幂算法求解递推式的第N项/">
-              <time>01-30</time>
-              <span class="title"><span>运用快速幂算法求解递推式的第N项</span></span>
-            </a>
-          </div>
-      
-          <div class="archive-item archive-post mark">
-            <a href="/2020/01/21/2048-游戏AI的实现思路/">
-              <time>01-21</time>
-              <span class="title"><span>2048 游戏AI的实现思路</span></span>
-            </a>
-          </div>
-      
-          <div class="archive-item archive-post mark">
-            <a href="/2020/01/17/对C-左值和右值的理解/">
-              <time>01-17</time>
-              <span class="title"><span>对C++左值和右值的理解</span></span>
-            </a>
-          </div>
-      
-          <div class="archive-item archive-post mark">
-            <a href="/2020/01/06/学校教务系统登录前端加密分析/">
-              <time>01-06</time>
-              <span class="title"><span>学校教务系统登录前端加密分析</span></span>
-            </a>
-          </div>
-      
-          <div class="archive-item archive-post mark">
-            <a href="/2020/01/04/使用libiconv将UTF8转换成GB18030/">
-              <time>01-04</time>
-              <span class="title"><span>将UTF8转换成GB18030的疲倦过程</span></span>
-            </a>
-          </div>
-      
-          <div class="archive-item archive-post mark">
-            <a href="/2020/01/01/Hello-2020/">
-              <time>01-01</time>
-              <span class="title"><span>Hello 2020</span></span>
-            </a>
-          </div>
-      
-            <div class="archive-item archive-year mark">
-              <a id="archive-year-2019" href='/archives/2019/' >
-                2019
-              </a>
-            </div>
-      
-          <div class="archive-item archive-post mark">
-            <a href="/2019/08/09/hello-world/">
-              <time>08-09</time>
-              <span class="title"><span>Hello World</span></span>
-            </a>
-          </div>
-      
-    </section>
-  </article>
-  <!--
-  
-    <nav id="page-nav">
-      
-      
-      <a class="next" rel="next" href="/archives/page/2/">
-        <span class="text">Next</span>
-        <span class="icon icon-chevron-right"></span>
-      </a>
-      
-    </nav>
-  
-    -->
+	  </div>
+    
+		
+	
+		<div class="art-item-footer">
+				
+				
+					<span class="art-item-right">next：<a href="/2020/07/18/翻译-控制台、终端和Shell的区别是什么？/" rel="next"  title="[翻译]控制台、终端和Shell的区别是什么？">
+						[翻译]控制台、终端和Shell的区别是什么？
+					</a><i class="icon icon-chevron-thin-right"></i></span>
+				
+		</div>
+	
+	</section>
+
+
+	
+
+</article>
+
+
+	<div id="gitalk-container"></div>
+	<link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+ <script type="text/javascript">
+      var gitalk = new Gitalk({
+        clientID: '53e3c578fcb7b7b1a4da',
+        clientSecret: '74433ee77d6e13fd635b82add519e143ac791726',
+        repo: 'cyanray.github.io',
+        owner: 'cyanray',
+        admin: ['cyanray'],
+        id: CryptoJS.MD5(location.pathname).toString(),
+        labels: ['Gitalk'],
+        perPage: 15,
+        pagerDirection: 'last',
+        createIssueManually: true,
+        distractionFreeMode: false
+      })
+
+      gitalk.render('gitalk-container')
+ </script>
+
+
+<script>
+	window.subData = {
+		title: '构造函数语义学(The Semantics of Constructors)',
+		tools: true
+	}
+</script>
 
       </div>
       <aside class='l_side'>

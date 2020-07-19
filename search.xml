@@ -4,6 +4,25 @@
   
     
     <entry>
+      <title>构造函数语义学(The Semantics of Constructors)</title>
+      <link href="/2020/07/19/%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0%E8%AF%AD%E4%B9%89%E5%AD%A6-The-Semantics-of-Constructors/"/>
+      <url>/2020/07/19/%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0%E8%AF%AD%E4%B9%89%E5%AD%A6-The-Semantics-of-Constructors/</url>
+      
+        <content type="html"><![CDATA[<p>《深度探索C++对象模型》读书笔记 1<br><a id="more"></a></p><h2 id="默认构造函数-Default-Constructor"><a href="#默认构造函数-Default-Constructor" class="headerlink" title="默认构造函数 (Default Constructor)"></a>默认构造函数 (Default Constructor)</h2><p>在《Effective C++》这本书有提到，C++编译器会在没有声明定义任何构造函数的情况下为 class 生成一个构造函数。在《深度探索C++对象模型》这本书里，对编译器何时生成构造函数做了更详细的讨论。</p><p>默认构造函数可以认为有两种，一种是 trivial（浅薄而无能，没什么用的） constructor ，一种是 nontrivial constructor。如果一个类的成员全都是内建类型（built-in type），也就是没有任何成员对象，那么产生的 default constructor 就是 trivial constructor。因为由编译器产生的 default constructor 是不会自动初始化内建类型的成员的，所以这个由编译器产生的构造函数其实什么都没做。</p><p>而 nontrivial constructor 会在<strong>编译器需要</strong>的时候被编译器产生出来。对于下面这一段代码，Foo 没有构造函数，程序也需要 bar’s members 都被清零，但是编译器不会为 Foo 生成默认构造函数。因为这里的需要，指的是编译器的需要，而不是程序员的需要。程序员的需要，应该由程序员来保证，这里应该让 class Foo 的作者负责。</p><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Foo</span> &#123;</span> <span class="keyword">public</span>: <span class="keyword">int</span> val; Foo *pnext; &#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">foo_bar</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="comment">// 程序要求 bar's members 都被清零</span></span><br><span class="line">    Foo bar;</span><br><span class="line">    <span class="keyword">if</span> (bar.val || bar.pnext)</span><br><span class="line">        <span class="comment">// do something</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><p>有 4 种情况会产生 nontrivial constructor：</p><ol><li>类中有一个或多个成员对象（即Member Class Object），并且它们都有 Default Constructor</li><li>派生自某个基类，并且该基类带有 Default Constructor</li><li>该类带有 Virtual Function</li><li>该类虚继承于基类(A Class with Virtual Base Class)</li></ol><p>第 1 种情况和第 2 种情况强调了成员对象或基类都要有 Default Constructor，如果没有，是无法通过编译的。（不展开，需要理解）当然，成员对象或基类的 Default Constructor，并没有限制必须是用户声明的（user-declared），也可以是编译器生成的。</p><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 未完待续...</span></span><br></pre></td></tr></table></figure>]]></content>
+      
+      
+      
+        <tags>
+            
+            <tag> C++ </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>[翻译]控制台、终端和Shell的区别是什么？</title>
       <link href="/2020/07/18/%E7%BF%BB%E8%AF%91-%E6%8E%A7%E5%88%B6%E5%8F%B0%E3%80%81%E7%BB%88%E7%AB%AF%E5%92%8CShell%E7%9A%84%E5%8C%BA%E5%88%AB%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%9F/"/>
       <url>/2020/07/18/%E7%BF%BB%E8%AF%91-%E6%8E%A7%E5%88%B6%E5%8F%B0%E3%80%81%E7%BB%88%E7%AB%AF%E5%92%8CShell%E7%9A%84%E5%8C%BA%E5%88%AB%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%9F/</url>
