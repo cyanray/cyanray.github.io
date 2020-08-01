@@ -12,18 +12,18 @@
   <link rel="shortcut icon" href="/">
   <link rel="alternate" href="/atom.xml" title="uint128's Blog">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="《深度探索C++对象模型》读书笔记 1">
+  <meta name="description" content="编译器在什么时候会创造默认构造函数？会如何创造构造函数？（《深度探索C++对象模型》读书笔记）">
 <meta name="keywords" content="C++">
 <meta property="og:type" content="article">
 <meta property="og:title" content="默认构造函数的构造行为">
 <meta property="og:url" content="https://uint128.com/2020/07/19/默认构造函数的构造行为/index.html">
 <meta property="og:site_name" content="uint128&#39;s Blog">
-<meta property="og:description" content="《深度探索C++对象模型》读书笔记 1">
+<meta property="og:description" content="编译器在什么时候会创造默认构造函数？会如何创造构造函数？（《深度探索C++对象模型》读书笔记）">
 <meta property="og:locale" content="zh-cn">
-<meta property="og:updated_time" content="2020-07-21T05:30:56.922Z">
+<meta property="og:updated_time" content="2020-07-21T05:34:18.660Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="默认构造函数的构造行为">
-<meta name="twitter:description" content="《深度探索C++对象模型》读书笔记 1">
+<meta name="twitter:description" content="编译器在什么时候会创造默认构造函数？会如何创造构造函数？（《深度探索C++对象模型》读书笔记）">
     
   <link href="https://fonts.googleapis.com/css?family=Inconsolata|Titillium+Web" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css?family=Roboto+Mono" rel="stylesheet">
@@ -145,7 +145,7 @@
 	
 	<section class="article typo">
   	<div class="article-entry" itemprop="articleBody">
-    	<p>《深度探索C++对象模型》读书笔记 1<br><a id="more"></a></p>
+    	<p>编译器在什么时候会创造默认构造函数？会如何创造构造函数？（《深度探索C++对象模型》读书笔记）<br><a id="more"></a></p>
 <h2 id="默认构造函数-Default-Constructor"><a href="#默认构造函数-Default-Constructor" class="headerlink" title="默认构造函数 (Default Constructor)"></a>默认构造函数 (Default Constructor)</h2><p>在《Effective C++》这本书有提到，C++编译器会在没有声明定义任何构造函数的情况下为 class 生成一个构造函数。在《深度探索C++对象模型》这本书里，对编译器何时生成构造函数做了更详细的讨论。(有很多词语这本书的译者都没有翻译，我觉得这个做法挺好，避免了歧义和不必要的解释。这篇笔记也仿照这种方法，一些词不做翻译，混入大量英文。)</p>
 <p>默认构造函数可以认为有两种，一种是 trivial（浅薄而无能，没什么用的） constructor ，一种是 nontrivial constructor。如果一个类的成员全都是内建类型（built-in type），也就是没有任何成员对象，那么产生的 default constructor 就是 trivial constructor。因为由编译器产生的 default constructor 是不会自动初始化内建类型的成员的，所以这个由编译器产生的构造函数其实什么都没做。</p>
 <p>而 nontrivial constructor 会在<strong>编译器需要</strong>的时候被编译器产生出来。对于下面这一段代码，Foo 没有构造函数，程序也需要 bar’s members 都被清零，但是编译器不会为 Foo 生成默认构造函数。因为这里的需要，指的是编译器的需要，而不是程序员的需要。程序员的需要，应该由程序员来保证，这里应该让 class Foo 的作者负责。</p>
@@ -269,6 +269,10 @@
     
         <li><a class="flat-box" target="_blank" href="http://quosimodo.cn/">
             <div class='name'>卡西莫多の礼物</div>
+        </a></li>
+    
+        <li><a class="flat-box" target="_blank" href="http://www.dora-kong.com/">
+            <div class='name'>哆啦控 - dora-kong.com</div>
         </a></li>
     
     </ul>
