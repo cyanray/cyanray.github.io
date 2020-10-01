@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://uint128.com/"/>
-  <updated>2020-09-16T12:38:02.251Z</updated>
+  <updated>2020-10-01T04:21:55.187Z</updated>
   <id>https://uint128.com/</id>
   
   <author>
@@ -15,6 +15,31 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>2020深圳杯数模C题简析:无线可充电传感器网络充电路线规划</title>
+    <link href="https://uint128.com/2020/09/29/2020%E6%B7%B1%E5%9C%B3%E6%9D%AF%E6%95%B0%E6%A8%A1C%E9%A2%98%E7%AE%80%E6%9E%90-%E6%97%A0%E7%BA%BF%E5%8F%AF%E5%85%85%E7%94%B5%E4%BC%A0%E6%84%9F%E5%99%A8%E7%BD%91%E7%BB%9C%E5%85%85%E7%94%B5%E8%B7%AF%E7%BA%BF%E8%A7%84%E5%88%92/"/>
+    <id>https://uint128.com/2020/09/29/2020%E6%B7%B1%E5%9C%B3%E6%9D%AF%E6%95%B0%E6%A8%A1C%E9%A2%98%E7%AE%80%E6%9E%90-%E6%97%A0%E7%BA%BF%E5%8F%AF%E5%85%85%E7%94%B5%E4%BC%A0%E6%84%9F%E5%99%A8%E7%BD%91%E7%BB%9C%E5%85%85%E7%94%B5%E8%B7%AF%E7%BA%BF%E8%A7%84%E5%88%92/</id>
+    <published>2020-09-29T08:07:47.000Z</published>
+    <updated>2020-10-01T04:21:55.187Z</updated>
+    
+    <content type="html"><![CDATA[<a id="more"></a><p>好像没啥好写的，就是个旅行商问题+多人旅行商问题。</p><p>完。</p>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;a id=&quot;more&quot;&gt;&lt;/a&gt;
+&lt;p&gt;好像没啥好写的，就是个旅行商问题+多人旅行商问题。&lt;/p&gt;
+&lt;p&gt;完。&lt;/p&gt;
+
+      
+    
+    </summary>
+    
+    
+    
+  </entry>
   
   <entry>
     <title>开源Android QQ协议库mirai使用教程(2020-08版本)</title>
