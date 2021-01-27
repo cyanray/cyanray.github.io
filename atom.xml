@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://uint128.com/"/>
-  <updated>2020-11-22T09:01:14.230Z</updated>
+  <updated>2021-01-27T09:49:56.205Z</updated>
   <id>https://uint128.com/</id>
   
   <author>
@@ -15,6 +15,44 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>写了一个WebSocket客户端</title>
+    <link href="https://uint128.com/2021/01/27/%E5%86%99%E4%BA%86%E4%B8%80%E4%B8%AAWebSocket%E5%AE%A2%E6%88%B7%E7%AB%AF/"/>
+    <id>https://uint128.com/2021/01/27/%E5%86%99%E4%BA%86%E4%B8%80%E4%B8%AAWebSocket%E5%AE%A2%E6%88%B7%E7%AB%AF/</id>
+    <published>2021-01-27T08:25:04.000Z</published>
+    <updated>2021-01-27T09:49:56.205Z</updated>
+    
+    <content type="html"><![CDATA[<p>写了一个WebSocket客户端<br><a id="more"></a></p><p>以前就接触过 tcp、udp 的编程，但是一直停留在 “Hello World” 的水平。这一次想写WebSocket客户端，是因为现有的库都非常巨大，但是我只需要一个能收消息的客户端。</p><p>之前一直用的是 <a href="https://github.com/dhbaird/easywsclient" target="_blank" rel="noopener">easywsclient</a> 这个库，只有一个头文件和一个源文件，简单好用。看源代码也没有很复杂，就自己做了一个“复刻版”（<a href="https://github.com/cyanray/LightWebSocketClient" target="_blank" rel="noopener">LightWebSocketClient</a>）。</p><p>WebSocket 协议是有标准的，具体可以在 <a href="https://tools.ietf.org/html/rfc6455" target="_blank" rel="noopener">RFC6455</a> 看到。协议的内容挺长的，但大可不必被吓倒，因为都很好理解。</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"> 0                   1                   2                   3</span><br><span class="line"> 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1</span><br><span class="line">+-+-+-+-+-------+-+-------------+-------------------------------+</span><br><span class="line">|F|R|R|R| opcode|M| Payload len |    Extended payload length    |</span><br><span class="line">|I|S|S|S|  (4)  |A|     (7)     |             (16/64)           |</span><br><span class="line">|N|V|V|V|       |S|             |   (if payload len==126/127)   |</span><br><span class="line">| |1|2|3|       |K|             |                               |</span><br><span class="line">+-+-+-+-+-------+-+-------------+ - - - - - - - - - - - - - - - +</span><br><span class="line">|     Extended payload length continued, if payload len == 127  |</span><br><span class="line">+ - - - - - - - - - - - - - - - +-------------------------------+</span><br><span class="line">|                               |Masking-key, if MASK set to 1  |</span><br><span class="line">+-------------------------------+-------------------------------+</span><br><span class="line">| Masking-key (continued)       |          Payload Data         |</span><br><span class="line">+-------------------------------- - - - - - - - - - - - - - - - +</span><br><span class="line">:                     Payload Data continued ...                :</span><br><span class="line">+ - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - +</span><br><span class="line">|                     Payload Data continued ...                |</span><br><span class="line">+---------------------------------------------------------------+</span><br></pre></td></tr></table></figure><p>写这个库花了两天时间，其中大部分时间都在研究怎么写 tcp socket 相关的代码。</p><p>下面是写这个库遇到的问题和一些经验。</p><h2 id="如何调试"><a href="#如何调试" class="headerlink" title="如何调试"></a>如何调试</h2><p>使用 nodejs 的 ws 库。几行代码就能创建一个 WebSocket 服务器。</p><h2 id="连接ws服务器，发消息总是提示-frame-错误"><a href="#连接ws服务器，发消息总是提示-frame-错误" class="headerlink" title="连接ws服务器，发消息总是提示 frame 错误"></a>连接ws服务器，发消息总是提示 frame 错误</h2><p>这个问题解决起来特别简单，但是发现问题的来源花了特别久。其实就是发送建立请求的字符串的时候，多发了个’\0’。</p><p>这个 ‘\0’，储存到了ws服务器的buffer中。于是我的第一帧内容的开头就多了个’\0’，服务器看不懂了，就报错崩溃了。</p><blockquote><p>我修改了 server 端的代码，把server 收到的 buffer 输出出来，才发现的这个错误。</p></blockquote><h2 id="关于“粘包”，TCP协议不背锅"><a href="#关于“粘包”，TCP协议不背锅" class="headerlink" title="关于“粘包”，TCP协议不背锅"></a>关于“粘包”，TCP协议不背锅</h2><p>现在去搜索“TCP 粘包”，依然能搜到很多信息。TCP粘包，大概是说服务器/客户端调用了多次 <code>send</code> 发送数据，但是客户端/服务器 <code>recv</code> 一次全都收到了。</p><p>粘包其实是一个误会，因为 TCP 传输的数据是抽象成“数据流”的，没有“数据包”的概念。TCP协议保证每次 <code>send</code> 都能收到，但是不会把每次 <code>send</code> 的内容区分开。实际上还可能出现 <code>recv</code> 一次，只能收到 <code>send</code> 的一部分数据。（比如 <code>send</code> 的数据的长度大于 <code>recv</code> 的缓冲区的大小）</p><p>解决“粘包”问题，是应用层的事情。比如 HTTP 协议就在头部规定了数据的长度。客户端/服务器在解析的时候，就要根据HTTP协议头部给出的长度，从TCP“数据流”中读取指定长度的数据。</p><p>WebSocket 协议也有类似的机制，每一帧数据的头部都储存了数据的长度。</p><p>TCP的这个特性在写程序的时候，还是挺麻烦的。</p><h2 id="多线程？单线程？"><a href="#多线程？单线程？" class="headerlink" title="多线程？单线程？"></a>多线程？单线程？</h2><p>TCP 协议常常要提到多线程。因为 recv 会阻塞当前线程，直到有数据到达才返回。简单粗暴的解决方法是，创建一条线程专门执行 recv，有数据到达就存到buffer里。主线程从buffer里取数据解析、处理。</p><p>但这就涉及到两条线程访问同一个变量的问题了，最终弄下来，也没有多么简单。</p><p>有没有办法在一条线程上既能recv，也能解析呢？</p><p>我找到了 select 模型。select 模型一般的教程都以服务端举例，其实用到客户端上也是可以的。</p><p>本质地来说，select 就是监控文件描述符状态的函数（unix的一个设计哲学，一切皆文件，socket 也是一个文件描述符）。</p><p>select 函数能同时监控多个文件描述符，如果文件变得“可读”、“可写”或者“有错误”，那么它就会返回。如果已知某个 socket 变得可读，这时候再执行 recv 就一定有数据啦。（当然也可能读到长度为0的数据，意思是socket被关闭了）</p><p>最重要的是，select 是可以设置超时时间的。用select监控一会socket，再解析一会buffer，把这个“一会儿”弄得很短，就做到一边监控，一边解析的效果了。</p><p>使用单线程，让我的 WebSocketClient 变得非常简洁，单线程比多线程还是简单一点的。</p><blockquote><p>很多 WebSocket 库之所以那么复杂，就是因为引入了 asio 之类的异步库。当然还有因为涉及到安全，引入了 openssl。</p></blockquote><h2 id="跨平台"><a href="#跨平台" class="headerlink" title="跨平台"></a>跨平台</h2><p>用到的System API都是简单而古老的API，做到跨平台还是比较轻松的。Windows 的 Win32 API看着头大，时不时来个全大写的宏，我英语又不好，要慢慢读才看得懂。</p><p>虽然如此，但我还是把 Linux 的 API 往 Windows 上靠近。把 Linux 缺失的宏补上，从而做到跨平台。</p><p>Windows 的头文件引入了特别多的宏。为了避免库的使用者被这些宏污染，必须想办法把头文件移动到 .cpp 的源文件里。这里用到了一个C++编程的技巧，PIMPL Idiom。原理就是利用前置声明，即在头文件里声明一个 struct，在源文件里定义这个struct。前置声明的struct是不完整类型，C/C++允许不完整类型的指针存在。</p>]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;写了一个WebSocket客户端&lt;br&gt;
+    
+    </summary>
+    
+    
+    
+  </entry>
+  
+  <entry>
+    <title>Hello World</title>
+    <link href="https://uint128.com/2021/01/16/hello-world/"/>
+    <id>https://uint128.com/2021/01/16/hello-world/</id>
+    <published>2021-01-16T05:32:47.560Z</published>
+    <updated>2020-01-01T05:13:21.413Z</updated>
+    
+    <content type="html"><![CDATA[<p>第一篇文章<br><a id="more"></a><br>Welcome to <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="noopener">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="noopener">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="noopener">GitHub</a>.</p><h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span><br></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="noopener">Writing</a></p><h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="noopener">Server</a></p><h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="noopener">Generating</a></p><h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/deployment.html" target="_blank" rel="noopener">Deployment</a></p>]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;第一篇文章&lt;br&gt;
+    
+    </summary>
+    
+    
+    
+  </entry>
   
   <entry>
     <title>C++20新特性之concept</title>
@@ -385,46 +423,6 @@
     <summary type="html">
     
       &lt;p&gt;我又无聊了……学校教务系统登录前端加密分析&lt;br&gt;
-    
-    </summary>
-    
-    
-    
-  </entry>
-  
-  <entry>
-    <title>将UTF8转换成GB18030的疲倦过程</title>
-    <link href="https://uint128.com/2020/01/04/%E4%BD%BF%E7%94%A8libiconv%E5%B0%86UTF8%E8%BD%AC%E6%8D%A2%E6%88%90GB18030/"/>
-    <id>https://uint128.com/2020/01/04/%E4%BD%BF%E7%94%A8libiconv%E5%B0%86UTF8%E8%BD%AC%E6%8D%A2%E6%88%90GB18030/</id>
-    <published>2020-01-04T07:13:46.000Z</published>
-    <updated>2020-01-06T04:28:22.708Z</updated>
-    
-    <content type="html"><![CDATA[<p>将UTF8转换成GB18030的疲倦过程<br><a id="more"></a></p><blockquote><p>编码问题是个很恶心人的问题。—— 鲁迅没说过这句话</p></blockquote><p>&emsp;&emsp;之前用C++开发过一个酷Q机器人插件（酷Q是一个基于Android QQ协议的QQ机器人软件，可以接收、发送各种类型的QQ消息），但是因为插件使用GBK编码的原因，插件无法发送emoji表情。<br>为了让这个插件能够发送emoji表情，必须修改插件程序使用的编码。</p><p>&emsp;&emsp;首先可以确定，酷Q的发送消息API用的肯定是GBK/GB2312之类的编码。因为插件在中文Windows+VS环境下开发，VS默认使用的编码就是GB2312（还是GBK？）。而我在调用这个API的时候，没有经过编码转换就能达到预期效果，也就是没有乱码。只有在发送文本里含有如Emoji、颜文字等特殊符号的时候，才会出现如 “????” 这种情况。</p><p>&emsp;&emsp;那么酷Q有没有什么发送消息的API是支持Unicode的呢？查阅资料后发现，酷Q的所有API使用的都是GB18030编码[1]。这种编码不仅对GBK/GB2312向下兼容，而且支持Unicode符号。酷Q使用这种编码是因为酷Q的插件大多用易语言开发，而易语言对Unicode的支持不好，如果使用GB18030编码就可以在保证一定的兼容性的同时支持Unicode符号。</p><p>&emsp;&emsp;我的插件发送的文本内容来自Web API，使用的是UTF8编码。在调用Web API获得文本内容后，需要把UTF8编码转换成GBK编码。都统一成GBK编码，标准输出、日志输出就不会出现乱码。我的想法是让整个程序都在UTF-8编码的环境下运行，也就是让标准输出、日志输出的文本的编码都是UTF-8。当然这样会有新的问题，中文Windows下CMD默认使用的是GBK编码，也就是说如果标准输出的文本是UTF-8编码，那么控制台黑框框看到的内容全都是乱码。不过我的插件没有用到标准输出，也就暂时不用担心这个问题。</p><h2 id="MSVC使用UTF-8编码编译"><a href="#MSVC使用UTF-8编码编译" class="headerlink" title="MSVC使用UTF-8编码编译"></a>MSVC使用UTF-8编码编译</h2><p>&emsp;&emsp;要做到程序在UTF-8环境下运行，其实只需要把源代码的文件改成UTF-8编码。然而VS保存文件的编码在中文windows下默认是GB2312。为了让保存的文件是UTF-8编码，可以使用一个叫做”forceAllUTF8”的VS扩展。</p><p><img src="./img-1.png" alt></p><p>&emsp;&emsp;我用的是图中框起来的那个插件，第一个扩展和第二个扩展的区别是有无BOM，但是Without BOM好像无法正常编译，提示非法字符”0xXXXX”，不知道什么原因（即使添加了参数 <strong>/utf-8</strong> ）。</p><p>&emsp;&emsp;这还不够，MSVC对UTF-8的支持不够好，只做到这一步可能会无法编译，所以还需要在编译器的编译选项里加一个 <strong>/utf-8</strong> 参数。 </p><p><img src="./img-2.png" alt></p><p>&emsp;&emsp;在VS里把所有的文件都打开再保存，重新编译、执行，插件运行日志文件的编码果然变成了UTF-8编码。</p><h2 id="将UTF-8编码转换成GB18030编码"><a href="#将UTF-8编码转换成GB18030编码" class="headerlink" title="将UTF-8编码转换成GB18030编码"></a>将UTF-8编码转换成GB18030编码</h2><p>&emsp;&emsp;我知道boost可以轻松做到编码转换。然而当我执行以下测试代码时……</p><p><img src="./img-3.png" alt></p><p>&emsp;&emsp;得到的却是……</p><p><img src="./img-4.png" alt></p><p>&emsp;&emsp;报错了！vector越界？</p><p>&emsp;&emsp;经过一系列的测试，发现只有在目标编码是GB18030的时候会出现这个错误。GBK to GB2312、UTF-8 to GBK 、 UTF-8 to GB2312都不会出错。</p><p>&emsp;&emsp;查了下资料（这里花了N个小时），发现这可能和boost::locale的实现方法有关。比如在Windows下使用MSVC编译boost，boost会使用Win32 API来实现boost::locale。翻了下报错点的调用栈，也确实发现了Win32 API。</p><p><img src="./img-5.png" alt></p><p>&emsp;&emsp;继续查资料发现，编译boost::locale的时候可以指定使用ICU实现。而且vcpkg就可以做到个性化编译。那这就好办了！删掉原来的boost之后，直接执行:</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./vcpkg install boost-locale[icu]</span><br></pre></td></tr></table></figure><p>&emsp;&emsp;然而事情并没有那么简单。使用了这个所谓的指定使用 <strong>[icu]</strong> 实现的boost::locale有同样的问题、而且一样调用了Win32 API，和之前没有任何变化。</p><p>&emsp;&emsp;找不到原因，不知道是vcpkg的问题还是boost的问题。没办法，只能暂时放弃使用boost，然后寻找到了同样有编码转换功能的 <strong>libiconv</strong> 。</p><p>&emsp;&emsp;使用 libiconv 的过程异常顺利。贴一下测试用的代码：</p><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="built_in">string</span> <span class="title">utf8_to_gb18030</span><span class="params">(<span class="keyword">const</span> <span class="built_in">string</span>&amp; uStr)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line"><span class="keyword">iconv_t</span> conv = iconv_open(<span class="string">"GB18030"</span>, <span class="string">"UTF-8"</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (conv == (<span class="keyword">iconv_t</span>)<span class="number">-1</span>) &#123;</span><br><span class="line">iconv_close(conv);</span><br><span class="line"><span class="keyword">throw</span> <span class="string">"An error occurred in iconv_open."</span>;</span><br><span class="line"><span class="keyword">return</span> <span class="string">""</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="built_in">string</span> ret;</span><br><span class="line">ret.resize(uStr.size() * <span class="number">2</span>, <span class="string">'\0'</span>);<span class="comment">// 不知道转码之后的字符串长度是多少，直接扩容两倍防止溢出</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">size_t</span> inbytes = uStr.size();</span><br><span class="line"><span class="keyword">size_t</span> outbytes = ret.size();</span><br><span class="line"><span class="keyword">char</span>* inPtr = <span class="keyword">const_cast</span>&lt;<span class="keyword">char</span>*&gt;(uStr.c_str());</span><br><span class="line"><span class="keyword">char</span>* outPtr = <span class="keyword">const_cast</span>&lt;<span class="keyword">char</span>*&gt;(ret.c_str());</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (iconv(conv, &amp;inPtr, &amp;inbytes, &amp;outPtr, &amp;outbytes) == (<span class="keyword">size_t</span>)<span class="number">-1</span>)</span><br><span class="line">&#123;</span><br><span class="line">iconv_close(conv);</span><br><span class="line"><span class="keyword">throw</span> <span class="string">"An error occurred in iconv."</span>;</span><br><span class="line"><span class="keyword">return</span> <span class="string">""</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">iconv_close(conv);</span><br><span class="line"></span><br><span class="line"><span class="keyword">return</span> ret;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><p>&emsp;&emsp;算是暂时解决的编码转换的问题。 libiconv 毕竟是个C语言库，传入的数组指针需要自己分配数组的空间。但是我并不知道转换之后的内容会占用多大的空间，为了防止越界直接设置为原大小的两倍，方法很暴力但是很有效。</p><blockquote><p>[1] 让编写的应用在使用酷Q API时支持Unicode文本, <a href="https://cqp.cc/t/38233" target="_blank" rel="noopener">https://cqp.cc/t/38233</a></p></blockquote>]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;将UTF8转换成GB18030的疲倦过程&lt;br&gt;
-    
-    </summary>
-    
-    
-    
-      <category term="C++" scheme="https://uint128.com/tags/C/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Hello 2020</title>
-    <link href="https://uint128.com/2020/01/01/Hello-2020/"/>
-    <id>https://uint128.com/2020/01/01/Hello-2020/</id>
-    <published>2020-01-01T05:14:33.000Z</published>
-    <updated>2020-01-11T08:41:33.049Z</updated>
-    
-    <content type="html"><![CDATA[<p>你好2020<br><a id="more"></a><br>2020年的第一天，送给自己一个域名，希望能保持写博客的习惯。</p><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* 结束2019年 */</span></span><br><span class="line"><span class="keyword">delete</span> &amp;_2019;</span><br><span class="line"><span class="comment">/* 希望2020年能轻松点 */</span></span><br><span class="line"><span class="keyword">auto</span> _2020 = &amp;<span class="keyword">new</span> year( with::happy | with::easy );</span><br><span class="line"><span class="comment">/* 启动2020年 */</span></span><br><span class="line">_2020.StartUp();</span><br></pre></td></tr></table></figure>]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;你好2020&lt;br&gt;
     
     </summary>
     
