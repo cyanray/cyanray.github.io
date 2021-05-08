@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  
+  <title>C++和C#的值类型与引用类型 | uint128&#39;s Blog</title>
+  <meta name="description" content="uint128&#39;s blog">
+  <meta name="keywords" content="uint128,uint128&#39;s blog,uint128.com">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <link rel="shortcut icon" href="/">
+  <link rel="alternate" href="/atom.xml" title="uint128's Blog">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="最近在看 《CLR Via C#》，看到这本书讨论值类型和引用类型时，我觉得很有必要做点笔记。">
+<meta name="keywords" content="c++,c#">
+<meta property="og:type" content="article">
+<meta property="og:title" content="C++和C#的值类型与引用类型">
+<meta property="og:url" content="https://uint128.com/2021/05/08/C-和C-的值类型与引用类型/index.html">
+<meta property="og:site_name" content="uint128&#39;s Blog">
+<meta property="og:description" content="最近在看 《CLR Via C#》，看到这本书讨论值类型和引用类型时，我觉得很有必要做点笔记。">
+<meta property="og:locale" content="zh-cn">
+<meta property="og:updated_time" content="2021-05-08T10:20:04.875Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="C++和C#的值类型与引用类型">
+<meta name="twitter:description" content="最近在看 《CLR Via C#》，看到这本书讨论值类型和引用类型时，我觉得很有必要做点笔记。">
+    
+  <link href="https://fonts.googleapis.com/css?family=Inconsolata|Titillium+Web" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Roboto+Mono" rel="stylesheet">
+  <link href="//cdnjs.cloudflare.com/ajax/libs/node-waves/0.7.5/waves.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="/style.css">
+  <script>
+    function setLoadingBarProgress(num) {
+      document.getElementById('loading-bar').style.width=num+"%";
+    }
+  </script>
+  <script src="/js/md5.js"></script>
+<link rel="alternate" href="/atom.xml" title="uint128's Blog" type="application/atom+xml"><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+</head>
+</html>
+<body>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div id="loading-bar-wrapper">
+  <div id="loading-bar"></div>
+</div>
+
+
+  <script>setLoadingBarProgress(20)</script> 
+  <header class="l_header">
+	<div class='wrapper'>
+		<div class="nav-main container container--flex">
+			<a class="logo flat-box" href='/' >
+				uint128's Blog
+			</a>
+			<div class='menu'>
+				<ul class='h-list'>
+					
+						<li>
+							<a class='flat-box nav-home' href='/'>
+								Home
+							</a>
+						</li>
+					
+						<li>
+							<a class='flat-box nav-archives' href='/archives'>
+								Archives
+							</a>
+						</li>
+					
+						<li>
+							<a class='flat-box nav-about' href='/about'>
+								About
+							</a>
+						</li>
+					
+				</ul>
+				<div class='underline'></div>
+			</div>
+			
+				<div class="m_search">
+					<form name="searchform" class="form u-search-form">
+						<input type="text" class="input u-search-input" placeholder="Search" />
+						<span class="icon icon-search"></span>
+					</form>
+				</div>
+			
+			<ul class='switcher h-list'>
+				
+					<li class='s-search'><a href='javascript:void(0)'><span class="icon icon-search flat-box"></span></a></li>
+				
+				<li class='s-menu'><a href='javascript:void(0)'><span class="icon icon-menu flat-box"></span></a></li>
+			</ul>
+		</div>
+		
+		<div class='nav-sub container container--flex'>
+			<a class="logo" class="flat-box" href='javascript:void(0)'>
+				Word of Forks
+			</a>
+
+			<ul class='switcher h-list'>
+				<li class='s-comment'><a href='javascript:void(0)'><span class="icon icon-chat_bubble_outline flat-box"></span></a></li>
+				<li class='s-top'><a href='javascript:void(0)'><span class="icon icon-arrow_upward flat-box"></span></a></li>
+				<li class='s-toc'><a href='javascript:void(0)'><span class="icon icon-format_list_numbered flat-box"></span></a></li>
+			</ul>
+		</div>
+	</div>
+</header>
+<aside class="menu-phone">
+	<nav>
+		
+			<a href="/" class="nav-home nav">
+				Home
+			</a>
+		
+			<a href="/archives" class="nav-archives nav">
+				Archives
+			</a>
+		
+			<a href="/about" class="nav-about nav">
+				About
+			</a>
+		
+	</nav>
+</aside>
+
+    <script>setLoadingBarProgress(40);</script>
+  <div class="l_body">
+    <div class='container clearfix'>
+      <div class='l_main'>
+        <article id="post-C-和C-的值类型与引用类型"
+  class="post white-box article-type-post"
+  itemscope itemprop="blogPost">
+	<section class='meta'>
+	<h2 class="title">
+  	<a href="/2021/05/08/C-和C-的值类型与引用类型/">
+    	C++和C#的值类型与引用类型
+    </a>
+  </h2>
+	<time>
+	  5月 8, 2021
+	</time>
+	
+	</section>
+	
+		<section class="toc-wrapper"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#C-的引用类型和值类型"><span class="toc-number">1.</span> <span class="toc-text">C# 的引用类型和值类型</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#C-的可空值类型"><span class="toc-number">2.</span> <span class="toc-text">C#的可空值类型</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#C-的装箱与拆箱"><span class="toc-number">3.</span> <span class="toc-text">C#的装箱与拆箱</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#参考文献"><span class="toc-number">4.</span> <span class="toc-text">参考文献</span></a></li></ol></section>
+	
+	<section class="article typo">
+  	<div class="article-entry" itemprop="articleBody">
+    	<p>最近在看 《CLR Via C#》，看到这本书讨论值类型和引用类型时，我觉得很有必要做点笔记。<br><a id="more"></a><br>我常常在 C++ 项目和 C# 项目之间切换，这两个语言虽然名字很像，但有很大的不同。我曾用着 C++ 的习惯来写 C# 代码，现在发现我当时对 C# 产生了很多误会。</p>
+<p>比如两个语言常见的顺序容器。C++ 中的 <code>vector&lt;T&gt; v;</code> 和 C# 中的 <code>List&lt;T&gt; l;</code>。往容器里加入一个对象，C++ 会把这个对象完整地复制一份到 vector 里。我原以为 C# 也是这样，但其实并不是。</p>
+<p>所以下面的代码在当时让我很困惑。</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> m = <span class="keyword">new</span> MyClass();</span><br><span class="line">m.MemberA = <span class="number">123</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> list = <span class="keyword">new</span> List&lt;MyClass&gt;();</span><br><span class="line">list.Add(m);            <span class="comment">// 将 m 加入 容器</span></span><br><span class="line">list[<span class="number">0</span>].MemberA = <span class="number">456</span>;  <span class="comment">// 修改容器中对象的值</span></span><br><span class="line">Console.WriteLine(m.MemberA); <span class="comment">// print 456，m 竟然被修改了！我以为会输出 123 ！</span></span><br></pre></td></tr></table></figure>
+<p>我当时会有这样的困惑，是因为我完全不了解 C# 的类型系统。</p>
+<h2 id="C-的引用类型和值类型"><a href="#C-的引用类型和值类型" class="headerlink" title="C# 的引用类型和值类型"></a>C# 的引用类型和值类型</h2><p>C# 支持两种类型：引用类型和值类型。引用类型的变量存储对其数据（对象）的引用，而值类型的变量直接包含其数据。 对于引用类型，两种变量可引用同一对象；因此，对一个变量执行的操作会影响另一个变量所引用的对象。 对于值类型，每个变量都具有其自己的数据副本，对一个变量执行的操作不会影响另一个变量。[1]</p>
+<p>微软文档给出的定义解释了我开头的困惑。<code>MyClass</code> 是引用类型，它的对象 <code>m</code> 只是储存了对数据的引用。而 <code>List&lt;MyClass&gt;.Add</code> 方法创造了另一个引用，所引用的数据与 <code>m</code> 相同。</p>
+<p>简单来说，可以用 C++ 中指针的概念来理解引用。</p>
+<p>C++ 应该是没有值类型和引用类型的说法的（或者说不存在与 C# 的引用类型和值类型相对应的概念）。但是 C++ 类型的行为默认是 C# 中值类型的行为。</p>
+<p>比如函数传递参数时，C++ 和 C# 的值类型都会把参数完整复制一份。C++ 往往用传递 const 引用的方式来省去复制的开销。而 C# 可以用 ref 关键词来传递值类型的引用。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// C++ 每次调用 Print 都会将 string 复制一份</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">print</span><span class="params">(<span class="built_in">string</span> words)</span></span>;</span><br><span class="line"><span class="comment">// C++ 传递 const 引用节省一次复制</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">print</span><span class="params">(<span class="keyword">const</span> <span class="built_in">string</span>&amp; words)</span></span>;</span><br></pre></td></tr></table></figure>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// C# struct MyStringValue 是值类型，每次调用 print 都会将 string 复制一份</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">print</span>(<span class="params">MyStringValue words</span>)</span>;</span><br><span class="line"><span class="comment">// C#</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">print</span>(<span class="params"><span class="keyword">ref</span> MyStringValue words</span>)</span>;</span><br></pre></td></tr></table></figure>
+<p>传递引用来节省复制是 C++ 引用的常见用法。</p>
+<p>写到这里我不知道怎么写下去了，所以就不写了。</p>
+<p>// 未完待续。。。</p>
+<h2 id="C-的可空值类型"><a href="#C-的可空值类型" class="headerlink" title="C#的可空值类型"></a>C#的可空值类型</h2><p>本质是 Nullable 类 + 一些语法糖。c++ 也有类似的东西，也就是 std::optional。</p>
+<h2 id="C-的装箱与拆箱"><a href="#C-的装箱与拆箱" class="headerlink" title="C#的装箱与拆箱"></a>C#的装箱与拆箱</h2><p>这是 C++ 没有的概念。这概念我也刚认识，下面是笔记，可能有错，建议不看。</p>
+<p>C# 里所有类型都基于 object 类型。因此将某个值类型转换为 object 这个基类型是行得通的。</p>
+<p>但这其中都发生了什么。要知道 object 可是引用类型，object 储存的是什么呢，是值类型变量的引用吗？</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> p = <span class="keyword">new</span> Point(<span class="number">3</span>,<span class="number">4</span>); <span class="comment">// 假设 Point 是值类型</span></span><br><span class="line"><span class="keyword">object</span> obj = p;         <span class="comment">// 这一步究竟发生了什么，是我们想知道的。</span></span><br></pre></td></tr></table></figure>
+<p>实际上， object 储存的是<strong>值类型变量副本</strong>的引用。将值类型转化成引用类型的机制称为<strong>装箱</strong>。</p>
+<p>装箱做了以下的工作，来实现将值类型转化为引用类型：</p>
+<ol>
+<li>在托管堆中分配足够容纳值类型的内存；</li>
+<li>将值类型各个字段复制到托管堆申请的内存中；</li>
+<li>返回对象的地址，也就是引用。</li>
+</ol>
+<p>装箱的逆操作是拆箱。比如下面的代码，将引用类型 object 转化为值类型 int：</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> v = (<span class="keyword">int</span>)<span class="keyword">object</span>;</span><br></pre></td></tr></table></figure>
+<p>拆箱做了下面的工作[2]：</p>
+<ol>
+<li>检查类型，确保可以进行转换</li>
+<li>将值从引用的内存中复制到值类型变量</li>
+</ol>
+<p>值得一提的是，在《CLR via C#》这本书里对拆箱的定义是获取值类型各个字段的地址，不包括复制的过程。</p>
+<blockquote>
+<p>CLR分两步完成复制。第一步获取已装箱Point对象中的各个Point字段的地址。这个过程称为拆箱(unboxing)。第二步将字段包含的值从堆复制到基于栈的值类型实例中。</p>
+</blockquote>
+<p>两个定义对我来说都是权威的，我不知道该采用哪个。</p>
+<p>不过不管是哪个定义，应该要知道将值类型与引用类型的转换是需要复制的，是有较大成本的，应该在编写代码时避免不必要的装箱和拆箱。</p>
+<h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h2><p>[1] <a href="https://docs.microsoft.com/zh-cn/dotnet/csharp/language-reference/keywords/reference-types" target="_blank" rel="noopener">https://docs.microsoft.com/zh-cn/dotnet/csharp/language-reference/keywords/reference-types</a></p>
+<p>[2]<a href="https://docs.microsoft.com/zh-cn/dotnet/csharp/programming-guide/types/boxing-and-unboxing" target="_blank" rel="noopener">https://docs.microsoft.com/zh-cn/dotnet/csharp/programming-guide/types/boxing-and-unboxing</a></p>
+
+  	</div>
+	  
+	  <div class="article-tags tags">
+      
+        <a href="/tags/c/">c++</a>
+      
+        <a href="/tags/c/">c#</a>
+      
+	  </div>
+    
+		
+	
+		<div class="art-item-footer">
+				
+				
+					<span class="art-item-right">next：<a href="/2021/04/20/运动手环的使用体验/" rel="next"  title="运动手环的使用体验">
+						运动手环的使用体验
+					</a><i class="icon icon-chevron-thin-right"></i></span>
+				
+		</div>
+	
+	</section>
+
+
+	
+
+</article>
+
+
+	<div id="gitalk-container"></div>
+	<link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+ <script type="text/javascript">
+      var gitalk = new Gitalk({
+        clientID: '53e3c578fcb7b7b1a4da',
+        clientSecret: '74433ee77d6e13fd635b82add519e143ac791726',
+        repo: 'cyanray.github.io',
+        owner: 'cyanray',
+        admin: ['cyanray'],
+        id: CryptoJS.MD5(location.pathname).toString(),
+        labels: ['Gitalk'],
+        perPage: 15,
+        pagerDirection: 'last',
+        createIssueManually: true,
+        distractionFreeMode: false
+      })
+
+      gitalk.render('gitalk-container')
+ </script>
+
+
+<script>
+	window.subData = {
+		title: 'C++和C#的值类型与引用类型',
+		tools: true
+	}
+</script>
+
+      </div>
+      <aside class='l_side'>
+        
+  <section class='m_widget about'>
+    
+            <div class='header'>
+                uint128.com
+            </div>
+            <div class='content'>
+                <div class='desc'>uint128, unsigned int.<br>Uint128 Is Not a Type with 128 bits.</div>
+            </div>
+</section>
+
+  <section class='m_widget links'>
+<div class='header'>Links</div>
+<div class='content'>
+    <ul class="entry">
+    
+        <li><a class="flat-box" target="_blank" href="https://github.com/cyanray">
+            <div class='name'>My Github</div>
+        </a></li>
+    
+        <li><a class="flat-box" target="_blank" href="https://yuanxingxing-yxx.github.io/">
+            <div class='name'>星星的博客</div>
+        </a></li>
+    
+        <li><a class="flat-box" target="_blank" href="http://www.h13studio.com/">
+            <div class='name'>H13-Studio</div>
+        </a></li>
+    
+        <li><a class="flat-box" target="_blank" href="http://quosimodo.cn/">
+            <div class='name'>卡西莫多の礼物</div>
+        </a></li>
+    
+        <li><a class="flat-box" target="_blank" href="http://www.dora-kong.com/">
+            <div class='name'>哆啦控 - dora-kong.com</div>
+        </a></li>
+    
+        <li><a class="flat-box" target="_blank" href="https://blog.icepie.net/">
+            <div class='name'>icepie&#39;s blog</div>
+        </a></li>
+    
+    </ul>
+</div>
+</section>
+
+      </aside>
+      <script>setLoadingBarProgress(60);</script>
+    </div>
+  </div>
+  <footer id="footer" class="clearfix">
+
+	<div class="social-wrapper">
+  	
+      
+        <a href="https://github.com/cyanray" class="social github"
+          target="_blank" rel="external">
+          <span class="icon icon-github"></span>
+        </a>
+      
+    
+  </div>
+  
+  <div>Theme <a href='https://github.com/stkevintan/hexo-theme-material-flow' class="codename">MaterialFlow</a> designed by <a href="http://keyin.me/" target="_blank">Kevin Tan</a>.</div>
+  
+</footer>
+
+
+  <script>setLoadingBarProgress(80);</script>
+  
+
+<script src="//apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+<script src='//cdnjs.cloudflare.com/ajax/libs/node-waves/0.7.5/waves.min.js'></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/scrollReveal.js/3.3.2/scrollreveal.min.js"></script>
+<script src="/js/jquery.fitvids.js"></script>
+<script>
+	var GOOGLE_CUSTOM_SEARCH_API_KEY = "";
+	var GOOGLE_CUSTOM_SEARCH_ENGINE_ID = "";
+	var ALGOLIA_API_KEY = "";
+	var ALGOLIA_APP_ID = "";
+	var ALGOLIA_INDEX_NAME = "";
+  var AZURE_SERVICE_NAME = "";
+  var AZURE_INDEX_NAME = "";
+  var AZURE_QUERY_KEY = "";
+  var BAIDU_API_ID = "";
+  var SEARCH_SERVICE = "hexo";
+  var ROOT = "/"||"/";
+  if(!ROOT.endsWith('/'))ROOT += '/';
+</script>
+<script src="/js/search.js"></script>
+<script src="/js/app.js"></script>
+
+
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+          tex2jax: {
+            inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+            processEscapes: true
+          }
+        });
+      </script>
+    
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+            tex2jax: {
+              skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+            }
+          });
+      </script>
+    
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+              var all = MathJax.Hub.getAllJax(), i;
+              for(i=0; i < all.length; i += 1) {
+                  all[i].SourceElement().parentNode.className += ' has-jax';
+              }
+          });
+      </script>
+    
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-MML-AM_CHTML">
+    </script>
+    
+  <script>setLoadingBarProgress(100);</script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config("");
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+</body>
+</html>
