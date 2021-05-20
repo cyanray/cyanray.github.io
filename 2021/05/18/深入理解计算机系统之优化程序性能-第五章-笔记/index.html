@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  
+  <title>《深入理解计算机系统》之优化程序性能(第五章)笔记 | uint128&#39;s Blog</title>
+  <meta name="description" content="uint128&#39;s blog">
+  <meta name="keywords" content="uint128,uint128&#39;s blog,uint128.com">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <link rel="shortcut icon" href="/">
+  <link rel="alternate" href="/atom.xml" title="uint128's Blog">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="高三毕业的暑假就看了这本书，但是当时水平很浅，只能看进去前两章，现在又回来继续往后看。">
+<meta name="keywords" content="读书笔记">
+<meta property="og:type" content="article">
+<meta property="og:title" content="《深入理解计算机系统》之优化程序性能(第五章)笔记">
+<meta property="og:url" content="https://uint128.com/2021/05/18/深入理解计算机系统之优化程序性能-第五章-笔记/index.html">
+<meta property="og:site_name" content="uint128&#39;s Blog">
+<meta property="og:description" content="高三毕业的暑假就看了这本书，但是当时水平很浅，只能看进去前两章，现在又回来继续往后看。">
+<meta property="og:locale" content="zh-cn">
+<meta property="og:updated_time" content="2021-05-20T05:13:08.088Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="《深入理解计算机系统》之优化程序性能(第五章)笔记">
+<meta name="twitter:description" content="高三毕业的暑假就看了这本书，但是当时水平很浅，只能看进去前两章，现在又回来继续往后看。">
+    
+  <link href="https://fonts.googleapis.com/css?family=Inconsolata|Titillium+Web" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Roboto+Mono" rel="stylesheet">
+  <link href="//cdnjs.cloudflare.com/ajax/libs/node-waves/0.7.5/waves.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="/style.css">
+  <script>
+    function setLoadingBarProgress(num) {
+      document.getElementById('loading-bar').style.width=num+"%";
+    }
+  </script>
+  <script src="/js/md5.js"></script>
+<link rel="alternate" href="/atom.xml" title="uint128's Blog" type="application/atom+xml"><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+</head>
+</html>
+<body>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div id="loading-bar-wrapper">
+  <div id="loading-bar"></div>
+</div>
+
+
+  <script>setLoadingBarProgress(20)</script> 
+  <header class="l_header">
+	<div class='wrapper'>
+		<div class="nav-main container container--flex">
+			<a class="logo flat-box" href='/' >
+				uint128's Blog
+			</a>
+			<div class='menu'>
+				<ul class='h-list'>
+					
+						<li>
+							<a class='flat-box nav-home' href='/'>
+								Home
+							</a>
+						</li>
+					
+						<li>
+							<a class='flat-box nav-archives' href='/archives'>
+								Archives
+							</a>
+						</li>
+					
+						<li>
+							<a class='flat-box nav-about' href='/about'>
+								About
+							</a>
+						</li>
+					
+				</ul>
+				<div class='underline'></div>
+			</div>
+			
+				<div class="m_search">
+					<form name="searchform" class="form u-search-form">
+						<input type="text" class="input u-search-input" placeholder="Search" />
+						<span class="icon icon-search"></span>
+					</form>
+				</div>
+			
+			<ul class='switcher h-list'>
+				
+					<li class='s-search'><a href='javascript:void(0)'><span class="icon icon-search flat-box"></span></a></li>
+				
+				<li class='s-menu'><a href='javascript:void(0)'><span class="icon icon-menu flat-box"></span></a></li>
+			</ul>
+		</div>
+		
+		<div class='nav-sub container container--flex'>
+			<a class="logo" class="flat-box" href='javascript:void(0)'>
+				Word of Forks
+			</a>
+
+			<ul class='switcher h-list'>
+				<li class='s-comment'><a href='javascript:void(0)'><span class="icon icon-chat_bubble_outline flat-box"></span></a></li>
+				<li class='s-top'><a href='javascript:void(0)'><span class="icon icon-arrow_upward flat-box"></span></a></li>
+				<li class='s-toc'><a href='javascript:void(0)'><span class="icon icon-format_list_numbered flat-box"></span></a></li>
+			</ul>
+		</div>
+	</div>
+</header>
+<aside class="menu-phone">
+	<nav>
+		
+			<a href="/" class="nav-home nav">
+				Home
+			</a>
+		
+			<a href="/archives" class="nav-archives nav">
+				Archives
+			</a>
+		
+			<a href="/about" class="nav-about nav">
+				About
+			</a>
+		
+	</nav>
+</aside>
+
+    <script>setLoadingBarProgress(40);</script>
+  <div class="l_body">
+    <div class='container clearfix'>
+      <div class='l_main'>
+        <article id="post-深入理解计算机系统之优化程序性能-第五章-笔记"
+  class="post white-box article-type-post"
+  itemscope itemprop="blogPost">
+	<section class='meta'>
+	<h2 class="title">
+  	<a href="/2021/05/18/深入理解计算机系统之优化程序性能-第五章-笔记/">
+    	《深入理解计算机系统》之优化程序性能(第五章)笔记
+    </a>
+  </h2>
+	<time>
+	  5月 18, 2021
+	</time>
+	
+	</section>
+	
+		<section class="toc-wrapper"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#减少不必要的开销"><span class="toc-number">1.</span> <span class="toc-text">减少不必要的开销</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#不必要的函数调用"><span class="toc-number">1.1.</span> <span class="toc-text">不必要的函数调用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#不必要的内存引用"><span class="toc-number">1.2.</span> <span class="toc-text">不必要的内存引用</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#让代码可以被编译器优化"><span class="toc-number">2.</span> <span class="toc-text">让代码可以被编译器优化</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#可能阻止编译器优化的情况"><span class="toc-number">2.1.</span> <span class="toc-text">可能阻止编译器优化的情况</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#利用现代处理器的硬件特性"><span class="toc-number">3.</span> <span class="toc-text">利用现代处理器的硬件特性</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#指令的并行执行"><span class="toc-number">3.1.</span> <span class="toc-text">指令的并行执行</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#循环展开"><span class="toc-number">3.2.</span> <span class="toc-text">循环展开</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#k-x-1-循环展开"><span class="toc-number">3.2.1.</span> <span class="toc-text">k x 1 循环展开</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#k-x-k-循环展开"><span class="toc-number">3.2.2.</span> <span class="toc-text">k x k 循环展开</span></a></li></ol></li></ol></li></ol></section>
+	
+	<section class="article typo">
+  	<div class="article-entry" itemprop="articleBody">
+    	<p>高三毕业的暑假就看了这本书，但是当时水平很浅，只能看进去前两章，现在又回来继续往后看。</p>
+<a id="more"></a>
+<p>这本书是了解计算机的一本好书，光是前两章的内容就让我在一段时间学习计算机相关课程的速度飞快。</p>
+<p>这本书的第五章主要讲解如何优化程序性能。作者的讲解方式很适合我学习，但是结构上不太适合复习。因此我将其中的知识点重新排列组合，方便我以后复习。</p>
+<p>笔记正文：</p>
+<p>优化程序性能的方式主要可概括成三种：</p>
+<ol>
+<li>减少不必要的开销 (比如不必要的函数调用、内存引用)</li>
+<li>让代码可以被编译器优化 (比如内存引用可能会阻止编译器优化)</li>
+<li>利用现代处理器的硬件特性 (利用超标量处理器指令并行特性)</li>
+</ol>
+<h2 id="减少不必要的开销"><a href="#减少不必要的开销" class="headerlink" title="减少不必要的开销"></a>减少不必要的开销</h2><p>这是最简单的优化方式，很多时候只要稍微留意就能注意到可以改善的地方。</p>
+<h3 id="不必要的函数调用"><a href="#不必要的函数调用" class="headerlink" title="不必要的函数调用"></a>不必要的函数调用</h3><p>比如书里很经典的一个例子，在循环里调用一个返回值固定的函数。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="built_in">strlen</span>(str); ++i)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// do sth...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>上面的代码，每一次循环，都会调用 strlen(str)，计算一次字符串的长度。而计算一次字符串的长度需要遍历整个字符串以寻找字符串末尾的 ‘\0’ 字符。这种情况下效率肯定是很低的。</p>
+<p>如果字符串的长度是不会改变的，那么更好的写法是只调用一次 strlen。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> length = <span class="built_in">strlen</span>(str);</span><br><span class="line"><span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; length; ++i)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// do sth...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>在我看这本书之前我就听说现代编译器（不知道是哪个语言）能够优化上面的代码。<br>但是在这本书里指出，C 语言编译器可能会认为 strlen(str) 的返回值是变化的，从而阻止了优化。</p>
+</blockquote>
+<p>在 C++ 中，<code>vector&lt;T&gt;</code> 根据索引访问元素有两种方式，一种是使用 <code>operator[]</code>，另一种是使用 <code>at()</code> 成员函数。这两个函数是有区别的，<code>at()</code> 函数会进行越界检查，如果索引越界会触发异常，而 operator[] 则不会。</p>
+<p>如果循环中，可以保证逻辑上不会出现越界访问，那么每次都进行越界检查显然是没必要的。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; vec = &#123;<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>&#125;;</span><br><span class="line"><span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; vec.size(); ++i)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// 在这个循环里，通过 i 访问 vec 不会导致越界</span></span><br><span class="line">    <span class="comment">// 如果用 at 函数进行越界检查是没必要的</span></span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; vec[i] &lt;&lt; <span class="built_in">endl</span>;     <span class="comment">// good</span></span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; vec.at(i) &lt;&lt; <span class="built_in">endl</span>;  <span class="comment">// bad</span></span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>C++ 标准库把最常用的 operator[] 设计为不进行越界检查估计就是为了效率。</p>
+</blockquote>
+<p>编译器的内联优化也可以消除不必要的函数调用，C++ 通过 inline 关键词标记一个函数为内联函数，但这不是强制性的约束，是否进行内联优化取决于编译器。</p>
+<h3 id="不必要的内存引用"><a href="#不必要的内存引用" class="headerlink" title="不必要的内存引用"></a>不必要的内存引用</h3><p>这是我以前很少注意到的细节，这个细节需要结合代码来分析。</p>
+<p>比如下面这个 <code>sum1</code> 函数，它对数组进行求和，并把结果存到 result 里。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">sum1</span><span class="params">(<span class="keyword">int</span>* <span class="built_in">array</span>, <span class="keyword">int</span> length, <span class="keyword">int</span>* result)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    *result = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; length; ++i)</span><br><span class="line">    &#123;</span><br><span class="line">        *result += <span class="built_in">array</span>[i];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">sum2</span><span class="params">(<span class="keyword">int</span>* <span class="built_in">array</span>, <span class="keyword">int</span> length, <span class="keyword">int</span>* result)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> tmp = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; length; ++i)</span><br><span class="line">    &#123;</span><br><span class="line">        tmp += <span class="built_in">array</span>[i];</span><br><span class="line">    &#125;</span><br><span class="line">    *result = tmp;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>result 是一个 int 指针，它指向一片内存。这个函数的循环，将会多次通过 result 访问这一片内存。</p>
+<p>对于函数 <code>sum2</code>，会有更好的效率。因为临时变量 tmp 完全可以存到某个寄存器里，CPU 在循环里只需多次访问一个寄存器。CPU 访问内存的速度和 CPU 访问寄存器的速度是不一样的，CPU 访问寄存器的效率要远远大于访问内存。</p>
+<blockquote>
+<p>我觉得 CPU 会把 array 的数据从内存复制到高速缓存里来提高效率，这本书似乎也有提到，但是我还没看完。</p>
+</blockquote>
+<h2 id="让代码可以被编译器优化"><a href="#让代码可以被编译器优化" class="headerlink" title="让代码可以被编译器优化"></a>让代码可以被编译器优化</h2><h3 id="可能阻止编译器优化的情况"><a href="#可能阻止编译器优化的情况" class="headerlink" title="可能阻止编译器优化的情况"></a>可能阻止编译器优化的情况</h3><p>下面这两个函数，直觉上看 <code>func2</code> 似乎是 <code>func1</code> 更优雅的实现，所以现代编译器把 <code>func1</code> 优化成 <code>func2</code> 是行得通。函数 <code>func1</code> 有 4 次内存引用。而 <code>func2</code> 只有两次，如果能这么进行优化，那执行效率会有所提升。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">func1</span><span class="params">(<span class="keyword">int</span>* a, <span class="keyword">int</span>* b)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    *a += *b;</span><br><span class="line">    *a += *b;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">func2</span><span class="params">(<span class="keyword">int</span>* a, <span class="keyword">int</span>* b)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    *a += <span class="number">2</span> * (*b);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>但是实际上，编译器可能不会做出这样的优化。这是因为当参数 <code>a</code> 和 参数 <code>b</code> 的指针是同一个指针时，两个函数的计算结果是不同的。</p>
+<p>比如：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> v = <span class="number">1</span>;</span><br><span class="line">func1(&amp;v, &amp;v);  <span class="comment">// return: 4</span></span><br><span class="line">func2(&amp;v, &amp;v);  <span class="comment">// return: 3</span></span><br></pre></td></tr></table></figure>
+<p>编译器的优化必须保证优化前后的一致性，所以编译器不会把 <code>func1</code> 优化成 <code>func2</code>。</p>
+<p>这里我觉得可以总结出一条结论：<strong>相同的内存引用，可能会阻止编译器优化。</strong></p>
+<h2 id="利用现代处理器的硬件特性"><a href="#利用现代处理器的硬件特性" class="headerlink" title="利用现代处理器的硬件特性"></a>利用现代处理器的硬件特性</h2><blockquote>
+<p>不了解现代 CPU 的工作细节，我看完也还是一知半解啊。所以以下内容很可能有错误，请批评指正。</p>
+</blockquote>
+<p>X86 中一条汇编指令可能要多个时钟周期才能完成。而且这些指令是有可能乱序执行的。线代处理器使用一种分支预测技术，在遇到分支(if语句可能产生分支)的时候，处理器不会等待条件检测完成再去选择分支，而是先猜测一条分支是成立的，执行这条分支的指令。如果分支预测错误，那么代价是很大的：之前执行的结果只能全部丢弃，要重新执行正确分支的指令。</p>
+<p>这些现代处理器的特性，也会对程序性能有影响。</p>
+<h3 id="指令的并行执行"><a href="#指令的并行执行" class="headerlink" title="指令的并行执行"></a>指令的并行执行</h3><p>上面提到的 <code>sum2</code> 函数，它循环部分的汇编代码如下(Clang 12.0 使用 O1 优化)：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">.LBB1_4:    # =&gt;This Inner Loop Header: Depth=1</span><br><span class="line">    add     ecx, dword ptr [rdi + 4*rsi]</span><br><span class="line">    add     rsi, 1</span><br><span class="line">    cmp     rax, rsi</span><br><span class="line">    jne     .LBB1_4</span><br></pre></td></tr></table></figure>
+<p>这一段汇编代码中，实际上并不只有 <code>add</code>、 <code>add</code>、 <code>cmp</code> 和 <code>jne</code> 四个操作，比如还涉及从内存中加载数据的操作( dword ptr [rdi + 4*rsi] )。在加载数据之后，比较关键的一个点是，两个 add 指令是可以同时运行的。</p>
+<p>这是因为两个 add 指令直接并不存在数据依赖。第二个 add 和 cmp 指令就不能同时进行，因为 cmp 使用了 rsi 寄存器的值，必须要等第二个 add 指令完成之后，cmp 计算的值才是正确的。</p>
+<p>第一个 add 指令和第二个 add 指令虽然也都用到了 rsi 寄存器，但是第一个 add 指令用到的 rsi 寄存器，发生在加载数据的时候。真正进行 add 计算时，已经不再使用 rsi 寄存器的值了。</p>
+<blockquote>
+<p>BUT! 如果我理解没问题的话，我这里就有个疑惑了：人可以分析出来这些，但是 CPU 怎么知道这些指令没有数据上的依赖呢？</p>
+</blockquote>
+<h3 id="循环展开"><a href="#循环展开" class="headerlink" title="循环展开"></a>循环展开</h3><p>这是我觉得最有意思的部分，循环展开优化是我以前就了解过的编译器优化技术，这本书让我知道了循环展开优化里的各种细节。</p>
+<h4 id="k-x-1-循环展开"><a href="#k-x-1-循环展开" class="headerlink" title="k x 1 循环展开"></a>k x 1 循环展开</h4><p>前文提到的 <code>sum2</code> 函数的循环要执行 n 次加法和 n 次判断(判断 i 和 length 的大小)。循环展开优化，将每次循环做 1 次加法改成做 k 次加法。这样优化最终还是要做 n 次加法，但是循环的次数以及判断的次数都减少了。(减少了 cmp 指令和 jmp 指令的执行)</p>
+<p>这种循环展开称为 k x 1 循环展开，一次循环计算 k 个元素而累计值存到 1 个变量中。</p>
+<p>比如当 k = 2 时，函数 <code>sum2</code> 可以展开成：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">sum2</span><span class="params">(<span class="keyword">int</span>* <span class="built_in">array</span>, <span class="keyword">int</span> length, <span class="keyword">int</span>* result)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> tmp = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">int</span> i;</span><br><span class="line">    <span class="comment">// 1 次循环加 2 个元素</span></span><br><span class="line">    <span class="keyword">for</span>(i = <span class="number">0</span>; i &lt; length - <span class="number">1</span>; i += <span class="number">2</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        tmp = (tmp + <span class="built_in">array</span>[i]) +  <span class="built_in">array</span>[i + <span class="number">1</span>];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 把剩余的元素都加上</span></span><br><span class="line">    <span class="keyword">for</span>(; i &lt; length; ++i)</span><br><span class="line">    &#123;</span><br><span class="line">        tmp = tmp + <span class="built_in">array</span>[i];</span><br><span class="line">    &#125;</span><br><span class="line">    *result = tmp;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="k-x-k-循环展开"><a href="#k-x-k-循环展开" class="headerlink" title="k x k 循环展开"></a>k x k 循环展开</h4><p>k x 1 次循环展开的计算结果都存到 1 个变量中，这导致第 t 次运算都要等第 t - 1 次运算结束后才能进行。如果有多个结果变量，那么这 k 次运算就可以并行执行。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">sum2</span><span class="params">(<span class="keyword">int</span>* <span class="built_in">array</span>, <span class="keyword">int</span> length, <span class="keyword">int</span>* result)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> tmp1 = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">int</span> tmp2 = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">int</span> i;</span><br><span class="line">    <span class="comment">// 1 次循环加 2 个元素</span></span><br><span class="line">    <span class="keyword">for</span>(i = <span class="number">0</span>; i &lt; length - <span class="number">1</span>; i += <span class="number">2</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">// 现在，这两个加法运算没有关联了，可以并行执行</span></span><br><span class="line">        tmp1 = tmp1 + <span class="built_in">array</span>[i];</span><br><span class="line">        tmp2 = tmp2 + <span class="built_in">array</span>[i + <span class="number">1</span>];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 把剩余的元素都加上</span></span><br><span class="line">    <span class="keyword">for</span>(; i &lt; length; ++i)</span><br><span class="line">    &#123;</span><br><span class="line">        tmp1 = tmp1 + <span class="built_in">array</span>[i];</span><br><span class="line">    &#125;</span><br><span class="line">    *result = tmp1 + tmp2;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>最后，循环展开的代码不需要自己写，编译器优化会自动完成的。</p>
+
+  	</div>
+	  
+	  <div class="article-tags tags">
+      
+        <a href="/tags/读书笔记/">读书笔记</a>
+      
+	  </div>
+    
+		
+	
+		<div class="art-item-footer">
+				
+				
+					<span class="art-item-right">next：<a href="/2021/05/11/准备数学建模国赛的心得体会/" rel="next"  title="准备数学建模国赛的心得体会">
+						准备数学建模国赛的心得体会
+					</a><i class="icon icon-chevron-thin-right"></i></span>
+				
+		</div>
+	
+	</section>
+
+
+	
+
+</article>
+
+
+	<div id="gitalk-container"></div>
+	<link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+ <script type="text/javascript">
+      var gitalk = new Gitalk({
+        clientID: '53e3c578fcb7b7b1a4da',
+        clientSecret: '74433ee77d6e13fd635b82add519e143ac791726',
+        repo: 'cyanray.github.io',
+        owner: 'cyanray',
+        admin: ['cyanray'],
+        id: CryptoJS.MD5(location.pathname).toString(),
+        labels: ['Gitalk'],
+        perPage: 15,
+        pagerDirection: 'last',
+        createIssueManually: true,
+        distractionFreeMode: false
+      })
+
+      gitalk.render('gitalk-container')
+ </script>
+
+
+<script>
+	window.subData = {
+		title: '《深入理解计算机系统》之优化程序性能(第五章)笔记',
+		tools: true
+	}
+</script>
+
+      </div>
+      <aside class='l_side'>
+        
+  <section class='m_widget about'>
+    
+            <div class='header'>
+                uint128.com
+            </div>
+            <div class='content'>
+                <div class='desc'>uint128, unsigned int.<br>Uint128 Is Not a Type with 128 bits.</div>
+            </div>
+</section>
+
+  <section class='m_widget links'>
+<div class='header'>Links</div>
+<div class='content'>
+    <ul class="entry">
+    
+        <li><a class="flat-box" target="_blank" href="https://github.com/cyanray">
+            <div class='name'>My Github</div>
+        </a></li>
+    
+        <li><a class="flat-box" target="_blank" href="https://yuanxingxing-yxx.github.io/">
+            <div class='name'>星星的博客</div>
+        </a></li>
+    
+        <li><a class="flat-box" target="_blank" href="http://www.h13studio.com/">
+            <div class='name'>H13-Studio</div>
+        </a></li>
+    
+        <li><a class="flat-box" target="_blank" href="http://quosimodo.cn/">
+            <div class='name'>卡西莫多の礼物</div>
+        </a></li>
+    
+        <li><a class="flat-box" target="_blank" href="http://www.dora-kong.com/">
+            <div class='name'>哆啦控 - dora-kong.com</div>
+        </a></li>
+    
+        <li><a class="flat-box" target="_blank" href="https://blog.icepie.net/">
+            <div class='name'>icepie&#39;s blog</div>
+        </a></li>
+    
+    </ul>
+</div>
+</section>
+
+      </aside>
+      <script>setLoadingBarProgress(60);</script>
+    </div>
+  </div>
+  <footer id="footer" class="clearfix">
+
+	<div class="social-wrapper">
+  	
+      
+        <a href="https://github.com/cyanray" class="social github"
+          target="_blank" rel="external">
+          <span class="icon icon-github"></span>
+        </a>
+      
+    
+  </div>
+  
+  <div>Theme <a href='https://github.com/stkevintan/hexo-theme-material-flow' class="codename">MaterialFlow</a> designed by <a href="http://keyin.me/" target="_blank">Kevin Tan</a>.</div>
+  
+</footer>
+
+
+  <script>setLoadingBarProgress(80);</script>
+  
+
+<script src="//apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+<script src='//cdnjs.cloudflare.com/ajax/libs/node-waves/0.7.5/waves.min.js'></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/scrollReveal.js/3.3.2/scrollreveal.min.js"></script>
+<script src="/js/jquery.fitvids.js"></script>
+<script>
+	var GOOGLE_CUSTOM_SEARCH_API_KEY = "";
+	var GOOGLE_CUSTOM_SEARCH_ENGINE_ID = "";
+	var ALGOLIA_API_KEY = "";
+	var ALGOLIA_APP_ID = "";
+	var ALGOLIA_INDEX_NAME = "";
+  var AZURE_SERVICE_NAME = "";
+  var AZURE_INDEX_NAME = "";
+  var AZURE_QUERY_KEY = "";
+  var BAIDU_API_ID = "";
+  var SEARCH_SERVICE = "hexo";
+  var ROOT = "/"||"/";
+  if(!ROOT.endsWith('/'))ROOT += '/';
+</script>
+<script src="/js/search.js"></script>
+<script src="/js/app.js"></script>
+
+
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+          tex2jax: {
+            inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+            processEscapes: true
+          }
+        });
+      </script>
+    
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+            tex2jax: {
+              skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+            }
+          });
+      </script>
+    
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+              var all = MathJax.Hub.getAllJax(), i;
+              for(i=0; i < all.length; i += 1) {
+                  all[i].SourceElement().parentNode.className += ' has-jax';
+              }
+          });
+      </script>
+    
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-MML-AM_CHTML">
+    </script>
+    
+  <script>setLoadingBarProgress(100);</script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config("");
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+</body>
+</html>
