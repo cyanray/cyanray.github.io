@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta><title>理解 C++20 Coroutine: 协程的概念 - uint128&#039;s Blog</title><link rel="manifest" href="/manifest.json"><meta name="application-name" content="uint128&#039;s Blog"><meta name="msapplication-TileImage" content="/favicon.ico"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="uint128&#039;s Blog"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="description" content="理解 C++20 Coroutine: 协程的概念。C++ coroutine 的细节非常的多，但是能查到的资料却不是很多。我一边学习一边记录，打算写很多篇文章来分享我的理解。"><meta property="og:type" content="blog"><meta property="og:title" content="理解 C++20 Coroutine: 协程的概念"><meta property="og:url" content="https://uint128.com/2022/02/16/%E7%90%86%E8%A7%A3-C-20-Coroutine-%E5%8D%8F%E7%A8%8B%E7%9A%84%E6%A6%82%E5%BF%B5/"><meta property="og:site_name" content="uint128&#039;s Blog"><meta property="og:description" content="理解 C++20 Coroutine: 协程的概念。C++ coroutine 的细节非常的多，但是能查到的资料却不是很多。我一边学习一边记录，打算写很多篇文章来分享我的理解。"><meta property="og:locale" content="zh_CN"><meta property="og:image" content="https://uint128.com/img/og_image.png"><meta property="article:published_time" content="2022-02-15T21:06:10.000Z"><meta property="article:modified_time" content="2022-08-22T09:11:21.035Z"><meta property="article:author" content="uint128.com"><meta property="article:tag" content="uint128"><meta property="article:tag" content="uint128&#039;s blog"><meta property="article:tag" content="uint128.com"><meta property="twitter:card" content="summary"><meta property="twitter:image" content="/img/og_image.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://uint128.com/2022/02/16/%E7%90%86%E8%A7%A3-C-20-Coroutine-%E5%8D%8F%E7%A8%8B%E7%9A%84%E6%A6%82%E5%BF%B5/"},"headline":"uint128's Blog","image":["https://uint128.com/img/og_image.png"],"datePublished":"2022-02-15T21:06:10.000Z","dateModified":"2022-08-22T09:11:21.035Z","author":{"@type":"Person","name":"uint128.com"},"publisher":{"@type":"Organization","logo":{"@type":"ImageObject"}},"description":"理解 C++20 Coroutine: 协程的概念。C++ coroutine 的细节非常的多，但是能查到的资料却不是很多。我一边学习一边记录，打算写很多篇文章来分享我的理解。"}</script><link rel="canonical" href="https://uint128.com/2022/02/16/%E7%90%86%E8%A7%A3-C-20-Coroutine-%E5%8D%8F%E7%A8%8B%E7%9A%84%E6%A6%82%E5%BF%B5/"><link rel="alternate" href="/atom.xml" title="uint128&#039;s Blog" type="application/atom+xml"><link rel="icon" href="/favicon.ico"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.2/css/all.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.12.0/styles/atom-one-light.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;600&amp;family=Source+Code+Pro"><link rel="stylesheet" href="/css/default.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><!--!--><!--!--><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/css/justifiedGallery.min.css"><!--!--><!--!--><!--!--><style>.pace{-webkit-pointer-events:none;pointer-events:none;-webkit-user-select:none;-moz-user-select:none;user-select:none}.pace-inactive{display:none}.pace .pace-progress{background:#3273dc;position:fixed;z-index:2000;top:0;right:100%;width:100%;height:2px}</style><script src="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js"></script><!--!--><!--!--><!-- hexo injector head_end start -->
+<!-- hexo-inject:begin --><!-- hexo-inject:end --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.6.0/katex.min.css">
+<!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.2.0"><!-- hexo-inject:begin --><!-- hexo-inject:end --></head><body class="is-2-column"><script type="text/javascript" src="/js/imaegoo/night.js"></script><canvas id="universe"></canvas><nav class="navbar navbar-main"><div class="container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/">uint128&#039;s Blog</a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">Home</a><a class="navbar-item" href="/archives">Archives</a><a class="navbar-item" href="/tags">Tags</a><a class="navbar-item" href="/about">About</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="My GitHub" href="https://github.com/cyanray"><i class="fab fa-github"></i></a><a class="navbar-item" target="_blank" rel="noopener" title="RSS" href="/atom.xml"><i class="fas fa-rss"></i></a><a class="navbar-item is-hidden-tablet catalogue" title="目录" href="javascript:;"><i class="fas fa-list-ul"></i></a><a class="navbar-item night" id="night-nav" title="Night Mode" href="javascript:;"><i class="fas fa-moon" id="night-icon"></i></a><a class="navbar-item search" title="搜索" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-8-widescreen"><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2022-02-15T21:06:10.000Z" title="2022/2/16 05:06:10">2022-02-16</time>发表</span><span class="level-item"><time dateTime="2022-08-22T09:11:21.035Z" title="2022/8/22 17:11:21">2022-08-22</time>更新</span></div></div><h1 class="title is-3 is-size-4-mobile">理解 C++20 Coroutine: 协程的概念</h1><div class="content"><p>理解 C++20 Coroutine: 协程的概念。C++ coroutine 的细节非常的多，但是能查到的资料却不是很多。我一边学习一边记录，打算写很多篇文章来分享我的理解。<br><span id="more"></span></p>
+<!-- hexo-inject:begin --><!-- hexo-inject:end --><p>这篇文章本来是想做成笔记的，但是写着写着就成了翻译。我参考的文章是 <a target="_blank" rel="noopener" href="https://lewissbaker.github.io/2017/09/25/coroutine-theory">https://lewissbaker.github.io/2017/09/25/coroutine-theory</a>，真的非常推荐大家将他的四篇文章都看完，讲解的非常详细清晰，我的文章不及他的千分之一。</p>
+<p>我是在运行了一些协程的实际应用（cppreference里的一个例子：<a target="_blank" rel="noopener" href="https://en.cppreference.com/w/cpp/language/coroutines">switch_to_new_thread</a>）之后才看的这篇文章，所以我还是很容易理解原文中所谓的“执行额外的逻辑”是什么意思。 C++20 所引入的协程只有一套机制，没有更多其它东西了，而这套机制非常的灵活，允许你在协程执行的各个关键节点运行你自己的逻辑代码，这就是“执行额外的逻辑”的含义。</p>
+<p>协程理论（Coroutine Theory）</p>
+<h1 id="协程就是函数"><a href="#协程就是函数" class="headerlink" title="协程就是函数"></a>协程就是函数</h1><p><strong>“普通”</strong>函数（“Normal”function 或称为 subroutine）有两种操作：<strong>调用（Call）</strong>和**返回（Return）。这里的返回，也包括函数因为异常而退出的情况。</p>
+<p>调用操作会创建一个 <strong>“活动帧”（Activation Frame）</strong>，挂起<strong>调用者（Caller）</strong>的执行，然后转移到<strong>被调用函数（function being called）</strong>的开始继续执行。</p>
+<p>返回操作会将返回值传递给调用者，销毁“活动帧”，并让调用者恢复执行。</p>
+<p>关于调用和返回以及活动帧的概念，会在下面进行深入而详细地分析。</p>
+<p><strong>协程（coroutine）</strong>也是函数，因此函数的两种操作协程也有，即协程也支持调用和返回。协程的特点是它还支持额外的三种操作：<strong>挂起（Suspend）</strong>、<strong>恢复（Resume）</strong>和<strong>销毁（Destroy）</strong>。</p>
+<p>挂起操作会暂停协程当前的执行，然后让调用者（Caller）继续执行。与返回操作不同的是，协程的挂起操作不会导致“活动帧”被破坏（这里的活动帧指的是<strong>协程活动帧</strong>）。函数的返回操作只在特定的节点发生，即在 return 关键词处发生返回操作。协程的挂起操作也是如此，只在使用 co_await 或 co_yield 关键词时，才会发生挂起操作。</p>
+<p>恢复操作会恢复被挂起的协程，让它在被挂起的位置继续执行。这个操作会重新建立协程的活动帧（这里的活动帧指的是<strong>栈活动帧</strong>）。</p>
+<p>销毁操作会销毁活动帧，而且不需要恢复协程的执行。用于储存活动帧的内存会被释放。</p>
+<h1 id="活动帧（Activation-Frames）"><a href="#活动帧（Activation-Frames）" class="headerlink" title="活动帧（Activation Frames）"></a>活动帧（Activation Frames）</h1><p>你可以将活动帧认为是一块保持着某个被调用函数状态的内存。这些状态包括所有<strong>函数参数</strong>的值和所有<strong>临时变量</strong>的值。</p>
+<p>对于普通函数，活动帧里也包括<strong>返回地址</strong>。在返回操作发生时，需要通过这个地址才能回到调用者，进而继续向后执行。</p>
+<p>对于普通函数，所有的活动帧都有严格的嵌套的生命周期。这种严格的嵌套允许我们使用一种高效率的内存分配数据结构来分配和释放每一次函数调用的活动帧。（也就是“栈”）</p>
+<p>当一个活动帧被分配到栈时，通常称为 <strong>“栈帧”（stack frame）</strong>。</p>
+<p>这个栈是如此地常用，以至于几乎所有的 CPU 架构都有一个特定的寄存器来存储这个栈的顶端（比如在 x64 架构是 rsp 寄存器）。</p>
+<p>要为新的活动帧分配空间，你只需要根据新活动帧的大小将这个寄存器的值增加。反之，要释放活动帧的空间，你只需要根据活动帧的大小将这个寄存器的值减小。（原文末尾有图片，参考着原文末尾的图片会更好理解。）</p>
+<h1 id="调用操作（The-‘Call’-Operation）"><a href="#调用操作（The-‘Call’-Operation）" class="headerlink" title="调用操作（The ‘Call’ Operation）"></a>调用操作（The ‘Call’ Operation）</h1><p>当一个函数调用另一个函数，调用者必须首先准备好将它自己挂起。</p>
+<p>这个挂起步骤通常包含将所有当前寄存器的值保存到内存。这些值会在将来函数恢复执行时被还原。根据函数的调用约定，调用者和被调用者会协调由谁来保存这些寄存器的值，但是你可以直接地认为这个步骤是调用操作的一部分。</p>
+<p>调用者还会将所有传递给被调用函数的参数保存到新的活动帧，这样被调用函数就可以访问他们。</p>
+<p>最后，调用者将调用者的恢复点地址写入新的活动帧，并将执行转移到被调用函数的开始处。</p>
+<p>在 x86/x64 架构中，最后一个操作有它自己的指令，也就是 call 指令。它将下一条指令的地址写入栈，将栈寄存器递增一个地址的大小，然后跳转到 call 指令指定的地址继续执行。</p>
+<h1 id="返回操作（The-‘Return’-Operation）"><a href="#返回操作（The-‘Return’-Operation）" class="headerlink" title="返回操作（The ‘Return’ Operation）"></a>返回操作（The ‘Return’ Operation）</h1><p>当一个函数使用 return 语句返回时，这个函数首先会将返回值（如果有）储存到调用者可以访问到的地方。这个地方可以认为处于调用者的活动帧也可以认为处于当前函数的活动帧（因为两个函数都能访问它，所以活动帧的边界会因为它而变得模糊）。</p>
+<p>然后，函数会经历以下步骤来销毁活动帧。</p>
+<ol>
+<li>销毁返回点范围内的所有局部变量（调用析构函数）；（返回点之外可能还声明了局部变量，它们可能尚未被初始化，因此不需要析构它们）</li>
+<li>销毁所有参数；</li>
+<li>释放活动帧占用的内存；</li>
+</ol>
+<p>最后，在调用者处恢复执行：</p>
+<ol>
+<li>通过设置栈寄存器以还原调用者的活动帧，并且还原所有的寄存器值，它们可能被函数给破坏了；</li>
+<li>跳转到调用者的恢复点，这个恢复点在调用操作时被储存；</li>
+</ol>
+<p>注意，和调用操作一样，某些调用约定可能将返回操作的一些职责分摊到调用者和被调用者的指令中。</p>
+<h1 id="协程活动帧（Coroutine-activation-frames）"><a href="#协程活动帧（Coroutine-activation-frames）" class="headerlink" title="协程活动帧（Coroutine activation frames）"></a>协程活动帧（Coroutine activation frames）</h1><p>由于协程具有可以被挂起而不销毁活动帧的特点，我们不再能保证活动帧的生命周期是严格嵌套的。这意味着活动帧不能像通常那样被分配到栈中，因此可能要分配到堆中。</p>
+<p>在 C++ 协程提案中有一些规定允许将协程活动帧的内存分配到调用者的活动帧中，如果编译器能够证明协程帧的生命周期严格嵌套在调用者活动帧的生命周期之内。有一个足够聪明的编译器可以在许多情况下避免堆分配。<em>（TODO：需要进一步了解何时可以节约堆分配）</em></p>
+<p>对于协程来说，活动帧可以被分为两部分：一部分需要在协程被挂起时被保留，而另一部分只在协程执行时存在。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">task&lt;&gt; <span class="built_in">func</span>()</span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">int</span> a = <span class="number">123</span>;</span><br><span class="line">    <span class="function"><span class="keyword">co_await</span> <span class="title">bar</span><span class="params">(a)</span></span>;</span><br><span class="line">    <span class="function"><span class="keyword">co_await</span> <span class="title">foo</span><span class="params">()</span></span>; <span class="comment">// 不再需要a, 因此 a 不需要在协程被挂起时保留</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">task&lt;&gt; <span class="built_in">func</span>()</span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">int</span> a = <span class="number">123</span>;</span><br><span class="line">    <span class="function"><span class="keyword">co_await</span> <span class="title">bar</span><span class="params">()</span></span>;</span><br><span class="line">    <span class="function"><span class="keyword">co_await</span> <span class="title">foo</span><span class="params">(a)</span></span>; <span class="comment">// 跨越了一个挂起点，在第二个挂起点需要a, 因此 a 需要在协程被挂起时保留，分配到堆中</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>比如上面所示代码，一个不跨越协程挂起点的局部变量 a，它可以被储存在栈中。而跨越了挂起点的局部变量，需要储存到堆中。可以将协程的活动帧逻辑上分成两个部分：</p>
+<ol>
+<li>对于需要在协程被挂起时而不被销毁的活动帧，将会分配到堆中，将这部分称之为<strong>协程帧(coroutine frame)</strong>。</li>
+<li>对于只在协程执行时存在的活动帧，将会分配到栈中，将这部分称为<strong>栈帧(stack frame)</strong>。</li>
+</ol>
+<p>栈帧部分只有在协程执行时存在，并且会在协程挂起时和转移执行到调用者(恢复者)时被释放。</p>
+<h1 id="挂起操作（The-‘Suspend’-operation）"><a href="#挂起操作（The-‘Suspend’-operation）" class="headerlink" title="挂起操作（The ‘Suspend’ operation）"></a>挂起操作（The ‘Suspend’ operation）</h1><h2 id="挂起点"><a href="#挂起点" class="headerlink" title="挂起点"></a>挂起点</h2><p>使用了 co_await 或 co_yield 关键词的地方就是挂起点。</p>
+<h2 id="挂起时进行的工作"><a href="#挂起时进行的工作" class="headerlink" title="挂起时进行的工作"></a>挂起时进行的工作</h2><p>首先，做好恢复协程的准备：</p>
+<ol>
+<li>将寄存器的值写入到协程帧中；</li>
+<li>将协程的挂起点写入协程帧中（这个工作让后续的恢复操作能够知道从哪里恢复，或者后续的销毁操作能够知道哪些值在范围内并且需要被销毁）；//TODO： 不知道具体是如何工作的<br>当协程准备好被恢复，那么协程就可以被认为是处于挂起状态。</li>
+</ol>
+<p>然后，在协程将执行转移回调用者/恢复者之前，协程有机会去执行一些额外的逻辑。这些额外的逻辑允许访问一个句柄(handle)，用以控制协程稍后如何恢复或销毁。</p>
+<p>在协程进入挂起状态后执行额外逻辑的能力允许不需要同步地安排协程恢复。（TODO：不懂）</p>
+<p>之后，协程可以选择立刻恢复（就是继续执行协程），或者选择将执行转移回调用者/恢复者。</p>
+<p>如果执行被转移回调用者/恢复者，协程活动帧的栈帧部分会被释放并且从栈中弹出。</p>
+<h1 id="恢复操作（The-‘Resume’-operation）"><a href="#恢复操作（The-‘Resume’-operation）" class="headerlink" title="恢复操作（The ‘Resume’ operation）"></a>恢复操作（The ‘Resume’ operation）</h1><p>恢复操作可以在一个处于挂起状态的协程上执行。</p>
+<p>通过调用句柄的 <code>void resume()</code> 方法来执行恢复操作。</p>
+<p>和普通的函数调用一样，对 resume 方法的调用会在转移执行之前分配新的栈帧并且储存调用者的返回地址到栈帧中。</p>
+<p>不一样的是，普通函数调用会将执行转移到被调用函数的开始，恢复操作的 resume 调用会将执行转移到<strong>恢复点(resume-point)</strong>，这个恢复点储存在协程帧中。</p>
+<p>当协程再次遇到挂起点或者执行完毕，resume 方法就会返回。</p>
+<h1 id="销毁操作（The-‘Destroy’-operation）"><a href="#销毁操作（The-‘Destroy’-operation）" class="headerlink" title="销毁操作（The ‘Destroy’ operation）"></a>销毁操作（The ‘Destroy’ operation）</h1><p>销毁操作会销毁协程帧，而且不会恢复协程的执行。</p>
+<p>销毁操作只能作用在处于挂起状态的协程。</p>
+<p>销毁操作和恢复操作很相似，因为它们都重新激活了协程活动帧，包括分配新的栈帧和储存返回地址（调用者）。</p>
+<p>另一个相似的地方是，销毁操作也是需要调用特定的方法，void destroy()。</p>
+<p>不同的地方是，恢复操作会跳转到挂起点之后继续执行，销毁操作会跳转到另一个代码分支。这个代码分支负责析构所有恢复点之前范围内的局部变量，然后释放它们在协程帧中占用的内存。</p>
+<h1 id="协程的调用操作（The-‘Call’-opeartion-of-a-coroutine）"><a href="#协程的调用操作（The-‘Call’-opeartion-of-a-coroutine）" class="headerlink" title="协程的调用操作（The ‘Call’ opeartion of a coroutine）"></a>协程的调用操作（The ‘Call’ opeartion of a coroutine）</h1><p>从调用者的角度来说，和普通函数的调用操作没什么区别。</p>
+<p>普通函数会在执行完毕时返回，协程会在<strong>遇到第一个挂起点时</strong>或<strong>执行完毕时</strong>返回。</p>
+<p>当调用一个协程的时候，调用者会分配新的栈帧，将调用参数压入栈中，将返回地址压入栈中，然后将执行转移到协程。</p>
+<p>协程所做的第一件事情是在堆上分配协程帧，然后从栈帧中复制(copy)/移动(move)调用参数到协程帧中，以使得调用参数的生命周期超过第一个挂起点。</p>
+<h1 id="协程的返回操作（The-‘Return’-opeartion-of-a-coroutine）"><a href="#协程的返回操作（The-‘Return’-opeartion-of-a-coroutine）" class="headerlink" title="协程的返回操作（The ‘Return’ opeartion of a coroutine）"></a>协程的返回操作（The ‘Return’ opeartion of a coroutine）</h1><p>当一个协程执行返回声明(return-statement)时（即 co_return 关键词），会将返回值储存在某个地方（这个地方可以自定义），然后销毁所有的局部变量（但是不包括调用参数）。</p>
+<p>然后协程有机会在将执行转移回调用者/恢复者之前执行一些额外的逻辑。</p>
+<p>这些额外的逻辑可能执行一些操作来发布返回值，或者恢复执行其他需要这个返回结果的协程。这是完全可自定义的。</p>
+<p>然后协程要么执行挂起操作（保持协程帧存活），或者执行销毁操作（销毁协程帧）。</p>
+</div><div class="article-licensing box"><div class="licensing-title"><p>理解 C++20 Coroutine: 协程的概念</p><p><a href="https://uint128.com/2022/02/16/理解-C-20-Coroutine-协程的概念/">https://uint128.com/2022/02/16/理解-C-20-Coroutine-协程的概念/</a></p></div><div class="licensing-meta level is-mobile"><div class="level-left"><div class="level-item is-narrow"><div><h6>作者</h6><p>uint128.com</p></div></div><div class="level-item is-narrow"><div><h6>发布于</h6><p>2022-02-16</p></div></div><div class="level-item is-narrow"><div><h6>更新于</h6><p>2022-08-22</p></div></div><div class="level-item is-narrow"><div><h6>许可协议</h6><p><a class="icons" rel="noopener" target="_blank" title="Creative Commons" href="https://creativecommons.org/"><i class="icon fab fa-creative-commons"></i></a><a class="icons" rel="noopener" target="_blank" title="Attribution" href="https://creativecommons.org/licenses/by/4.0/"><i class="icon fab fa-creative-commons-by"></i></a><a class="icons" rel="noopener" target="_blank" title="Noncommercial" href="https://creativecommons.org/licenses/by-nc/4.0/"><i class="icon fab fa-creative-commons-nc"></i></a></p></div></div></div></div></div><!--!--></article></div><!--!--><div class="card"><nav class="post-navigation mt-4 level is-mobile card-content"><div class="level-start"><a class="article-nav-prev level level-item link-muted" href="/2022/02/21/%E7%90%86%E8%A7%A3C-20-Coroutine-co-await%E4%B8%8EAwaiter/"><i class="level-item fas fa-chevron-left"></i><span class="level-item">理解C++20 Coroutine: co_await与Awaiter</span></a></div><div class="level-end"><a class="article-nav-next level level-item link-muted" href="/2022/02/16/C-17-%E7%89%B9%E6%80%A7-%E4%BD%BF%E7%94%A8-std-string-view-%E6%97%B6%E5%B0%8F%E5%BF%83%E8%B8%A9%E5%9D%91/"><span class="level-item">C++17 特性:使用 std::string_view 时小心踩坑</span><i class="level-item fas fa-chevron-right"></i></a></div></nav></div><div class="card"><div class="card-content"><h3 class="title is-5">评论</h3><div id="comment-container"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.css"><script src="https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.min.js"></script><script>var gitalk = new Gitalk({
+            id: "cc2c5df83dd70981caf199127e6ce87d",
+            repo: "cyanray.github.io",
+            owner: "cyanray",
+            clientID: "53e3c578fcb7b7b1a4da",
+            clientSecret: "74433ee77d6e13fd635b82add519e143ac791726",
+            admin: ["cyanray"],
+            createIssueManually: true,
+            distractionFreeMode: false,
+            perPage: 20,
+            pagerDirection: "last",
+            
+            
+            enableHotKey: true,
+            language: "zh-CN",
+        })
+        gitalk.render('comment-container')</script></div></div></div><!--!--><div class="column column-right is-4-tablet is-4-desktop is-4-widescreen  order-3 is-sticky"><div class="card widget" id="toc" data-type="toc"><div class="card-content"><div class="menu"><h3 class="menu-label">目录</h3><ul class="menu-list"><li><a class="level is-mobile" href="#协程就是函数"><span class="level-left"><span class="level-item">1</span><span class="level-item">协程就是函数</span></span></a></li><li><a class="level is-mobile" href="#活动帧（Activation-Frames）"><span class="level-left"><span class="level-item">2</span><span class="level-item">活动帧（Activation Frames）</span></span></a></li><li><a class="level is-mobile" href="#调用操作（The-‘Call’-Operation）"><span class="level-left"><span class="level-item">3</span><span class="level-item">调用操作（The ‘Call’ Operation）</span></span></a></li><li><a class="level is-mobile" href="#返回操作（The-‘Return’-Operation）"><span class="level-left"><span class="level-item">4</span><span class="level-item">返回操作（The ‘Return’ Operation）</span></span></a></li><li><a class="level is-mobile" href="#协程活动帧（Coroutine-activation-frames）"><span class="level-left"><span class="level-item">5</span><span class="level-item">协程活动帧（Coroutine activation frames）</span></span></a></li><li><a class="level is-mobile" href="#挂起操作（The-‘Suspend’-operation）"><span class="level-left"><span class="level-item">6</span><span class="level-item">挂起操作（The ‘Suspend’ operation）</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#挂起点"><span class="level-left"><span class="level-item">6.1</span><span class="level-item">挂起点</span></span></a></li><li><a class="level is-mobile" href="#挂起时进行的工作"><span class="level-left"><span class="level-item">6.2</span><span class="level-item">挂起时进行的工作</span></span></a></li></ul></li><li><a class="level is-mobile" href="#恢复操作（The-‘Resume’-operation）"><span class="level-left"><span class="level-item">7</span><span class="level-item">恢复操作（The ‘Resume’ operation）</span></span></a></li><li><a class="level is-mobile" href="#销毁操作（The-‘Destroy’-operation）"><span class="level-left"><span class="level-item">8</span><span class="level-item">销毁操作（The ‘Destroy’ operation）</span></span></a></li><li><a class="level is-mobile" href="#协程的调用操作（The-‘Call’-opeartion-of-a-coroutine）"><span class="level-left"><span class="level-item">9</span><span class="level-item">协程的调用操作（The ‘Call’ opeartion of a coroutine）</span></span></a></li><li><a class="level is-mobile" href="#协程的返回操作（The-‘Return’-opeartion-of-a-coroutine）"><span class="level-left"><span class="level-item">10</span><span class="level-item">协程的返回操作（The ‘Return’ opeartion of a coroutine）</span></span></a></li></ul></div></div><style>#toc .menu-list > li > a.is-active + .menu-list { display: block; }#toc .menu-list > li > a + .menu-list { display: none; }</style><script src="/js/toc.js" defer></script></div><div class="card widget" data-type="recent-posts"><div class="card-content"><h3 class="menu-label">最新文章</h3><article class="media"><div class="media-content"><p class="date"><time dateTime="2023-04-29T09:02:24.000Z">2023-04-29</time></p><p class="title"><a href="/2023/04/29/C-Concepts-%E7%9A%84%E4%B8%A4%E4%B8%AA%E6%8A%80%E5%B7%A7/">C++ Concepts 的两个技巧</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2023-03-16T17:24:21.000Z">2023-03-17</time></p><p class="title"><a href="/2023/03/17/%E7%8C%AB%E5%A8%98-NNLL-UINT128/">猫娘 NNLL - UINT128</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2023-03-06T15:23:32.000Z">2023-03-06</time></p><p class="title"><a href="/2023/03/06/Modern-CMake-%E5%AE%9E%E8%B7%B5/">Modern CMake 实践</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2023-01-07T18:40:09.000Z">2023-01-08</time></p><p class="title"><a href="/2023/01/08/%E7%89%9B%E9%A1%BF%E6%8F%92%E5%80%BC%E6%B3%95%E7%9A%84-Matlab-%E5%AE%9E%E7%8E%B0/">牛顿插值法的 Matlab 实现</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2023-01-07T18:38:42.000Z">2023-01-08</time></p><p class="title"><a href="/2023/01/08/%E5%A4%9A%E5%85%83%E7%89%9B%E9%A1%BF%E8%BF%AD%E4%BB%A3%E6%B3%95%E7%9A%84-Matlab-%E5%AE%9E%E7%8E%B0/">多元牛顿迭代法的 Matlab 实现</a></p></div></article></div></div><div class="card widget" data-type="links"><div class="card-content"><div class="menu"><h3 class="menu-label">链接</h3><ul class="menu-list"><li><a class="level is-mobile" href="https://yuanxingxing-yxx.github.io/" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">星星的博客</span></span><span class="level-right"><span class="level-item tag">yuanxingxing-yxx.github.io</span></span></a></li><li><a class="level is-mobile" href="http://quosimodo.cn/" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">卡西莫多の礼物</span></span><span class="level-right"><span class="level-item tag">quosimodo.cn</span></span></a></li><li><a class="level is-mobile" href="https://blog.icepie.net/" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">icepie&#039;s blog</span></span><span class="level-right"><span class="level-item tag">blog.icepie.net</span></span></a></li><li><a class="level is-mobile" href="https://www.cnblogs.com/sherlson" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">sherlson&#039;s blog</span></span><span class="level-right"><span class="level-item tag">www.cnblogs.com</span></span></a></li><li><a class="level is-mobile" href="http://blog.devilwst.top/" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">小生的技术成长路线</span></span><span class="level-right"><span class="level-item tag">blog.devilwst.top</span></span></a></li></ul></div></div></div></div></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/">uint128&#039;s Blog</a><p class="is-size-7"><span>&copy; 2023 uint128.com</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a></p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Creative Commons" href="https://creativecommons.org/"><i class="fab fa-creative-commons"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Attribution 4.0 International" href="https://creativecommons.org/licenses/by/4.0/"><i class="fab fa-creative-commons-by"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" async></script><script>moment.locale("zh-CN");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script src="/js/column.js"></script><script src="/js/animation.js"></script><a id="back-to-top" title="回到顶端" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script src="/js/back_to_top.js" defer></script><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js" defer></script><script>window.addEventListener("load", () => {
+      window.cookieconsent.initialise({
+        type: "info",
+        theme: "edgeless",
+        static: false,
+        position: "bottom-left",
+        content: {
+          message: "此网站使用Cookie来改善您的体验。",
+          dismiss: "知道了！",
+          allow: "允许使用Cookie",
+          deny: "拒绝",
+          link: "了解更多",
+          policy: "Cookie政策",
+          href: "https://www.cookiesandyou.com/",
+        },
+        palette: {
+          popup: {
+            background: "#edeff5",
+            text: "#838391"
+          },
+          button: {
+            background: "#4b81e8"
+          },
+        },
+      });
+    });</script><script src="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/js/lightgallery.min.js" defer></script><script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
+            if (typeof $.fn.lightGallery === 'function') {
+                $('.article').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof $.fn.justifiedGallery === 'function') {
+                if ($('.justified-gallery > p > .gallery-item').length) {
+                    $('.justified-gallery > p > .gallery-item').unwrap();
+                }
+                $('.justified-gallery').justifiedGallery();
+            }
+        });</script><!--!--><!--!--><script type="text/x-mathjax-config">MathJax.Hub.Config({
+            'HTML-CSS': {
+                matchFontHeight: false
+            },
+            SVG: {
+                matchFontHeight: false
+            },
+            CommonHTML: {
+                matchFontHeight: false
+            },
+            tex2jax: {
+                inlineMath: [
+                    ['$','$'],
+                    ['\\(','\\)']
+                ]
+            }
+        });</script><script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.9/unpacked/MathJax.js?config=TeX-MML-AM_CHTML" defer></script><!--!--><!--!--><!--!--><script src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="想要查找什么..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script src="/js/insight.js" defer></script><script>document.addEventListener('DOMContentLoaded', function () {
+            loadInsight({"contentUrl":"/content.json"}, {"hint":"想要查找什么...","untitled":"(无标题)","posts":"文章","pages":"页面","categories":"分类","tags":"标签"});
+        });</script><script type="text/javascript" src="/js/imaegoo/universe.js"></script><!-- hexo-inject:begin --><!-- hexo-inject:end --></body></html>

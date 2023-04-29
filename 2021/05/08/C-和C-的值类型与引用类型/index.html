@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta><title>C++和C#的值类型与引用类型 - uint128&#039;s Blog</title><link rel="manifest" href="/manifest.json"><meta name="application-name" content="uint128&#039;s Blog"><meta name="msapplication-TileImage" content="/favicon.ico"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="uint128&#039;s Blog"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="description" content="最近在看 《CLR Via C#》，看到这本书讨论值类型和引用类型时，我觉得很有必要做点笔记。"><meta property="og:type" content="blog"><meta property="og:title" content="C++和C#的值类型与引用类型"><meta property="og:url" content="https://uint128.com/2021/05/08/C-%E5%92%8CC-%E7%9A%84%E5%80%BC%E7%B1%BB%E5%9E%8B%E4%B8%8E%E5%BC%95%E7%94%A8%E7%B1%BB%E5%9E%8B/"><meta property="og:site_name" content="uint128&#039;s Blog"><meta property="og:description" content="最近在看 《CLR Via C#》，看到这本书讨论值类型和引用类型时，我觉得很有必要做点笔记。"><meta property="og:locale" content="zh_CN"><meta property="og:image" content="https://uint128.com/img/og_image.png"><meta property="article:published_time" content="2021-05-08T08:20:55.000Z"><meta property="article:modified_time" content="2022-08-22T09:11:21.019Z"><meta property="article:author" content="uint128.com"><meta property="article:tag" content="c++"><meta property="article:tag" content="c#"><meta property="twitter:card" content="summary"><meta property="twitter:image" content="/img/og_image.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://uint128.com/2021/05/08/C-%E5%92%8CC-%E7%9A%84%E5%80%BC%E7%B1%BB%E5%9E%8B%E4%B8%8E%E5%BC%95%E7%94%A8%E7%B1%BB%E5%9E%8B/"},"headline":"uint128's Blog","image":["https://uint128.com/img/og_image.png"],"datePublished":"2021-05-08T08:20:55.000Z","dateModified":"2022-08-22T09:11:21.019Z","author":{"@type":"Person","name":"uint128.com"},"publisher":{"@type":"Organization","logo":{"@type":"ImageObject"}},"description":"最近在看 《CLR Via C#》，看到这本书讨论值类型和引用类型时，我觉得很有必要做点笔记。"}</script><link rel="canonical" href="https://uint128.com/2021/05/08/C-%E5%92%8CC-%E7%9A%84%E5%80%BC%E7%B1%BB%E5%9E%8B%E4%B8%8E%E5%BC%95%E7%94%A8%E7%B1%BB%E5%9E%8B/"><link rel="alternate" href="/atom.xml" title="uint128&#039;s Blog" type="application/atom+xml"><link rel="icon" href="/favicon.ico"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.2/css/all.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.12.0/styles/atom-one-light.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;600&amp;family=Source+Code+Pro"><link rel="stylesheet" href="/css/default.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><!--!--><!--!--><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/css/justifiedGallery.min.css"><!--!--><!--!--><!--!--><style>.pace{-webkit-pointer-events:none;pointer-events:none;-webkit-user-select:none;-moz-user-select:none;user-select:none}.pace-inactive{display:none}.pace .pace-progress{background:#3273dc;position:fixed;z-index:2000;top:0;right:100%;width:100%;height:2px}</style><script src="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js"></script><!--!--><!--!--><!-- hexo injector head_end start -->
+<!-- hexo-inject:begin --><!-- hexo-inject:end --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.6.0/katex.min.css">
+<!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.2.0"><!-- hexo-inject:begin --><!-- hexo-inject:end --></head><body class="is-2-column"><script type="text/javascript" src="/js/imaegoo/night.js"></script><canvas id="universe"></canvas><nav class="navbar navbar-main"><div class="container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/">uint128&#039;s Blog</a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">Home</a><a class="navbar-item" href="/archives">Archives</a><a class="navbar-item" href="/tags">Tags</a><a class="navbar-item" href="/about">About</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="My GitHub" href="https://github.com/cyanray"><i class="fab fa-github"></i></a><a class="navbar-item" target="_blank" rel="noopener" title="RSS" href="/atom.xml"><i class="fas fa-rss"></i></a><a class="navbar-item is-hidden-tablet catalogue" title="目录" href="javascript:;"><i class="fas fa-list-ul"></i></a><a class="navbar-item night" id="night-nav" title="Night Mode" href="javascript:;"><i class="fas fa-moon" id="night-icon"></i></a><a class="navbar-item search" title="搜索" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-8-widescreen"><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2021-05-08T08:20:55.000Z" title="2021/5/8 16:20:55">2021-05-08</time>发表</span><span class="level-item"><time dateTime="2022-08-22T09:11:21.019Z" title="2022/8/22 17:11:21">2022-08-22</time>更新</span></div></div><h1 class="title is-3 is-size-4-mobile">C++和C#的值类型与引用类型</h1><div class="content"><p>最近在看 《CLR Via C#》，看到这本书讨论值类型和引用类型时，我觉得很有必要做点笔记。<br><span id="more"></span><br>我常常在 C++ 项目和 C# 项目之间切换，这两个语言虽然名字很像，但有很大的不同。我曾用着 C++ 的习惯来写 C# 代码，现在发现我当时对 C# 产生了很多误会。</p>
+<!-- hexo-inject:begin --><!-- hexo-inject:end --><p>比如两个语言常见的顺序容器。C++ 中的 <code>vector&lt;T&gt; v;</code> 和 C# 中的 <code>List&lt;T&gt; l;</code>。往容器里加入一个对象，C++ 会把这个对象完整地复制一份到 vector 里。我原以为 C# 也是这样，但其实并不是。</p>
+<p>所以下面的代码在当时让我很困惑。</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> m = <span class="keyword">new</span> MyClass();</span><br><span class="line">m.MemberA = <span class="number">123</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> list = <span class="keyword">new</span> List&lt;MyClass&gt;();</span><br><span class="line">list.Add(m);            <span class="comment">// 将 m 加入 容器</span></span><br><span class="line">list[<span class="number">0</span>].MemberA = <span class="number">456</span>;  <span class="comment">// 修改容器中对象的值</span></span><br><span class="line">Console.WriteLine(m.MemberA); <span class="comment">// print 456，m 竟然被修改了！我以为会输出 123 ！</span></span><br></pre></td></tr></table></figure>
+<p>我当时会有这样的困惑，是因为我完全不了解 C# 的类型系统。</p>
+<h2 id="C-的引用类型和值类型"><a href="#C-的引用类型和值类型" class="headerlink" title="C# 的引用类型和值类型"></a>C# 的引用类型和值类型</h2><p>C# 支持两种类型：引用类型和值类型。引用类型的变量存储对其数据（对象）的引用，而值类型的变量直接包含其数据。 对于引用类型，两种变量可引用同一对象；因此，对一个变量执行的操作会影响另一个变量所引用的对象。 对于值类型，每个变量都具有其自己的数据副本，对一个变量执行的操作不会影响另一个变量。[1]</p>
+<p>微软文档给出的定义解释了我开头的困惑。<code>MyClass</code> 是引用类型，它的对象 <code>m</code> 只是储存了对数据的引用。而 <code>List&lt;MyClass&gt;.Add</code> 方法创造了另一个引用，所引用的数据与 <code>m</code> 相同。</p>
+<p>简单来说，可以用 C++ 中指针的概念来理解引用。</p>
+<p>C++ 应该是没有值类型和引用类型的说法的（或者说不存在与 C# 的引用类型和值类型相对应的概念）。但是 C++ 类型的行为默认是 C# 中值类型的行为。</p>
+<p>比如函数传递参数时，C++ 和 C# 的值类型都会把参数完整复制一份。C++ 往往用传递 const 引用的方式来省去复制的开销。而 C# 可以用 ref 关键词来传递值类型的引用。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// C++ 每次调用 Print 都会将 string 复制一份</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">print</span><span class="params">(string words)</span></span>;</span><br><span class="line"><span class="comment">// C++ 传递 const 引用节省一次复制</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">print</span><span class="params">(<span class="type">const</span> string&amp; words)</span></span>;</span><br></pre></td></tr></table></figure>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// C# struct MyStringValue 是值类型，每次调用 print 都会将 string 复制一份</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">print</span>(<span class="params">MyStringValue words</span>)</span>;</span><br><span class="line"><span class="comment">// C#</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">print</span>(<span class="params"><span class="keyword">ref</span> MyStringValue words</span>)</span>;</span><br></pre></td></tr></table></figure>
+<p>传递引用来节省复制是 C++ 引用的常见用法。</p>
+<p>写到这里我不知道怎么写下去了，所以就不写了。</p>
+<p>// 未完待续。。。</p>
+<h2 id="C-的可空值类型"><a href="#C-的可空值类型" class="headerlink" title="C#的可空值类型"></a>C#的可空值类型</h2><p>本质是 Nullable 类 + 一些语法糖。c++ 也有类似的东西，也就是 std::optional。</p>
+<h2 id="C-的装箱与拆箱"><a href="#C-的装箱与拆箱" class="headerlink" title="C#的装箱与拆箱"></a>C#的装箱与拆箱</h2><p>这是 C++ 没有的概念。这概念我也刚认识，下面是笔记，可能有错，建议不看。</p>
+<p>C# 里所有类型都基于 object 类型。因此将某个值类型转换为 object 这个基类型是行得通的。</p>
+<p>但这其中都发生了什么。要知道 object 可是引用类型，object 储存的是什么呢，是值类型变量的引用吗？</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> p = <span class="keyword">new</span> Point(<span class="number">3</span>,<span class="number">4</span>); <span class="comment">// 假设 Point 是值类型</span></span><br><span class="line"><span class="built_in">object</span> obj = p;         <span class="comment">// 这一步究竟发生了什么，是我们想知道的。</span></span><br></pre></td></tr></table></figure>
+<p>实际上， object 储存的是<strong>值类型变量副本</strong>的引用。将值类型转化成引用类型的机制称为<strong>装箱</strong>。</p>
+<p>装箱做了以下的工作，来实现将值类型转化为引用类型：</p>
+<ol>
+<li>在托管堆中分配足够容纳值类型的内存；</li>
+<li>将值类型各个字段复制到托管堆申请的内存中；</li>
+<li>返回对象的地址，也就是引用。</li>
+</ol>
+<p>装箱的逆操作是拆箱。比如下面的代码，将引用类型 object 转化为值类型 int：</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">int</span> v = (<span class="built_in">int</span>)<span class="built_in">object</span>;</span><br></pre></td></tr></table></figure>
+<p>拆箱做了下面的工作[2]：</p>
+<ol>
+<li>检查类型，确保可以进行转换</li>
+<li>将值从引用的内存中复制到值类型变量</li>
+</ol>
+<p>值得一提的是，在《CLR via C#》这本书里对拆箱的定义是获取值类型各个字段的地址，不包括复制的过程。</p>
+<blockquote>
+<p>CLR分两步完成复制。第一步获取已装箱Point对象中的各个Point字段的地址。这个过程称为拆箱(unboxing)。第二步将字段包含的值从堆复制到基于栈的值类型实例中。</p>
+</blockquote>
+<p>两个定义对我来说都是权威的，我不知道该采用哪个。</p>
+<p>不过不管是哪个定义，应该要知道将值类型与引用类型的转换是需要复制的，是有较大成本的，应该在编写代码时避免不必要的装箱和拆箱。</p>
+<h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h2><p>[1] <a target="_blank" rel="noopener" href="https://docs.microsoft.com/zh-cn/dotnet/csharp/language-reference/keywords/reference-types">https://docs.microsoft.com/zh-cn/dotnet/csharp/language-reference/keywords/reference-types</a></p>
+<p>[2]<a target="_blank" rel="noopener" href="https://docs.microsoft.com/zh-cn/dotnet/csharp/programming-guide/types/boxing-and-unboxing">https://docs.microsoft.com/zh-cn/dotnet/csharp/programming-guide/types/boxing-and-unboxing</a></p>
+</div><div class="article-licensing box"><div class="licensing-title"><p>C++和C#的值类型与引用类型</p><p><a href="https://uint128.com/2021/05/08/C-和C-的值类型与引用类型/">https://uint128.com/2021/05/08/C-和C-的值类型与引用类型/</a></p></div><div class="licensing-meta level is-mobile"><div class="level-left"><div class="level-item is-narrow"><div><h6>作者</h6><p>uint128.com</p></div></div><div class="level-item is-narrow"><div><h6>发布于</h6><p>2021-05-08</p></div></div><div class="level-item is-narrow"><div><h6>更新于</h6><p>2022-08-22</p></div></div><div class="level-item is-narrow"><div><h6>许可协议</h6><p><a class="icons" rel="noopener" target="_blank" title="Creative Commons" href="https://creativecommons.org/"><i class="icon fab fa-creative-commons"></i></a><a class="icons" rel="noopener" target="_blank" title="Attribution" href="https://creativecommons.org/licenses/by/4.0/"><i class="icon fab fa-creative-commons-by"></i></a><a class="icons" rel="noopener" target="_blank" title="Noncommercial" href="https://creativecommons.org/licenses/by-nc/4.0/"><i class="icon fab fa-creative-commons-nc"></i></a></p></div></div></div></div></div><div class="article-tags is-size-7 mb-4"><span class="mr-2">#</span><a class="link-muted mr-2" rel="tag" href="/tags/c/">c++</a><a class="link-muted mr-2" rel="tag" href="/tags/c/">c#</a></div><!--!--></article></div><!--!--><div class="card"><nav class="post-navigation mt-4 level is-mobile card-content"><div class="level-start"><a class="article-nav-prev level level-item link-muted" href="/2021/05/11/%E5%87%86%E5%A4%87%E6%95%B0%E5%AD%A6%E5%BB%BA%E6%A8%A1%E5%9B%BD%E8%B5%9B%E7%9A%84%E5%BF%83%E5%BE%97%E4%BD%93%E4%BC%9A/"><i class="level-item fas fa-chevron-left"></i><span class="level-item">准备数学建模国赛的心得体会</span></a></div><div class="level-end"><a class="article-nav-next level level-item link-muted" href="/2021/04/20/%E8%BF%90%E5%8A%A8%E6%89%8B%E7%8E%AF%E7%9A%84%E4%BD%BF%E7%94%A8%E4%BD%93%E9%AA%8C/"><span class="level-item">运动手环的使用体验</span><i class="level-item fas fa-chevron-right"></i></a></div></nav></div><div class="card"><div class="card-content"><h3 class="title is-5">评论</h3><div id="comment-container"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.css"><script src="https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.min.js"></script><script>var gitalk = new Gitalk({
+            id: "c9b1681d657951c4fa12681ed02810ec",
+            repo: "cyanray.github.io",
+            owner: "cyanray",
+            clientID: "53e3c578fcb7b7b1a4da",
+            clientSecret: "74433ee77d6e13fd635b82add519e143ac791726",
+            admin: ["cyanray"],
+            createIssueManually: true,
+            distractionFreeMode: false,
+            perPage: 20,
+            pagerDirection: "last",
+            
+            
+            enableHotKey: true,
+            language: "zh-CN",
+        })
+        gitalk.render('comment-container')</script></div></div></div><!--!--><div class="column column-right is-4-tablet is-4-desktop is-4-widescreen  order-3 is-sticky"><div class="card widget" id="toc" data-type="toc"><div class="card-content"><div class="menu"><h3 class="menu-label">目录</h3><ul class="menu-list"><li><a class="level is-mobile" href="#C-的引用类型和值类型"><span class="level-left"><span class="level-item">1</span><span class="level-item">C# 的引用类型和值类型</span></span></a></li><li><a class="level is-mobile" href="#C-的可空值类型"><span class="level-left"><span class="level-item">2</span><span class="level-item">C#的可空值类型</span></span></a></li><li><a class="level is-mobile" href="#C-的装箱与拆箱"><span class="level-left"><span class="level-item">3</span><span class="level-item">C#的装箱与拆箱</span></span></a></li><li><a class="level is-mobile" href="#参考文献"><span class="level-left"><span class="level-item">4</span><span class="level-item">参考文献</span></span></a></li></ul></div></div><style>#toc .menu-list > li > a.is-active + .menu-list { display: block; }#toc .menu-list > li > a + .menu-list { display: none; }</style><script src="/js/toc.js" defer></script></div><div class="card widget" data-type="recent-posts"><div class="card-content"><h3 class="menu-label">最新文章</h3><article class="media"><div class="media-content"><p class="date"><time dateTime="2023-04-29T09:02:24.000Z">2023-04-29</time></p><p class="title"><a href="/2023/04/29/C-Concepts-%E7%9A%84%E4%B8%A4%E4%B8%AA%E6%8A%80%E5%B7%A7/">C++ Concepts 的两个技巧</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2023-03-16T17:24:21.000Z">2023-03-17</time></p><p class="title"><a href="/2023/03/17/%E7%8C%AB%E5%A8%98-NNLL-UINT128/">猫娘 NNLL - UINT128</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2023-03-06T15:23:32.000Z">2023-03-06</time></p><p class="title"><a href="/2023/03/06/Modern-CMake-%E5%AE%9E%E8%B7%B5/">Modern CMake 实践</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2023-01-07T18:40:09.000Z">2023-01-08</time></p><p class="title"><a href="/2023/01/08/%E7%89%9B%E9%A1%BF%E6%8F%92%E5%80%BC%E6%B3%95%E7%9A%84-Matlab-%E5%AE%9E%E7%8E%B0/">牛顿插值法的 Matlab 实现</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2023-01-07T18:38:42.000Z">2023-01-08</time></p><p class="title"><a href="/2023/01/08/%E5%A4%9A%E5%85%83%E7%89%9B%E9%A1%BF%E8%BF%AD%E4%BB%A3%E6%B3%95%E7%9A%84-Matlab-%E5%AE%9E%E7%8E%B0/">多元牛顿迭代法的 Matlab 实现</a></p></div></article></div></div><div class="card widget" data-type="links"><div class="card-content"><div class="menu"><h3 class="menu-label">链接</h3><ul class="menu-list"><li><a class="level is-mobile" href="https://yuanxingxing-yxx.github.io/" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">星星的博客</span></span><span class="level-right"><span class="level-item tag">yuanxingxing-yxx.github.io</span></span></a></li><li><a class="level is-mobile" href="http://quosimodo.cn/" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">卡西莫多の礼物</span></span><span class="level-right"><span class="level-item tag">quosimodo.cn</span></span></a></li><li><a class="level is-mobile" href="https://blog.icepie.net/" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">icepie&#039;s blog</span></span><span class="level-right"><span class="level-item tag">blog.icepie.net</span></span></a></li><li><a class="level is-mobile" href="https://www.cnblogs.com/sherlson" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">sherlson&#039;s blog</span></span><span class="level-right"><span class="level-item tag">www.cnblogs.com</span></span></a></li><li><a class="level is-mobile" href="http://blog.devilwst.top/" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">小生的技术成长路线</span></span><span class="level-right"><span class="level-item tag">blog.devilwst.top</span></span></a></li></ul></div></div></div></div></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/">uint128&#039;s Blog</a><p class="is-size-7"><span>&copy; 2023 uint128.com</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a></p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Creative Commons" href="https://creativecommons.org/"><i class="fab fa-creative-commons"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Attribution 4.0 International" href="https://creativecommons.org/licenses/by/4.0/"><i class="fab fa-creative-commons-by"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" async></script><script>moment.locale("zh-CN");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script src="/js/column.js"></script><script src="/js/animation.js"></script><a id="back-to-top" title="回到顶端" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script src="/js/back_to_top.js" defer></script><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js" defer></script><script>window.addEventListener("load", () => {
+      window.cookieconsent.initialise({
+        type: "info",
+        theme: "edgeless",
+        static: false,
+        position: "bottom-left",
+        content: {
+          message: "此网站使用Cookie来改善您的体验。",
+          dismiss: "知道了！",
+          allow: "允许使用Cookie",
+          deny: "拒绝",
+          link: "了解更多",
+          policy: "Cookie政策",
+          href: "https://www.cookiesandyou.com/",
+        },
+        palette: {
+          popup: {
+            background: "#edeff5",
+            text: "#838391"
+          },
+          button: {
+            background: "#4b81e8"
+          },
+        },
+      });
+    });</script><script src="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/js/lightgallery.min.js" defer></script><script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
+            if (typeof $.fn.lightGallery === 'function') {
+                $('.article').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof $.fn.justifiedGallery === 'function') {
+                if ($('.justified-gallery > p > .gallery-item').length) {
+                    $('.justified-gallery > p > .gallery-item').unwrap();
+                }
+                $('.justified-gallery').justifiedGallery();
+            }
+        });</script><!--!--><!--!--><script type="text/x-mathjax-config">MathJax.Hub.Config({
+            'HTML-CSS': {
+                matchFontHeight: false
+            },
+            SVG: {
+                matchFontHeight: false
+            },
+            CommonHTML: {
+                matchFontHeight: false
+            },
+            tex2jax: {
+                inlineMath: [
+                    ['$','$'],
+                    ['\\(','\\)']
+                ]
+            }
+        });</script><script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.9/unpacked/MathJax.js?config=TeX-MML-AM_CHTML" defer></script><!--!--><!--!--><!--!--><script src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="想要查找什么..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script src="/js/insight.js" defer></script><script>document.addEventListener('DOMContentLoaded', function () {
+            loadInsight({"contentUrl":"/content.json"}, {"hint":"想要查找什么...","untitled":"(无标题)","posts":"文章","pages":"页面","categories":"分类","tags":"标签"});
+        });</script><script type="text/javascript" src="/js/imaegoo/universe.js"></script><!-- hexo-inject:begin --><!-- hexo-inject:end --></body></html>

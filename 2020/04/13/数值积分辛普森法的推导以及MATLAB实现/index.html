@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta><title>数值积分辛普森法的推导以及MATLAB实现 - uint128&#039;s Blog</title><link rel="manifest" href="/manifest.json"><meta name="application-name" content="uint128&#039;s Blog"><meta name="msapplication-TileImage" content="/favicon.ico"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="uint128&#039;s Blog"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="description" content="数值积分在船体计算中很常用。以前只会用, 花点时间搞明白它近似计算的原理。(我没有完全搞懂, 本文可能有错误)"><meta property="og:type" content="blog"><meta property="og:title" content="数值积分辛普森法的推导以及MATLAB实现"><meta property="og:url" content="https://uint128.com/2020/04/13/%E6%95%B0%E5%80%BC%E7%A7%AF%E5%88%86%E8%BE%9B%E6%99%AE%E6%A3%AE%E6%B3%95%E7%9A%84%E6%8E%A8%E5%AF%BC%E4%BB%A5%E5%8F%8AMATLAB%E5%AE%9E%E7%8E%B0/"><meta property="og:site_name" content="uint128&#039;s Blog"><meta property="og:description" content="数值积分在船体计算中很常用。以前只会用, 花点时间搞明白它近似计算的原理。(我没有完全搞懂, 本文可能有错误)"><meta property="og:locale" content="zh_CN"><meta property="og:image" content="https://uint128.com/img/og_image.png"><meta property="article:published_time" content="2020-04-13T00:48:49.000Z"><meta property="article:modified_time" content="2022-08-22T09:11:21.035Z"><meta property="article:author" content="uint128.com"><meta property="article:tag" content="数学"><meta property="article:tag" content="MATLAB"><meta property="twitter:card" content="summary"><meta property="twitter:image" content="/img/og_image.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://uint128.com/2020/04/13/%E6%95%B0%E5%80%BC%E7%A7%AF%E5%88%86%E8%BE%9B%E6%99%AE%E6%A3%AE%E6%B3%95%E7%9A%84%E6%8E%A8%E5%AF%BC%E4%BB%A5%E5%8F%8AMATLAB%E5%AE%9E%E7%8E%B0/"},"headline":"uint128's Blog","image":["https://uint128.com/img/og_image.png"],"datePublished":"2020-04-13T00:48:49.000Z","dateModified":"2022-08-22T09:11:21.035Z","author":{"@type":"Person","name":"uint128.com"},"publisher":{"@type":"Organization","logo":{"@type":"ImageObject"}},"description":"数值积分在船体计算中很常用。以前只会用, 花点时间搞明白它近似计算的原理。(我没有完全搞懂, 本文可能有错误)"}</script><link rel="canonical" href="https://uint128.com/2020/04/13/%E6%95%B0%E5%80%BC%E7%A7%AF%E5%88%86%E8%BE%9B%E6%99%AE%E6%A3%AE%E6%B3%95%E7%9A%84%E6%8E%A8%E5%AF%BC%E4%BB%A5%E5%8F%8AMATLAB%E5%AE%9E%E7%8E%B0/"><link rel="alternate" href="/atom.xml" title="uint128&#039;s Blog" type="application/atom+xml"><link rel="icon" href="/favicon.ico"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.2/css/all.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.12.0/styles/atom-one-light.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;600&amp;family=Source+Code+Pro"><link rel="stylesheet" href="/css/default.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><!--!--><!--!--><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/css/justifiedGallery.min.css"><!--!--><!--!--><!--!--><style>.pace{-webkit-pointer-events:none;pointer-events:none;-webkit-user-select:none;-moz-user-select:none;user-select:none}.pace-inactive{display:none}.pace .pace-progress{background:#3273dc;position:fixed;z-index:2000;top:0;right:100%;width:100%;height:2px}</style><script src="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js"></script><!--!--><!--!--><!-- hexo injector head_end start -->
+<!-- hexo-inject:begin --><!-- hexo-inject:end --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.6.0/katex.min.css">
+<!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.2.0"><!-- hexo-inject:begin --><!-- hexo-inject:end --></head><body class="is-2-column"><script type="text/javascript" src="/js/imaegoo/night.js"></script><canvas id="universe"></canvas><nav class="navbar navbar-main"><div class="container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/">uint128&#039;s Blog</a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">Home</a><a class="navbar-item" href="/archives">Archives</a><a class="navbar-item" href="/tags">Tags</a><a class="navbar-item" href="/about">About</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="My GitHub" href="https://github.com/cyanray"><i class="fab fa-github"></i></a><a class="navbar-item" target="_blank" rel="noopener" title="RSS" href="/atom.xml"><i class="fas fa-rss"></i></a><a class="navbar-item is-hidden-tablet catalogue" title="目录" href="javascript:;"><i class="fas fa-list-ul"></i></a><a class="navbar-item night" id="night-nav" title="Night Mode" href="javascript:;"><i class="fas fa-moon" id="night-icon"></i></a><a class="navbar-item search" title="搜索" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-8-widescreen"><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2020-04-13T00:48:49.000Z" title="2020/4/13 08:48:49">2020-04-13</time>发表</span><span class="level-item"><time dateTime="2022-08-22T09:11:21.035Z" title="2022/8/22 17:11:21">2022-08-22</time>更新</span></div></div><h1 class="title is-3 is-size-4-mobile">数值积分辛普森法的推导以及MATLAB实现</h1><div class="content"><p>数值积分在船体计算中很常用。以前只会用, 花点时间搞明白它近似计算的原理。(我没有完全搞懂, 本文可能有错误)<br><span id="more"></span></p>
+<!-- hexo-inject:begin --><!-- hexo-inject:end --><p>我个人理解的数值积分, 就是把原函数 \( f(x) \) 在 \( f(0) \) 处用麦克劳林级数展开, 用多项式来拟合原函数。多项式的次数为\( 1 \) 时, 就是梯形法; 为 \( 2 \) 时就是辛普森一法; 为 \( 3 \) 时就是辛普森二法。 多项式的次数越高, 拟合精度越高。</p>
+<h1 id="数值积分的一般形式"><a href="#数值积分的一般形式" class="headerlink" title="数值积分的一般形式"></a>数值积分的一般形式</h1><p>对于函数 \( f(x) \) 在区间 \( [a,b] \) 上的积分有</p>
+<script type="math/tex; mode=display">
+A = \int_0^L f(x) dx = \int_0^L y dx
+
+\tag{1}
+\label{1}</script><p>假定用 \( n \) 次多项式曲线对 \( f(x) \) 进行拟合。将该多项式曲线在 \( f(0) \) 处用麦克劳林级数展开, 则得</p>
+<script type="math/tex; mode=display">
+f(x) \approx \sum_{i = 0}^{n} \frac{1}{i!} f^{(i)}(0) x^i
+
+\tag{2}
+\label{2}</script><p>将式 \( \eqref{2} \) 代入式 \( \eqref{1} \) 可得</p>
+<script type="math/tex; mode=display">
+\begin{aligned}
+    A &= \int_0^L f(x) dx                               \\\\
+      &\approx  \frac{1}{0!} f(0)     \int_0^L   dx + 
+                \frac{1}{1!} f^{'}(0) \int_0^L x dx +
+                \cdots                              +
+                \frac{1}{n!} f^{(n)}(0) \int_0^Lx^ndx   \\\\
+      &= \sum_{i = 0}^{n} \frac{L^{i+1} }{(i+1)!}f^{(i)}(0)
+\end{aligned}
+
+\tag{3}
+\label{3}</script><p>令面积 \( A \) 为</p>
+<script type="math/tex; mode=display">
+A = \sum_{i = 0}^{n} k_iy_i
+
+\tag{4}
+\label{4}</script><p>上式中的 \( y_i \) 可由式 \( \eqref{2} \) 得到</p>
+<script type="math/tex; mode=display">
+\begin{aligned}
+y_0 &= f(0)                                                               \\\\
+y_1 &= f(0) + f^{'}(0)x_1 + \cdots + \frac{1}{n!} f^{(n)}(0)x_1^n         \\\\
+& \cdots \cdots                                                             \\\\
+y_n &= f(0) + f^{'}(0)x_n + \cdots + \frac{1}{n!} f^{(n)}(0)x_n^n         
+\end{aligned}
+
+\tag{5}
+\label{5}</script><p>将式 \( \eqref{5} \) 代入式 \( \eqref{4} \), 得 <em>(注意:如果看不出来, 可以先在式 \( \eqref{5} \) 左右同时乘以\( k_i \) 然后再把 \( f^{(i)}(0) \) 提出来 )</em></p>
+<script type="math/tex; mode=display">
+A = (k_0 + k_1 + \cdots + k_n)f(0) +    \\\\
+    \frac{1}{1!} (k_1x_1 + k_2x_2 + \cdots + k_nx_n) f^{'}(0) + \\\\
+    \cdots + \\\\
+    \frac{1}{n!} (k_1x_1^n + k_2x_2^n + \cdots + k_nx_n^n) f^{(n)}(0) 
+
+\tag{6}
+\label{6}</script><p>将式 \( \eqref{6} \) 与式 \( \eqref{3} \) 相比较, 可以得到</p>
+<script type="math/tex; mode=display">
+
+    k_0 + k_1 + \cdots + k_n = L                      \\\\
+    k_1x_1 + k_2x_2 + \cdots + k_nx_n = \frac{L^2}{2} \\\\
+    \cdots                                              \\\\
+    k_1x_1^n + k_2x_2^n + \cdots + k_nx_n^n = \frac{L^{n+1}}{n+1} \\\\
+
+\tag{7}
+\label{7}</script><p>至此得到了数值积分的一般形式。通过式 \( \eqref{7} \) 解得 \( k \) 的值, 再通过式 \( \eqref{4} \) 就可以求得面积 \( A \) , 即数值积分。</p>
+<h2 id="梯形法"><a href="#梯形法" class="headerlink" title="梯形法"></a>梯形法</h2><p>取 \( n = 1 \) , 以直线段近似地代替 \( y = f(x) \) 的曲线, 坐标值只有 \( y_0 \) 和 \( y_1 \) , 区间长度 \( L = x_1 - x_0 \) , 且 \( x_1 = L \)。</p>
+<p>由式 \( \eqref{7} \) , 可得 </p>
+<script type="math/tex; mode=display">
+\left\{
+    \begin{array}{l}
+        k_0 + k_1 = L    \\\\
+        k_1x_1 = \frac{L^2}{2}  
+    \end{array}
+\right.</script><p>解得</p>
+<script type="math/tex; mode=display">
+\left\{
+    \begin{array}{l}
+    k_0 = \frac{L}{2}   \\\\
+    k_1 = \frac{L}{2}
+    \end{array}
+\right.</script><p>代入式 \( \eqref{4} \) , 可得</p>
+<script type="math/tex; mode=display">
+A = \frac{L}{2} (y_0 + y_1)</script><h2 id="辛普森一法"><a href="#辛普森一法" class="headerlink" title="辛普森一法"></a>辛普森一法</h2><p>步骤和梯形法一样。取 \( n = 2 \) , 以二次抛物线近似地代替 \( y = f(x) \) 的曲线, 坐标值有 \( y_0 \) 、 \( y_1 \) 和 \( y_2 \) , 区间长度 \( L = x_2 - x_0 \) , 且 \( x_1 = L/2 , x_2 = L \)。</p>
+<p>由式 \( \eqref{7} \) , 可得 </p>
+<script type="math/tex; mode=display">
+\left\{
+    \begin{array}{l}
+        k_0 + k_1 + k_2= L    \\\\
+        k_1x_1 + k_2x_2 = \frac{L^2}{2}  \\\\
+        k_1x_1^2 + k_2x_2^2 = \frac{L^3}{3}
+    \end{array}
+\right.</script><p>解得</p>
+<script type="math/tex; mode=display">
+\left\{
+    \begin{array}{l}
+    k_0 = \frac{L}{6}   \\\\
+    k_1 = \frac{4L}{6}  \\\\
+    k_2 = \frac{L}{6}
+    \end{array}
+\right.</script><p>代入式 \( \eqref{4} \) , 可得</p>
+<script type="math/tex; mode=display">
+A = \frac{L}{6} (y_0 + 4y_1 + y_2)</script><p>一般使用的时候, 会把积分区间等分为偶数份, 每三个点用一次辛普森一法。</p>
+<h1 id="MATLAB-程序实现"><a href="#MATLAB-程序实现" class="headerlink" title="MATLAB 程序实现"></a>MATLAB 程序实现</h1><p>MATLAB 中的 <strong>trapz</strong> 函数是梯形法的实现, 但是对于辛普森法没有对应的函数。<strong>quad</strong> 函数采用自适应辛普森法, 但是好像只能对函数对象进行积分, 而不能对离散的函数值进行积分。<br>所以我自己实现了一个 <strong>simpson</strong> 函数, 用法和 <strong>trapz</strong> 函数类似。但是多了个使用限制, 即必须把函数等分成偶数份 (输入的 <strong>y_vec</strong> 必须有奇数个值), 这个限制是为了方便生成辛普森系数。</p>
+<p>使用方法: </p>
+<figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">clear;clc;</span><br><span class="line"><span class="comment">% 辛普森一法</span></span><br><span class="line">res1 = <span class="number">10</span> * simpson([<span class="number">1</span> <span class="number">2</span> <span class="number">3</span> <span class="number">4</span> <span class="number">5</span>].^<span class="number">2</span>);</span><br><span class="line"><span class="comment">% 梯形法</span></span><br><span class="line">res2 = <span class="number">10</span> * trapz([<span class="number">1</span> <span class="number">2</span> <span class="number">3</span> <span class="number">4</span> <span class="number">5</span>].^<span class="number">2</span>);</span><br><span class="line"><span class="comment">% 自适应数值积分</span></span><br><span class="line">res3 = <span class="number">10</span> * integral(@(x)x.^<span class="number">2</span> ,<span class="number">1</span>,<span class="number">5</span>);</span><br><span class="line">fprintf(<span class="string">&#x27;辛普森一法结果: %.2f \n&#x27;</span>, res1);</span><br><span class="line">fprintf(<span class="string">&#x27;梯形法结果: %.2f \n&#x27;</span>, res2);</span><br><span class="line">fprintf(<span class="string">&#x27;自适应数值积分结果: %.2f \n&#x27;</span>, res3);</span><br><span class="line"><span class="comment">% 执行结果: </span></span><br><span class="line"><span class="comment">% 辛普森一法结果: 413.33 </span></span><br><span class="line"><span class="comment">% 梯形法结果: 420.00 </span></span><br><span class="line"><span class="comment">% 自适应数值积分结果: 413.33 </span></span><br></pre></td></tr></table></figure>
+<p>simpson 函数的实现: </p>
+<figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="params">[ result ]</span> = <span class="title">simpson</span><span class="params">( y_vec , d_num)</span></span></span><br><span class="line"><span class="comment">%SIMPSON 适用于离散数据的辛普森一法</span></span><br><span class="line"><span class="comment">%   y_vec : 等间距 y 值向量</span></span><br><span class="line"><span class="comment">%   d_num : 间距大小 (默认为 1)</span></span><br><span class="line"></span><br><span class="line"><span class="comment">%% 适用条件判断</span></span><br><span class="line"><span class="keyword">if</span> (nargin == <span class="number">1</span>)</span><br><span class="line">    d_num = <span class="number">1</span>;</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"><span class="keyword">if</span> <span class="built_in">length</span>(y_vec) &lt; <span class="number">3</span></span><br><span class="line">    error(<span class="string">&#x27;y_vec 的长度太小了&#x27;</span>);</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"><span class="keyword">if</span> <span class="built_in">mod</span>(<span class="built_in">length</span>(y_vec),<span class="number">2</span>) == <span class="number">0</span></span><br><span class="line">    error(<span class="string">&#x27;y_vec 的长度必须是奇数&#x27;</span>);</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"><span class="keyword">if</span> d_num &lt;= <span class="number">0</span></span><br><span class="line">    error(<span class="string">&#x27;d_num 必须大于0&#x27;</span>);</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="comment">%% 常用量</span></span><br><span class="line"><span class="comment">% y_vec 的长度</span></span><br><span class="line">Len = <span class="built_in">length</span>(y_vec);</span><br><span class="line"></span><br><span class="line"><span class="comment">%% 生成系数向量 M</span></span><br><span class="line">M = <span class="built_in">zeros</span>(<span class="number">1</span>,Len);</span><br><span class="line"><span class="keyword">if</span> d_num == <span class="number">3</span></span><br><span class="line">    M = [<span class="number">1</span> <span class="number">4</span> <span class="number">1</span>];</span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">    M(<span class="number">1</span>) = <span class="number">1</span>;</span><br><span class="line">    M(<span class="number">2</span>) = <span class="number">4</span>;</span><br><span class="line">    <span class="keyword">for</span> <span class="built_in">i</span> = <span class="number">1</span>: (Len - <span class="number">4</span>)</span><br><span class="line">        <span class="keyword">if</span> <span class="built_in">mod</span>(<span class="built_in">i</span>,<span class="number">2</span>) == <span class="number">1</span></span><br><span class="line">            M(<span class="number">2</span> + <span class="built_in">i</span>) = <span class="number">2</span>;</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">            M(<span class="number">2</span> + <span class="built_in">i</span>) = <span class="number">4</span>;</span><br><span class="line">        <span class="keyword">end</span></span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line">    M(Len - <span class="number">1</span>) = <span class="number">4</span>;</span><br><span class="line">    M(Len) = <span class="number">1</span>;</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="comment">%% 计算结果</span></span><br><span class="line">t = y_vec .* M;</span><br><span class="line">result = (<span class="number">1</span>/<span class="number">3</span>) * sum(t(:)) * d_num;</span><br><span class="line"></span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure></div><div class="article-licensing box"><div class="licensing-title"><p>数值积分辛普森法的推导以及MATLAB实现</p><p><a href="https://uint128.com/2020/04/13/数值积分辛普森法的推导以及MATLAB实现/">https://uint128.com/2020/04/13/数值积分辛普森法的推导以及MATLAB实现/</a></p></div><div class="licensing-meta level is-mobile"><div class="level-left"><div class="level-item is-narrow"><div><h6>作者</h6><p>uint128.com</p></div></div><div class="level-item is-narrow"><div><h6>发布于</h6><p>2020-04-13</p></div></div><div class="level-item is-narrow"><div><h6>更新于</h6><p>2022-08-22</p></div></div><div class="level-item is-narrow"><div><h6>许可协议</h6><p><a class="icons" rel="noopener" target="_blank" title="Creative Commons" href="https://creativecommons.org/"><i class="icon fab fa-creative-commons"></i></a><a class="icons" rel="noopener" target="_blank" title="Attribution" href="https://creativecommons.org/licenses/by/4.0/"><i class="icon fab fa-creative-commons-by"></i></a><a class="icons" rel="noopener" target="_blank" title="Noncommercial" href="https://creativecommons.org/licenses/by-nc/4.0/"><i class="icon fab fa-creative-commons-nc"></i></a></p></div></div></div></div></div><div class="article-tags is-size-7 mb-4"><span class="mr-2">#</span><a class="link-muted mr-2" rel="tag" href="/tags/%E6%95%B0%E5%AD%A6/">数学</a><a class="link-muted mr-2" rel="tag" href="/tags/MATLAB/">MATLAB</a></div><!--!--></article></div><!--!--><div class="card"><nav class="post-navigation mt-4 level is-mobile card-content"><div class="level-start"><a class="article-nav-prev level level-item link-muted" href="/2020/04/18/%E5%BC%80%E6%BA%90%E5%AE%89%E5%8D%93QQ%E5%8D%8F%E8%AE%AE%E5%BA%93-mirai-%E4%BD%BF%E7%94%A8%E6%95%99%E7%A8%8B/"><i class="level-item fas fa-chevron-left"></i><span class="level-item">开源安卓QQ协议库 mirai 使用教程</span></a></div><div class="level-end"><a class="article-nav-next level level-item link-muted" href="/2020/04/06/%E7%8E%A9%E4%B8%80%E7%8E%A9%E6%B3%9B%E5%9F%9F%E5%90%8D%E8%A7%A3%E6%9E%90/"><span class="level-item">玩一玩泛域名解析</span><i class="level-item fas fa-chevron-right"></i></a></div></nav></div><div class="card"><div class="card-content"><h3 class="title is-5">评论</h3><div id="comment-container"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.css"><script src="https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.min.js"></script><script>var gitalk = new Gitalk({
+            id: "e47c752f591da90629b195a4ba267b88",
+            repo: "cyanray.github.io",
+            owner: "cyanray",
+            clientID: "53e3c578fcb7b7b1a4da",
+            clientSecret: "74433ee77d6e13fd635b82add519e143ac791726",
+            admin: ["cyanray"],
+            createIssueManually: true,
+            distractionFreeMode: false,
+            perPage: 20,
+            pagerDirection: "last",
+            
+            
+            enableHotKey: true,
+            language: "zh-CN",
+        })
+        gitalk.render('comment-container')</script></div></div></div><!--!--><div class="column column-right is-4-tablet is-4-desktop is-4-widescreen  order-3 is-sticky"><div class="card widget" id="toc" data-type="toc"><div class="card-content"><div class="menu"><h3 class="menu-label">目录</h3><ul class="menu-list"><li><a class="level is-mobile" href="#数值积分的一般形式"><span class="level-left"><span class="level-item">1</span><span class="level-item">数值积分的一般形式</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#梯形法"><span class="level-left"><span class="level-item">1.1</span><span class="level-item">梯形法</span></span></a></li><li><a class="level is-mobile" href="#辛普森一法"><span class="level-left"><span class="level-item">1.2</span><span class="level-item">辛普森一法</span></span></a></li></ul></li><li><a class="level is-mobile" href="#MATLAB-程序实现"><span class="level-left"><span class="level-item">2</span><span class="level-item">MATLAB 程序实现</span></span></a></li></ul></div></div><style>#toc .menu-list > li > a.is-active + .menu-list { display: block; }#toc .menu-list > li > a + .menu-list { display: none; }</style><script src="/js/toc.js" defer></script></div><div class="card widget" data-type="recent-posts"><div class="card-content"><h3 class="menu-label">最新文章</h3><article class="media"><div class="media-content"><p class="date"><time dateTime="2023-04-29T09:02:24.000Z">2023-04-29</time></p><p class="title"><a href="/2023/04/29/C-Concepts-%E7%9A%84%E4%B8%A4%E4%B8%AA%E6%8A%80%E5%B7%A7/">C++ Concepts 的两个技巧</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2023-03-16T17:24:21.000Z">2023-03-17</time></p><p class="title"><a href="/2023/03/17/%E7%8C%AB%E5%A8%98-NNLL-UINT128/">猫娘 NNLL - UINT128</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2023-03-06T15:23:32.000Z">2023-03-06</time></p><p class="title"><a href="/2023/03/06/Modern-CMake-%E5%AE%9E%E8%B7%B5/">Modern CMake 实践</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2023-01-07T18:40:09.000Z">2023-01-08</time></p><p class="title"><a href="/2023/01/08/%E7%89%9B%E9%A1%BF%E6%8F%92%E5%80%BC%E6%B3%95%E7%9A%84-Matlab-%E5%AE%9E%E7%8E%B0/">牛顿插值法的 Matlab 实现</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2023-01-07T18:38:42.000Z">2023-01-08</time></p><p class="title"><a href="/2023/01/08/%E5%A4%9A%E5%85%83%E7%89%9B%E9%A1%BF%E8%BF%AD%E4%BB%A3%E6%B3%95%E7%9A%84-Matlab-%E5%AE%9E%E7%8E%B0/">多元牛顿迭代法的 Matlab 实现</a></p></div></article></div></div><div class="card widget" data-type="links"><div class="card-content"><div class="menu"><h3 class="menu-label">链接</h3><ul class="menu-list"><li><a class="level is-mobile" href="https://yuanxingxing-yxx.github.io/" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">星星的博客</span></span><span class="level-right"><span class="level-item tag">yuanxingxing-yxx.github.io</span></span></a></li><li><a class="level is-mobile" href="http://quosimodo.cn/" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">卡西莫多の礼物</span></span><span class="level-right"><span class="level-item tag">quosimodo.cn</span></span></a></li><li><a class="level is-mobile" href="https://blog.icepie.net/" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">icepie&#039;s blog</span></span><span class="level-right"><span class="level-item tag">blog.icepie.net</span></span></a></li><li><a class="level is-mobile" href="https://www.cnblogs.com/sherlson" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">sherlson&#039;s blog</span></span><span class="level-right"><span class="level-item tag">www.cnblogs.com</span></span></a></li><li><a class="level is-mobile" href="http://blog.devilwst.top/" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">小生的技术成长路线</span></span><span class="level-right"><span class="level-item tag">blog.devilwst.top</span></span></a></li></ul></div></div></div></div></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/">uint128&#039;s Blog</a><p class="is-size-7"><span>&copy; 2023 uint128.com</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a></p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Creative Commons" href="https://creativecommons.org/"><i class="fab fa-creative-commons"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Attribution 4.0 International" href="https://creativecommons.org/licenses/by/4.0/"><i class="fab fa-creative-commons-by"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" async></script><script>moment.locale("zh-CN");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script src="/js/column.js"></script><script src="/js/animation.js"></script><a id="back-to-top" title="回到顶端" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script src="/js/back_to_top.js" defer></script><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js" defer></script><script>window.addEventListener("load", () => {
+      window.cookieconsent.initialise({
+        type: "info",
+        theme: "edgeless",
+        static: false,
+        position: "bottom-left",
+        content: {
+          message: "此网站使用Cookie来改善您的体验。",
+          dismiss: "知道了！",
+          allow: "允许使用Cookie",
+          deny: "拒绝",
+          link: "了解更多",
+          policy: "Cookie政策",
+          href: "https://www.cookiesandyou.com/",
+        },
+        palette: {
+          popup: {
+            background: "#edeff5",
+            text: "#838391"
+          },
+          button: {
+            background: "#4b81e8"
+          },
+        },
+      });
+    });</script><script src="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/js/lightgallery.min.js" defer></script><script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
+            if (typeof $.fn.lightGallery === 'function') {
+                $('.article').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof $.fn.justifiedGallery === 'function') {
+                if ($('.justified-gallery > p > .gallery-item').length) {
+                    $('.justified-gallery > p > .gallery-item').unwrap();
+                }
+                $('.justified-gallery').justifiedGallery();
+            }
+        });</script><!--!--><!--!--><script type="text/x-mathjax-config">MathJax.Hub.Config({
+            'HTML-CSS': {
+                matchFontHeight: false
+            },
+            SVG: {
+                matchFontHeight: false
+            },
+            CommonHTML: {
+                matchFontHeight: false
+            },
+            tex2jax: {
+                inlineMath: [
+                    ['$','$'],
+                    ['\\(','\\)']
+                ]
+            }
+        });</script><script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.9/unpacked/MathJax.js?config=TeX-MML-AM_CHTML" defer></script><!--!--><!--!--><!--!--><script src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="想要查找什么..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script src="/js/insight.js" defer></script><script>document.addEventListener('DOMContentLoaded', function () {
+            loadInsight({"contentUrl":"/content.json"}, {"hint":"想要查找什么...","untitled":"(无标题)","posts":"文章","pages":"页面","categories":"分类","tags":"标签"});
+        });</script><script type="text/javascript" src="/js/imaegoo/universe.js"></script><!-- hexo-inject:begin --><!-- hexo-inject:end --></body></html>

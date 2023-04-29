@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta><title>使用EndNote管理文献 - uint128&#039;s Blog</title><link rel="manifest" href="/manifest.json"><meta name="application-name" content="uint128&#039;s Blog"><meta name="msapplication-TileImage" content="/favicon.ico"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="uint128&#039;s Blog"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="description" content="毕业论文要求使用 Word 来写，就想用 Word 插件来管理引用文献，记录一下使用时遇到的问题和解决方法。我使用的是 EndNote 20，本文的方法在其他版本可能不适用。"><meta property="og:type" content="blog"><meta property="og:title" content="使用EndNote管理文献"><meta property="og:url" content="https://uint128.com/2022/04/03/%E4%BD%BF%E7%94%A8EndNote%E7%AE%A1%E7%90%86%E6%96%87%E7%8C%AE/"><meta property="og:site_name" content="uint128&#039;s Blog"><meta property="og:description" content="毕业论文要求使用 Word 来写，就想用 Word 插件来管理引用文献，记录一下使用时遇到的问题和解决方法。我使用的是 EndNote 20，本文的方法在其他版本可能不适用。"><meta property="og:locale" content="zh_CN"><meta property="og:image" content="https://uint128.com/2022/04/03/%E4%BD%BF%E7%94%A8EndNote%E7%AE%A1%E7%90%86%E6%96%87%E7%8C%AE/pic002.png"><meta property="og:image" content="https://uint128.com/2022/04/03/%E4%BD%BF%E7%94%A8EndNote%E7%AE%A1%E7%90%86%E6%96%87%E7%8C%AE/pic001.png"><meta property="og:image" content="https://uint128.com/2022/04/03/%E4%BD%BF%E7%94%A8EndNote%E7%AE%A1%E7%90%86%E6%96%87%E7%8C%AE/pic003.png"><meta property="og:image" content="https://uint128.com/2022/04/03/%E4%BD%BF%E7%94%A8EndNote%E7%AE%A1%E7%90%86%E6%96%87%E7%8C%AE/pic004.png"><meta property="og:image" content="https://uint128.com/2022/04/03/%E4%BD%BF%E7%94%A8EndNote%E7%AE%A1%E7%90%86%E6%96%87%E7%8C%AE/pic005.png"><meta property="og:image" content="https://uint128.com/2022/04/03/%E4%BD%BF%E7%94%A8EndNote%E7%AE%A1%E7%90%86%E6%96%87%E7%8C%AE/pic006.png"><meta property="og:image" content="https://uint128.com/2022/04/03/%E4%BD%BF%E7%94%A8EndNote%E7%AE%A1%E7%90%86%E6%96%87%E7%8C%AE/pic007.png"><meta property="og:image" content="https://uint128.com/2022/04/03/%E4%BD%BF%E7%94%A8EndNote%E7%AE%A1%E7%90%86%E6%96%87%E7%8C%AE/pic008.png"><meta property="og:image" content="https://uint128.com/2022/04/03/%E4%BD%BF%E7%94%A8EndNote%E7%AE%A1%E7%90%86%E6%96%87%E7%8C%AE/pic009.png"><meta property="og:image" content="https://uint128.com/2022/04/03/%E4%BD%BF%E7%94%A8EndNote%E7%AE%A1%E7%90%86%E6%96%87%E7%8C%AE/pic010.png"><meta property="og:image" content="https://uint128.com/2022/04/03/%E4%BD%BF%E7%94%A8EndNote%E7%AE%A1%E7%90%86%E6%96%87%E7%8C%AE/pic011.png"><meta property="og:image" content="https://uint128.com/2022/04/03/%E4%BD%BF%E7%94%A8EndNote%E7%AE%A1%E7%90%86%E6%96%87%E7%8C%AE/pic012.png"><meta property="og:image" content="https://uint128.com/2022/04/03/%E4%BD%BF%E7%94%A8EndNote%E7%AE%A1%E7%90%86%E6%96%87%E7%8C%AE/pic013.png"><meta property="og:image" content="https://uint128.com/2022/04/03/%E4%BD%BF%E7%94%A8EndNote%E7%AE%A1%E7%90%86%E6%96%87%E7%8C%AE/pic014.png"><meta property="article:published_time" content="2022-04-03T11:43:18.000Z"><meta property="article:modified_time" content="2022-08-22T09:11:21.019Z"><meta property="article:author" content="uint128.com"><meta property="article:tag" content="uint128"><meta property="article:tag" content="uint128&#039;s blog"><meta property="article:tag" content="uint128.com"><meta property="twitter:card" content="summary"><meta property="twitter:image" content="pic002.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://uint128.com/2022/04/03/%E4%BD%BF%E7%94%A8EndNote%E7%AE%A1%E7%90%86%E6%96%87%E7%8C%AE/"},"headline":"uint128's Blog","image":["https://uint128.com/2022/04/03/%E4%BD%BF%E7%94%A8EndNote%E7%AE%A1%E7%90%86%E6%96%87%E7%8C%AE/pic002.png","https://uint128.com/2022/04/03/%E4%BD%BF%E7%94%A8EndNote%E7%AE%A1%E7%90%86%E6%96%87%E7%8C%AE/pic001.png","https://uint128.com/2022/04/03/%E4%BD%BF%E7%94%A8EndNote%E7%AE%A1%E7%90%86%E6%96%87%E7%8C%AE/pic003.png","https://uint128.com/2022/04/03/%E4%BD%BF%E7%94%A8EndNote%E7%AE%A1%E7%90%86%E6%96%87%E7%8C%AE/pic004.png","https://uint128.com/2022/04/03/%E4%BD%BF%E7%94%A8EndNote%E7%AE%A1%E7%90%86%E6%96%87%E7%8C%AE/pic005.png","https://uint128.com/2022/04/03/%E4%BD%BF%E7%94%A8EndNote%E7%AE%A1%E7%90%86%E6%96%87%E7%8C%AE/pic006.png","https://uint128.com/2022/04/03/%E4%BD%BF%E7%94%A8EndNote%E7%AE%A1%E7%90%86%E6%96%87%E7%8C%AE/pic007.png","https://uint128.com/2022/04/03/%E4%BD%BF%E7%94%A8EndNote%E7%AE%A1%E7%90%86%E6%96%87%E7%8C%AE/pic008.png","https://uint128.com/2022/04/03/%E4%BD%BF%E7%94%A8EndNote%E7%AE%A1%E7%90%86%E6%96%87%E7%8C%AE/pic009.png","https://uint128.com/2022/04/03/%E4%BD%BF%E7%94%A8EndNote%E7%AE%A1%E7%90%86%E6%96%87%E7%8C%AE/pic010.png","https://uint128.com/2022/04/03/%E4%BD%BF%E7%94%A8EndNote%E7%AE%A1%E7%90%86%E6%96%87%E7%8C%AE/pic011.png","https://uint128.com/2022/04/03/%E4%BD%BF%E7%94%A8EndNote%E7%AE%A1%E7%90%86%E6%96%87%E7%8C%AE/pic012.png","https://uint128.com/2022/04/03/%E4%BD%BF%E7%94%A8EndNote%E7%AE%A1%E7%90%86%E6%96%87%E7%8C%AE/pic013.png","https://uint128.com/2022/04/03/%E4%BD%BF%E7%94%A8EndNote%E7%AE%A1%E7%90%86%E6%96%87%E7%8C%AE/pic014.png"],"datePublished":"2022-04-03T11:43:18.000Z","dateModified":"2022-08-22T09:11:21.019Z","author":{"@type":"Person","name":"uint128.com"},"publisher":{"@type":"Organization","logo":{"@type":"ImageObject"}},"description":"毕业论文要求使用 Word 来写，就想用 Word 插件来管理引用文献，记录一下使用时遇到的问题和解决方法。我使用的是 EndNote 20，本文的方法在其他版本可能不适用。"}</script><link rel="canonical" href="https://uint128.com/2022/04/03/%E4%BD%BF%E7%94%A8EndNote%E7%AE%A1%E7%90%86%E6%96%87%E7%8C%AE/"><link rel="alternate" href="/atom.xml" title="uint128&#039;s Blog" type="application/atom+xml"><link rel="icon" href="/favicon.ico"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.2/css/all.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.12.0/styles/atom-one-light.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;600&amp;family=Source+Code+Pro"><link rel="stylesheet" href="/css/default.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><!--!--><!--!--><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/css/justifiedGallery.min.css"><!--!--><!--!--><!--!--><style>.pace{-webkit-pointer-events:none;pointer-events:none;-webkit-user-select:none;-moz-user-select:none;user-select:none}.pace-inactive{display:none}.pace .pace-progress{background:#3273dc;position:fixed;z-index:2000;top:0;right:100%;width:100%;height:2px}</style><script src="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js"></script><!--!--><!--!--><!-- hexo injector head_end start -->
+<!-- hexo-inject:begin --><!-- hexo-inject:end --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.6.0/katex.min.css">
+<!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.2.0"><!-- hexo-inject:begin --><!-- hexo-inject:end --></head><body class="is-2-column"><script type="text/javascript" src="/js/imaegoo/night.js"></script><canvas id="universe"></canvas><nav class="navbar navbar-main"><div class="container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/">uint128&#039;s Blog</a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">Home</a><a class="navbar-item" href="/archives">Archives</a><a class="navbar-item" href="/tags">Tags</a><a class="navbar-item" href="/about">About</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="My GitHub" href="https://github.com/cyanray"><i class="fab fa-github"></i></a><a class="navbar-item" target="_blank" rel="noopener" title="RSS" href="/atom.xml"><i class="fas fa-rss"></i></a><a class="navbar-item is-hidden-tablet catalogue" title="目录" href="javascript:;"><i class="fas fa-list-ul"></i></a><a class="navbar-item night" id="night-nav" title="Night Mode" href="javascript:;"><i class="fas fa-moon" id="night-icon"></i></a><a class="navbar-item search" title="搜索" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-8-widescreen"><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2022-04-03T11:43:18.000Z" title="2022/4/3 19:43:18">2022-04-03</time>发表</span><span class="level-item"><time dateTime="2022-08-22T09:11:21.019Z" title="2022/8/22 17:11:21">2022-08-22</time>更新</span></div></div><h1 class="title is-3 is-size-4-mobile">使用EndNote管理文献</h1><div class="content"><p>毕业论文要求使用 Word 来写，就想用 Word 插件来管理引用文献，记录一下使用时遇到的问题和解决方法。我使用的是 EndNote 20，本文的方法在其他版本可能不适用。<br><span id="more"></span></p>
+<!-- hexo-inject:begin --><!-- hexo-inject:end --><h2 id="使用-GB-T7714-Style"><a href="#使用-GB-T7714-Style" class="headerlink" title="使用 GB/T7714 Style"></a>使用 GB/T7714 Style</h2><p>在菜单栏中点击 <strong>Tools/Output Sytle/Open Style Manager…</strong>，打开样式管理器。</p>
+<p><img src="pic002.png" alt=""></p>
+<p>点击样式管理器中的 <strong>Get more on the web</strong> 按钮，就会<a target="_blank" rel="noopener" href="https://endnote.com/downloads/styles/">打开一个网页</a>，在这个网页里搜索 <strong>Chinese Standard</strong> 就能找到两个国标样式了，全都下载下来。</p>
+<p><img src="pic001.png" alt=""></p>
+<p>将下载得到的两个样式文件放到 EndNote 安装目录的 Style 目录下，比如我的是 <code>C:\Program Files (x86)\EndNote 20\Styles</code>。</p>
+<p>然后回到 Style Manager，把两个国标样式都勾选上，再打开你的 Word 文档，就可以选择国标样式了。</p>
+<p><img src="pic003.png" alt=""></p>
+<h2 id="相关问题"><a href="#相关问题" class="headerlink" title="相关问题"></a>相关问题</h2><h3 id="中文期刊只显示前三位作者"><a href="#中文期刊只显示前三位作者" class="headerlink" title="中文期刊只显示前三位作者"></a>中文期刊只显示前三位作者</h3><p>对于作者数量大于 3 位作者的期刊，我们的毕业论文格式要求只显示前 3 位作者，然后在后面加上 “et al.” 或者 “, 等”。</p>
+<p>对于英文期刊来说当然用 “et al.”，但是对于中文期刊来说，应该使用 “, 等”。</p>
+<p>EndNote 下载的国标格式，不论英文期刊还是中文期刊，都显示的“et al.”。这是因为不论英文期刊还是中文期刊，都被视为一种文献类型：“Journal Article”。</p>
+<p>要对中文期刊做特别设置，就要新创建一种文献类型。</p>
+<p>点击菜单栏 <strong>Edit/Preferences</strong> 打开设置页面，点击 <strong>Reference Types</strong>。</p>
+<p>如图所示，在 <strong>Default Reference Type</strong> 中选择 <strong>Unused 1</strong>（因为我已经设置过了，所以图中只剩下Unused 2/3）。</p>
+<p><img src="pic004.png" alt=""></p>
+<p>然后点击 <strong>Modify Reference Type</strong> 按钮，如图填写设置。</p>
+<p><img src="pic005.png" alt=""></p>
+<p>保存之后就创建了“中文期刊”这种文献类型，现在要对这种类型进行设置。</p>
+<p>在菜单  <strong>Tools/Output Sytle/</strong> 中勾选 <strong>Chinese Std GBT7714(numeric)</strong>。然后再再到菜单  <strong>Tools/Output Sytle/</strong> 中点击 <strong>Edit “Chinese Std GBT7714(numeric)”</strong>，进入编辑界面。</p>
+<p>在编辑界面，首先在菜单 <strong>File/Save as</strong> 另存为新的样式，比如我取名为 <strong>Chinese Std GBT7714(numeric) Fix</strong>，避免影响下载的国标样式。</p>
+<p>然后如图所示，修改 <strong>Editor Lists</strong> 中的设置，将原来的 <strong>“, et al.”</strong> 替换为 <strong>“, 等”</strong>。</p>
+<p><img src="pic006.png" alt=""></p>
+<p>这里<strong>不要</strong>修改 <strong>Author Lists</strong> 中的设置。因为这两个设置是不限定文献类型的，也就是说英文期刊和中文期刊都会受到影响。而我们对英文期刊和中文期刊分别设置的原理就是将 Author Lists 的设置应用于英文期刊，而 Editor Lists 的设置应用于中文期刊。</p>
+<p>接下来编辑中文期刊的 Style 模板。如图所示，点击 Reference types 按钮，勾上 “中文期刊”类型，然后写入如下模板。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Secondary Author. Title [J]. Journal, Year|, Volume|(Issue)| : Pages|.</span><br></pre></td></tr></table></figure>
+<p>注意，这里用的不是 Author 而是 Secondary Author。这里的 Secondary Author 会使用前面 “Editor Lists” 的设置，这就是对英文文献和中文文献使用不同设置的原理。对于英文文献，其 Reference Type 为 “Journal Article”，模板中使用的是 “Author”，则会应用 “Author Lists” 的设置。</p>
+<p>还要注意，这里的 “|” 和 “°” 都不是普通文本，不能用复制粘贴的方式填入，应该在右上角的 “Insert Field” 按钮中插入。</p>
+<p>其中“Foced Separation” 对应 “|”，“Link Adjacent Text” 对应 “°”，空格对应“·”。</p>
+<p><img src="pic007.png" alt=""></p>
+<p>我这里的模板是经过调整的，对于那些没有卷号的期刊，也可以正确显示。（如果使用 Journal Article 的模板，没有卷号的期刊会显示多余的逗号和空格）</p>
+<p>保存修改，接下来的操作是把中文期刊的文献类型修改为“中文期刊”。</p>
+<p>在文献列表中双击你要修改的文献，然后如图所示将 Reference Type 修改为 “中文期刊”。</p>
+<p><img src="pic008.png" alt=""></p>
+<p>将所有的中文期刊的 Reference Type 都修改为“中文期刊”后，接下来要编辑它们的 “Secondary Author”。</p>
+<p>首先创建一个 Smart Group，将所有的“中文期刊”都列出来，具体方法是右键左侧的 “MY GROUPS”，点击 “Create smart group”。</p>
+<p><img src="pic009.png" alt=""></p>
+<p>切换到刚刚创建的 Smart Group，这时候列表里只有 Reference Type 为 “中文期刊” 的文献。</p>
+<p>然后点击菜单栏的 <strong>Library/Change/Move/Copy Fields</strong>，按照如图所示设置，将 Author 的值复制到 Secondary Author。</p>
+<p><img src="pic010.png" alt=""></p>
+<p>然后，回到 Word 里更新引用，作者数量大于三位的文献应该会使用正确的格式显示了。</p>
+<h3 id="页码显示问题"><a href="#页码显示问题" class="headerlink" title="页码显示问题"></a>页码显示问题</h3><p>下载的国标样式的页码显示方式是错误的，要修改为显示完整的页码，其设置方法如图所示。</p>
+<p><img src="pic011.png" alt=""></p>
+<h3 id="不要全大写的作者名称"><a href="#不要全大写的作者名称" class="headerlink" title="不要全大写的作者名称"></a>不要全大写的作者名称</h3><p>下载的国标样式中，英文文献的作者是字母全大写的，要修改为首字母大写，其设置方法如图所示。</p>
+<p><img src="pic012.png" alt=""></p>
+<h2 id="中英文混排的-Word-样式调整"><a href="#中英文混排的-Word-样式调整" class="headerlink" title="中英文混排的 Word 样式调整"></a>中英文混排的 Word 样式调整</h2><p>中英文混合排版主要的问题是字体设置，中文使用宋体，英文使用 Times New Roman 字体。但是 EndNote 的设置只支持设置一种字体，如下图所示。</p>
+<p><img src="pic013.png" alt=""></p>
+<p>我找到的一种解决方法是，在 EndNote 的字体设置中设置英文字体：Times New Roman。然后再修改 “EndNote Bibliography” 的字体样式，将中文字体修改为宋体。</p>
+<p><img src="pic014.png" alt=""></p>
+<p>很奇怪的是，对“EndNote Bibliography”的段落样式进行修改是无效的，每次更新都会被覆盖，我也不知道应该在哪里进行设置。</p>
+<p>段落样式在 EndNote 的设置里可以设置一些简单的参数，如上上图所示，可以修改的项目有：首行缩进、行间距、悬挂缩进、后置字符。</p>
+<p>其中行间距只支持单倍行距、1.5倍行距和双倍行距，不支持设置固定值，这点不太灵活。</p>
+<p>只能在交稿之前手动修改参考文献列表的样式，不能完全自动化了。</p>
+</div><div class="article-licensing box"><div class="licensing-title"><p>使用EndNote管理文献</p><p><a href="https://uint128.com/2022/04/03/使用EndNote管理文献/">https://uint128.com/2022/04/03/使用EndNote管理文献/</a></p></div><div class="licensing-meta level is-mobile"><div class="level-left"><div class="level-item is-narrow"><div><h6>作者</h6><p>uint128.com</p></div></div><div class="level-item is-narrow"><div><h6>发布于</h6><p>2022-04-03</p></div></div><div class="level-item is-narrow"><div><h6>更新于</h6><p>2022-08-22</p></div></div><div class="level-item is-narrow"><div><h6>许可协议</h6><p><a class="icons" rel="noopener" target="_blank" title="Creative Commons" href="https://creativecommons.org/"><i class="icon fab fa-creative-commons"></i></a><a class="icons" rel="noopener" target="_blank" title="Attribution" href="https://creativecommons.org/licenses/by/4.0/"><i class="icon fab fa-creative-commons-by"></i></a><a class="icons" rel="noopener" target="_blank" title="Noncommercial" href="https://creativecommons.org/licenses/by-nc/4.0/"><i class="icon fab fa-creative-commons-nc"></i></a></p></div></div></div></div></div><!--!--></article></div><!--!--><div class="card"><nav class="post-navigation mt-4 level is-mobile card-content"><div class="level-start"><a class="article-nav-prev level level-item link-muted" href="/2022/05/19/%E7%BB%99%E5%8D%9A%E5%AE%A2%E6%8D%A2%E4%BA%86%E4%B8%AA%E6%96%B0%E4%B8%BB%E9%A2%98/"><i class="level-item fas fa-chevron-left"></i><span class="level-item">给博客换了个新主题</span></a></div><div class="level-end"><a class="article-nav-next level level-item link-muted" href="/2022/03/02/%E7%90%86%E8%A7%A3C-20-Coroutine-promise-type/"><span class="level-item">理解C++20 Coroutine: Promise type</span><i class="level-item fas fa-chevron-right"></i></a></div></nav></div><div class="card"><div class="card-content"><h3 class="title is-5">评论</h3><div id="comment-container"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.css"><script src="https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.min.js"></script><script>var gitalk = new Gitalk({
+            id: "1184f1e31ef3afee89885228157a69e8",
+            repo: "cyanray.github.io",
+            owner: "cyanray",
+            clientID: "53e3c578fcb7b7b1a4da",
+            clientSecret: "74433ee77d6e13fd635b82add519e143ac791726",
+            admin: ["cyanray"],
+            createIssueManually: true,
+            distractionFreeMode: false,
+            perPage: 20,
+            pagerDirection: "last",
+            
+            
+            enableHotKey: true,
+            language: "zh-CN",
+        })
+        gitalk.render('comment-container')</script></div></div></div><!--!--><div class="column column-right is-4-tablet is-4-desktop is-4-widescreen  order-3 is-sticky"><div class="card widget" id="toc" data-type="toc"><div class="card-content"><div class="menu"><h3 class="menu-label">目录</h3><ul class="menu-list"><li><a class="level is-mobile" href="#使用-GB-T7714-Style"><span class="level-left"><span class="level-item">1</span><span class="level-item">使用 GB/T7714 Style</span></span></a></li><li><a class="level is-mobile" href="#相关问题"><span class="level-left"><span class="level-item">2</span><span class="level-item">相关问题</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#中文期刊只显示前三位作者"><span class="level-left"><span class="level-item">2.1</span><span class="level-item">中文期刊只显示前三位作者</span></span></a></li><li><a class="level is-mobile" href="#页码显示问题"><span class="level-left"><span class="level-item">2.2</span><span class="level-item">页码显示问题</span></span></a></li><li><a class="level is-mobile" href="#不要全大写的作者名称"><span class="level-left"><span class="level-item">2.3</span><span class="level-item">不要全大写的作者名称</span></span></a></li></ul></li><li><a class="level is-mobile" href="#中英文混排的-Word-样式调整"><span class="level-left"><span class="level-item">3</span><span class="level-item">中英文混排的 Word 样式调整</span></span></a></li></ul></div></div><style>#toc .menu-list > li > a.is-active + .menu-list { display: block; }#toc .menu-list > li > a + .menu-list { display: none; }</style><script src="/js/toc.js" defer></script></div><div class="card widget" data-type="recent-posts"><div class="card-content"><h3 class="menu-label">最新文章</h3><article class="media"><div class="media-content"><p class="date"><time dateTime="2023-04-29T09:02:24.000Z">2023-04-29</time></p><p class="title"><a href="/2023/04/29/C-Concepts-%E7%9A%84%E4%B8%A4%E4%B8%AA%E6%8A%80%E5%B7%A7/">C++ Concepts 的两个技巧</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2023-03-16T17:24:21.000Z">2023-03-17</time></p><p class="title"><a href="/2023/03/17/%E7%8C%AB%E5%A8%98-NNLL-UINT128/">猫娘 NNLL - UINT128</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2023-03-06T15:23:32.000Z">2023-03-06</time></p><p class="title"><a href="/2023/03/06/Modern-CMake-%E5%AE%9E%E8%B7%B5/">Modern CMake 实践</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2023-01-07T18:40:09.000Z">2023-01-08</time></p><p class="title"><a href="/2023/01/08/%E7%89%9B%E9%A1%BF%E6%8F%92%E5%80%BC%E6%B3%95%E7%9A%84-Matlab-%E5%AE%9E%E7%8E%B0/">牛顿插值法的 Matlab 实现</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2023-01-07T18:38:42.000Z">2023-01-08</time></p><p class="title"><a href="/2023/01/08/%E5%A4%9A%E5%85%83%E7%89%9B%E9%A1%BF%E8%BF%AD%E4%BB%A3%E6%B3%95%E7%9A%84-Matlab-%E5%AE%9E%E7%8E%B0/">多元牛顿迭代法的 Matlab 实现</a></p></div></article></div></div><div class="card widget" data-type="links"><div class="card-content"><div class="menu"><h3 class="menu-label">链接</h3><ul class="menu-list"><li><a class="level is-mobile" href="https://yuanxingxing-yxx.github.io/" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">星星的博客</span></span><span class="level-right"><span class="level-item tag">yuanxingxing-yxx.github.io</span></span></a></li><li><a class="level is-mobile" href="http://quosimodo.cn/" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">卡西莫多の礼物</span></span><span class="level-right"><span class="level-item tag">quosimodo.cn</span></span></a></li><li><a class="level is-mobile" href="https://blog.icepie.net/" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">icepie&#039;s blog</span></span><span class="level-right"><span class="level-item tag">blog.icepie.net</span></span></a></li><li><a class="level is-mobile" href="https://www.cnblogs.com/sherlson" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">sherlson&#039;s blog</span></span><span class="level-right"><span class="level-item tag">www.cnblogs.com</span></span></a></li><li><a class="level is-mobile" href="http://blog.devilwst.top/" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">小生的技术成长路线</span></span><span class="level-right"><span class="level-item tag">blog.devilwst.top</span></span></a></li></ul></div></div></div></div></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/">uint128&#039;s Blog</a><p class="is-size-7"><span>&copy; 2023 uint128.com</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a></p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Creative Commons" href="https://creativecommons.org/"><i class="fab fa-creative-commons"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Attribution 4.0 International" href="https://creativecommons.org/licenses/by/4.0/"><i class="fab fa-creative-commons-by"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" async></script><script>moment.locale("zh-CN");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script src="/js/column.js"></script><script src="/js/animation.js"></script><a id="back-to-top" title="回到顶端" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script src="/js/back_to_top.js" defer></script><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js" defer></script><script>window.addEventListener("load", () => {
+      window.cookieconsent.initialise({
+        type: "info",
+        theme: "edgeless",
+        static: false,
+        position: "bottom-left",
+        content: {
+          message: "此网站使用Cookie来改善您的体验。",
+          dismiss: "知道了！",
+          allow: "允许使用Cookie",
+          deny: "拒绝",
+          link: "了解更多",
+          policy: "Cookie政策",
+          href: "https://www.cookiesandyou.com/",
+        },
+        palette: {
+          popup: {
+            background: "#edeff5",
+            text: "#838391"
+          },
+          button: {
+            background: "#4b81e8"
+          },
+        },
+      });
+    });</script><script src="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/js/lightgallery.min.js" defer></script><script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
+            if (typeof $.fn.lightGallery === 'function') {
+                $('.article').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof $.fn.justifiedGallery === 'function') {
+                if ($('.justified-gallery > p > .gallery-item').length) {
+                    $('.justified-gallery > p > .gallery-item').unwrap();
+                }
+                $('.justified-gallery').justifiedGallery();
+            }
+        });</script><!--!--><!--!--><script type="text/x-mathjax-config">MathJax.Hub.Config({
+            'HTML-CSS': {
+                matchFontHeight: false
+            },
+            SVG: {
+                matchFontHeight: false
+            },
+            CommonHTML: {
+                matchFontHeight: false
+            },
+            tex2jax: {
+                inlineMath: [
+                    ['$','$'],
+                    ['\\(','\\)']
+                ]
+            }
+        });</script><script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.9/unpacked/MathJax.js?config=TeX-MML-AM_CHTML" defer></script><!--!--><!--!--><!--!--><script src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="想要查找什么..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script src="/js/insight.js" defer></script><script>document.addEventListener('DOMContentLoaded', function () {
+            loadInsight({"contentUrl":"/content.json"}, {"hint":"想要查找什么...","untitled":"(无标题)","posts":"文章","pages":"页面","categories":"分类","tags":"标签"});
+        });</script><script type="text/javascript" src="/js/imaegoo/universe.js"></script><!-- hexo-inject:begin --><!-- hexo-inject:end --></body></html>

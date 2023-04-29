@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta><title>开源安卓QQ协议库 mirai 使用教程 - uint128&#039;s Blog</title><link rel="manifest" href="/manifest.json"><meta name="application-name" content="uint128&#039;s Blog"><meta name="msapplication-TileImage" content="/favicon.ico"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="uint128&#039;s Blog"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="description" content="简单的入门教程, 适合无基础小白。因水平有限，本文内容可能会有错误，还请指正。"><meta property="og:type" content="blog"><meta property="og:title" content="开源安卓QQ协议库 mirai 使用教程"><meta property="og:url" content="https://uint128.com/2020/04/18/%E5%BC%80%E6%BA%90%E5%AE%89%E5%8D%93QQ%E5%8D%8F%E8%AE%AE%E5%BA%93-mirai-%E4%BD%BF%E7%94%A8%E6%95%99%E7%A8%8B/"><meta property="og:site_name" content="uint128&#039;s Blog"><meta property="og:description" content="简单的入门教程, 适合无基础小白。因水平有限，本文内容可能会有错误，还请指正。"><meta property="og:locale" content="zh_CN"><meta property="og:image" content="https://uint128.com/2020/04/18/%E5%BC%80%E6%BA%90%E5%AE%89%E5%8D%93QQ%E5%8D%8F%E8%AE%AE%E5%BA%93-mirai-%E4%BD%BF%E7%94%A8%E6%95%99%E7%A8%8B/pic/mirai_console_running.png"><meta property="og:image" content="https://uint128.com/2020/04/18/%E5%BC%80%E6%BA%90%E5%AE%89%E5%8D%93QQ%E5%8D%8F%E8%AE%AE%E5%BA%93-mirai-%E4%BD%BF%E7%94%A8%E6%95%99%E7%A8%8B/pic/installing_jre_1_8.jpg"><meta property="og:image" content="https://uint128.com/2020/04/18/%E5%BC%80%E6%BA%90%E5%AE%89%E5%8D%93QQ%E5%8D%8F%E8%AE%AE%E5%BA%93-mirai-%E4%BD%BF%E7%94%A8%E6%95%99%E7%A8%8B/pic/java_version.png"><meta property="og:image" content="https://uint128.com/2020/04/18/%E5%BC%80%E6%BA%90%E5%AE%89%E5%8D%93QQ%E5%8D%8F%E8%AE%AE%E5%BA%93-mirai-%E4%BD%BF%E7%94%A8%E6%95%99%E7%A8%8B/pic/github_mirai_console_wrapper.png"><meta property="og:image" content="https://uint128.com/2020/04/18/%E5%BC%80%E6%BA%90%E5%AE%89%E5%8D%93QQ%E5%8D%8F%E8%AE%AE%E5%BA%93-mirai-%E4%BD%BF%E7%94%A8%E6%95%99%E7%A8%8B/pic/execute_mirai_console_wrapper_1.png"><meta property="og:image" content="https://uint128.com/2020/04/18/%E5%BC%80%E6%BA%90%E5%AE%89%E5%8D%93QQ%E5%8D%8F%E8%AE%AE%E5%BA%93-mirai-%E4%BD%BF%E7%94%A8%E6%95%99%E7%A8%8B/pic/execute_mirai_console_wrapper_2.png"><meta property="og:image" content="https://uint128.com/2020/04/18/%E5%BC%80%E6%BA%90%E5%AE%89%E5%8D%93QQ%E5%8D%8F%E8%AE%AE%E5%BA%93-mirai-%E4%BD%BF%E7%94%A8%E6%95%99%E7%A8%8B/pic/execute_mirai_console_wrapper_3.png"><meta property="article:published_time" content="2020-04-18T06:47:47.000Z"><meta property="article:modified_time" content="2022-08-22T09:11:21.035Z"><meta property="article:author" content="uint128.com"><meta property="article:tag" content="uint128"><meta property="article:tag" content="uint128&#039;s blog"><meta property="article:tag" content="uint128.com"><meta property="twitter:card" content="summary"><meta property="twitter:image" content="./pic/mirai_console_running.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://uint128.com/2020/04/18/%E5%BC%80%E6%BA%90%E5%AE%89%E5%8D%93QQ%E5%8D%8F%E8%AE%AE%E5%BA%93-mirai-%E4%BD%BF%E7%94%A8%E6%95%99%E7%A8%8B/"},"headline":"uint128's Blog","image":["https://uint128.com/2020/04/18/%E5%BC%80%E6%BA%90%E5%AE%89%E5%8D%93QQ%E5%8D%8F%E8%AE%AE%E5%BA%93-mirai-%E4%BD%BF%E7%94%A8%E6%95%99%E7%A8%8B/pic/mirai_console_running.png","https://uint128.com/2020/04/18/%E5%BC%80%E6%BA%90%E5%AE%89%E5%8D%93QQ%E5%8D%8F%E8%AE%AE%E5%BA%93-mirai-%E4%BD%BF%E7%94%A8%E6%95%99%E7%A8%8B/pic/installing_jre_1_8.jpg","https://uint128.com/2020/04/18/%E5%BC%80%E6%BA%90%E5%AE%89%E5%8D%93QQ%E5%8D%8F%E8%AE%AE%E5%BA%93-mirai-%E4%BD%BF%E7%94%A8%E6%95%99%E7%A8%8B/pic/java_version.png","https://uint128.com/2020/04/18/%E5%BC%80%E6%BA%90%E5%AE%89%E5%8D%93QQ%E5%8D%8F%E8%AE%AE%E5%BA%93-mirai-%E4%BD%BF%E7%94%A8%E6%95%99%E7%A8%8B/pic/github_mirai_console_wrapper.png","https://uint128.com/2020/04/18/%E5%BC%80%E6%BA%90%E5%AE%89%E5%8D%93QQ%E5%8D%8F%E8%AE%AE%E5%BA%93-mirai-%E4%BD%BF%E7%94%A8%E6%95%99%E7%A8%8B/pic/execute_mirai_console_wrapper_1.png","https://uint128.com/2020/04/18/%E5%BC%80%E6%BA%90%E5%AE%89%E5%8D%93QQ%E5%8D%8F%E8%AE%AE%E5%BA%93-mirai-%E4%BD%BF%E7%94%A8%E6%95%99%E7%A8%8B/pic/execute_mirai_console_wrapper_2.png","https://uint128.com/2020/04/18/%E5%BC%80%E6%BA%90%E5%AE%89%E5%8D%93QQ%E5%8D%8F%E8%AE%AE%E5%BA%93-mirai-%E4%BD%BF%E7%94%A8%E6%95%99%E7%A8%8B/pic/execute_mirai_console_wrapper_3.png"],"datePublished":"2020-04-18T06:47:47.000Z","dateModified":"2022-08-22T09:11:21.035Z","author":{"@type":"Person","name":"uint128.com"},"publisher":{"@type":"Organization","logo":{"@type":"ImageObject"}},"description":"简单的入门教程, 适合无基础小白。因水平有限，本文内容可能会有错误，还请指正。"}</script><link rel="canonical" href="https://uint128.com/2020/04/18/%E5%BC%80%E6%BA%90%E5%AE%89%E5%8D%93QQ%E5%8D%8F%E8%AE%AE%E5%BA%93-mirai-%E4%BD%BF%E7%94%A8%E6%95%99%E7%A8%8B/"><link rel="alternate" href="/atom.xml" title="uint128&#039;s Blog" type="application/atom+xml"><link rel="icon" href="/favicon.ico"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.2/css/all.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.12.0/styles/atom-one-light.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;600&amp;family=Source+Code+Pro"><link rel="stylesheet" href="/css/default.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><!--!--><!--!--><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/css/justifiedGallery.min.css"><!--!--><!--!--><!--!--><style>.pace{-webkit-pointer-events:none;pointer-events:none;-webkit-user-select:none;-moz-user-select:none;user-select:none}.pace-inactive{display:none}.pace .pace-progress{background:#3273dc;position:fixed;z-index:2000;top:0;right:100%;width:100%;height:2px}</style><script src="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js"></script><!--!--><!--!--><!-- hexo injector head_end start -->
+<!-- hexo-inject:begin --><!-- hexo-inject:end --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.6.0/katex.min.css">
+<!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.2.0"><!-- hexo-inject:begin --><!-- hexo-inject:end --></head><body class="is-2-column"><script type="text/javascript" src="/js/imaegoo/night.js"></script><canvas id="universe"></canvas><nav class="navbar navbar-main"><div class="container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/">uint128&#039;s Blog</a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">Home</a><a class="navbar-item" href="/archives">Archives</a><a class="navbar-item" href="/tags">Tags</a><a class="navbar-item" href="/about">About</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="My GitHub" href="https://github.com/cyanray"><i class="fab fa-github"></i></a><a class="navbar-item" target="_blank" rel="noopener" title="RSS" href="/atom.xml"><i class="fas fa-rss"></i></a><a class="navbar-item is-hidden-tablet catalogue" title="目录" href="javascript:;"><i class="fas fa-list-ul"></i></a><a class="navbar-item night" id="night-nav" title="Night Mode" href="javascript:;"><i class="fas fa-moon" id="night-icon"></i></a><a class="navbar-item search" title="搜索" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-8-widescreen"><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2020-04-18T06:47:47.000Z" title="2020/4/18 14:47:47">2020-04-18</time>发表</span><span class="level-item"><time dateTime="2022-08-22T09:11:21.035Z" title="2022/8/22 17:11:21">2022-08-22</time>更新</span></div></div><h1 class="title is-3 is-size-4-mobile">开源安卓QQ协议库 mirai 使用教程</h1><div class="content"><p>简单的入门教程, 适合无基础小白。因水平有限，本文内容可能会有错误，还请指正。<br><span id="more"></span></p>
+<!-- hexo-inject:begin --><!-- hexo-inject:end --><h1 id="mirai-项目简介"><a href="#mirai-项目简介" class="headerlink" title="mirai 项目简介"></a>mirai 项目简介</h1><p>&emsp;&emsp;Mirai 是一个在全平台下运行, 提供 QQ Android 和 TIM PC 协议支持的高效率机器人框架(官方定义)。实际上因为一些原因,  TIM PC 协议停止更新了。目前功能最齐全, 运行最稳定的是 QQ Android 协议。(mirai 项目地址: <a target="_blank" rel="noopener" href="https://github.com/mamoe/mirai">Github</a> )</p>
+<p>&emsp;&emsp;mirai 是由 Kotlin 编写的协议库, 提供使用 QQ Android 协议的一些 API。但是 mirai 本身<strong>不是</strong>一个 <strong>“QQ机器人”</strong> 程序, 而是一个库。与机器人软件 <strong>酷Q</strong> 对标的应该是 mirai 官方的衍生项目 <strong>mirai-console</strong>。(mirai-console 项目地址: <a target="_blank" rel="noopener" href="https://github.com/mamoe/mirai-console">Github</a> )</p>
+<p><img src="./pic/mirai_console_running.png" alt=""></p>
+<p><strong><center>图 1 mirai-console 运行时截图</center></strong></p>
+<p>&emsp;&emsp;<strong>mirai-console</strong> 提供了插件系统, 支持安装 由 Java/Kotlin 编写的 <strong>mirai-console</strong> 插件。如果安装 <strong>mirai-native</strong> 插件, 那还可以支持 酷Q 的插件, 但是目前为止机制还不够完善, 需要将 酷Q 的插件重新编译为 dll 才能给 <strong>mirai-native</strong> 使用。( <strong>mirai-native</strong> 项目地址: <a target="_blank" rel="noopener" href="https://github.com/iTXTech/mirai-native">Github</a> )。安装 <strong>mirai-http-api</strong> 插件, 则可以提供 HTTP API 来使用 mirai, 方便其他语言使用 mirai。( <strong>mirai-http-api</strong> 项目地址: <a target="_blank" rel="noopener" href="https://github.com/mamoe/mirai-api-http">Github</a> )</p>
+<h1 id="在-windows-上使用-mirai-console"><a href="#在-windows-上使用-mirai-console" class="headerlink" title="在 windows 上使用 mirai-console"></a>在 windows 上使用 mirai-console</h1><h2 id="准备运行环境"><a href="#准备运行环境" class="headerlink" title="准备运行环境"></a>准备运行环境</h2><p>&emsp;&emsp;运行 <strong>mirai-console</strong> 需要安装 Java 运行环境。安装 <strong>jre1.8</strong> (或 <strong>jdk8</strong>) 以及更高版本都可以。(jre1.8 安装包下载地址: <a target="_blank" rel="noopener" href="https://www.baidu.com/s?wd=jre%201.8">baidu</a> ; jdk8安装包下载地址: <a target="_blank" rel="noopener" href="https://www.baidu.com/s?wd=jdk%201.8">baidu</a> )</p>
+<p><img src="./pic/installing_jre_1_8.jpg" alt=""></p>
+<p><strong><center>图 2 安装 Java 运行环境(jre)截图</center></strong></p>
+<p>&emsp;&emsp;安装完成后, 重启计算机。打开 <strong>Powershell</strong>, 输入 <code>java -version</code> 或者 <code>java --version</code> 然后回车, 查看是否正确安装 Java。正确安装 Java 并执行上面的指令后, 其结果应该如 <strong>图 3</strong> 所示。</p>
+<blockquote>
+<p>打开 Powershell 的方法: 同时按下键盘上的 <strong>Win</strong> 按键 (印着 windows 图标的按键) 和 <strong>字母 R</strong> 按键, 这会启动 “运行” 程序。输入 <code>powershell</code> 然后点击确定, 就可以打开 Powershell。</p>
+</blockquote>
+<p><img src="./pic/java_version.png" alt=""></p>
+<p><strong><center>图 3 执行 java -version 截图</center></strong></p>
+<h2 id="下载-mirai-console-wrapper"><a href="#下载-mirai-console-wrapper" class="headerlink" title="下载 mirai-console-wrapper"></a>下载 mirai-console-wrapper</h2><p>&emsp;&emsp;前面介绍了 mirai-console 才是真正的 <strong>“QQ 机器人程序”</strong>。但是为了方便使用 <strong>mirai-console</strong> 总共有 6 个版本, 各个版本的说明可以见 <strong>表 1</strong>。</p>
+<p><strong>表 1 mirai-console 各个版本的介绍</strong></p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th style="text-align:center">名称</th>
+<th style="text-align:center">介绍</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">Mirai-Console-Pure</td>
+<td style="text-align:center">最纯净版, CLI环境, 通过标准输入与标准输出 交互</td>
+</tr>
+<tr>
+<td style="text-align:center">Mirai-Console-Terminal</td>
+<td style="text-align:center">(UNIX)Terminal环境 提供简洁的富文本控制台</td>
+</tr>
+<tr>
+<td style="text-align:center">Mirai-Console-Android</td>
+<td style="text-align:center">安卓APP (TODO)</td>
+</tr>
+<tr>
+<td style="text-align:center">Mirai-Console-Graphical</td>
+<td style="text-align:center">JavaFX的图形化界面 (.jar/.exe/.dmg)</td>
+</tr>
+<tr>
+<td style="text-align:center">Mirai-Console-WebPanel</td>
+<td style="text-align:center">Web Panel操作(TODO)</td>
+</tr>
+<tr>
+<td style="text-align:center">Mirai-Console-Ios</td>
+<td style="text-align:center">IOS APP (TODO)</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>&emsp;&emsp;根据不同的运行环境和需求, 选择对应的版本。因为本篇文章涉及到将 mirai-console 部署到 Linux, 这里以 Pure 版本为例进行讲解。</p>
+<p>&emsp;&emsp;要使用 mirai-console-pure , 需要下载 mirai-console-wrapper 。mirai-console-wrapper 提供了安装、更新各个版本 mirai-console 的功能。</p>
+<blockquote>
+<p><strong>mirai-console-wrapper 的下载地址: <a target="_blank" rel="noopener" href="https://github.com/mamoe/mirai-console/releases">https://github.com/mamoe/mirai-console/releases</a></strong></p>
+</blockquote>
+<p>&emsp;&emsp;找到 wrapper 开头的标题, 下载最新版本的 <strong>mirai-console-wrapper.jar</strong> 文件。(如 <strong>图 4</strong> )</p>
+<p><img src="./pic/github_mirai_console_wrapper.png" alt=""></p>
+<p><strong><center>图 4 mirai-console-wrapper 的下载地址</center></strong></p>
+<p>&emsp;&emsp;将下载好的 mirai-console-wrapper 移动到合适的位置。在地址栏中输入 powershell 并回车, 这会在当前目录启动 Powershell。(如 <strong>图 5</strong>)</p>
+<p><img src="./pic/execute_mirai_console_wrapper_1.png" alt=""></p>
+<p><strong><center>图 5 准备执行 mirai-console-wrapper</center></strong></p>
+<p>&emsp;&emsp;启动 Powershell 后, 输入 <code>java -jar .\mirai-console-wrapper-0.3.0.jar</code> 并回车启动 mirai-console-wrapper。</p>
+<p>&emsp;&emsp;启动 mirai-console-wrapper 后, 它会让你选择安装哪个 mirai-console 版本, 本文要安装 Pure 版本, 所以这里输入了 Pure。你可以按照你的需求来选择版本。</p>
+<p>&emsp;&emsp;输入 Pure 并回车, mirai-console-wrapper 会自动从服务器下载最新版的 mirai-console 和 mirai 库 (保存在 content 文件夹里)。并会自动创建 plugins 文件夹, 这个文件夹用于存放插件和插件的配置文件。</p>
+<p><img src="./pic/execute_mirai_console_wrapper_2.png" alt=""></p>
+<p><strong><center>图 6 正在下载 mirai-console-pure</center></strong></p>
+<p>&emsp;&emsp;等待下载完成后, 会显示如图 7的结果, 这就说明成功的启动了 mirai-console-pure。</p>
+<p><img src="./pic/execute_mirai_console_wrapper_3.png" alt=""></p>
+<p><strong><center>图 7 正在下载 mirai-console-pure</center></strong></p>
+<p>&emsp;&emsp;直接输入 <code>/login 你的机器人的qq号码 你的机器人的qq密码</code> 然后回车确认, 就能登录QQ机器人了。</p>
+<h2 id="安装插件"><a href="#安装插件" class="headerlink" title="安装插件"></a>安装插件</h2><h3 id="自动安装插件"><a href="#自动安装插件" class="headerlink" title="自动安装插件"></a>自动安装插件</h3><p>&emsp;&emsp;输入 <code>/help</code> 可以查看 mirai-console-pure 的指令。这个指令列表是会变化的, 比如有的插件会提供一些指令。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">-&gt; manager :Add a manager</span><br><span class="line">-&gt; login :机器人登录</span><br><span class="line">-&gt; status :获取状态</span><br><span class="line">-&gt; say :聊天功能演示</span><br><span class="line">-&gt; plugins :获取插件列表</span><br><span class="line">-&gt; command :获取指令列表</span><br><span class="line">-&gt; about :About Mirai-Console</span><br><span class="line">-&gt; reload :重新加载全部插件</span><br><span class="line">-&gt; install :Install plugin from PluginCenter</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;输入 <code>/install</code> 可以查看插件列表。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">=&gt;BiliBiliLinker ;作者: Karlatemp ;介绍: 解析BiliBili视频信息</span><br><span class="line">=&gt;DrawLots ;作者: Sincky ;介绍: 群抽签解签插件, 抽取当天玄学的运势, 遇事不决, 量子力学</span><br><span class="line">=&gt;History ;作者: Logiase ;介绍: 记录本地聊天记录</span><br><span class="line">=&gt;HsoPro ;作者: unknown ;介绍: 支持群内看高清涩图, 允许配置每个群允许,不允许看普通/r18的图</span><br><span class="line">=&gt;KeywordReply ;作者: Anders ;介绍: 群内关键字回复, 可选择精准问答或模糊问答, 分群配置</span><br><span class="line">=&gt;PingMyMcServer ;作者: NaturalHG ;介绍: 在QQ中ping MCPE服务器</span><br><span class="line">=&gt;Rcon ;作者: Angel、 ;介绍: 对服务器发送命令, 可在QQ群内或私聊执行服务器命令。</span><br><span class="line">=&gt;Runcode ;作者: Simper16 ;介绍: 在线运行代码</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;输入 <code>/install 插件名称</code> 如: <code>/install Rcon</code> 就可以安装插件。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[INFO] [Command] 正在连接崔云</span><br><span class="line">[INFO] [Command] 正在安装Rcon</span><br><span class="line">[INFO] [Command] 安装Rcon成功</span><br></pre></td></tr></table></figure>
+<h3 id="手动安装插件"><a href="#手动安装插件" class="headerlink" title="手动安装插件"></a>手动安装插件</h3><p>&emsp;&emsp;有几个很重要的插件没有出现在列表里, 接下来介绍手动安装插件。</p>
+<p>&emsp;&emsp;<strong>mirai-http-api</strong> 插件会在本地运行一个Web服务器, 从而提供 HTTP API。这允许其他程序通过 HTTP API 来使用 mirai。安装了它, 就可以运行各种编程语言编写的插件。(按理说这类插件会很多, 但是目前来说这类插件比较少, 因为各个大佬都自己玩, 少有发布插件的)</p>
+<blockquote>
+<p><strong>mirai-http-api</strong> 插件下载地址: <a target="_blank" rel="noopener" href="https://github.com/mamoe/mirai-api-http/releases">https://github.com/mamoe/mirai-api-http/releases</a></p>
+</blockquote>
+<p>&emsp;&emsp;<strong>mirai-console-addition</strong> 插件增强了 mirai-console 的功能, 它提供了 MD5密码登录 以及 MD5密码自动登录 等功能。</p>
+<blockquote>
+<p><strong>mirai-console-addition</strong> 插件下载地址: <a target="_blank" rel="noopener" href="https://github.com/ryoii/mirai-console-addition/releases">https://github.com/ryoii/mirai-console-addition/releases</a></p>
+</blockquote>
+<p>&emsp;&emsp;以 <strong>mirai-console-addition</strong> 为例, 下载最新版的 <strong>mirai-console-addition-V0.2.3.jar</strong> , 将它复制到 <strong>plugins</strong> 目录下。</p>
+<p>&emsp;&emsp;重新启动 mirai-console-wrapper, 该插件即可生效。</p>
+<p>&emsp;&emsp;此时再次输入 <code>/help</code>, 可以发现比原来多出了几个指令: </p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">-&gt; manager :Add a manager</span><br><span class="line">-&gt; login :机器人登录</span><br><span class="line">-&gt; status :获取状态</span><br><span class="line">-&gt; say :聊天功能演示</span><br><span class="line">-&gt; plugins :获取插件列表</span><br><span class="line">-&gt; command :获取指令列表</span><br><span class="line">-&gt; about :About Mirai-Console</span><br><span class="line">-&gt; reload :重新加载全部插件</span><br><span class="line">-&gt; install :Install plugin from PluginCenter</span><br><span class="line">-&gt; login-md5 :[console addition]使用md5作为密码登录</span><br><span class="line">-&gt; auto-login :[console addition]自动保存本次登录的qq号和密码md5值, 下次启动时自动登录</span><br><span class="line">-&gt; rcon :rcon插件命令</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;多出的 <strong>login-md5</strong> 和 <strong>auto-login</strong> 指令由 mirai-console-addition 插件提供。</p>
+<h1 id="将-mirai-机器人部署到-Linux-服务器"><a href="#将-mirai-机器人部署到-Linux-服务器" class="headerlink" title="将 mirai 机器人部署到 Linux 服务器"></a>将 mirai 机器人部署到 Linux 服务器</h1><p>未完待续…</p>
+<h2 id="准备运行环境-1"><a href="#准备运行环境-1" class="headerlink" title="准备运行环境"></a>准备运行环境</h2><h2 id="开始使用"><a href="#开始使用" class="headerlink" title="开始使用"></a>开始使用</h2><h2 id="进阶使用"><a href="#进阶使用" class="headerlink" title="进阶使用"></a>进阶使用</h2></div><div class="article-licensing box"><div class="licensing-title"><p>开源安卓QQ协议库 mirai 使用教程</p><p><a href="https://uint128.com/2020/04/18/开源安卓QQ协议库-mirai-使用教程/">https://uint128.com/2020/04/18/开源安卓QQ协议库-mirai-使用教程/</a></p></div><div class="licensing-meta level is-mobile"><div class="level-left"><div class="level-item is-narrow"><div><h6>作者</h6><p>uint128.com</p></div></div><div class="level-item is-narrow"><div><h6>发布于</h6><p>2020-04-18</p></div></div><div class="level-item is-narrow"><div><h6>更新于</h6><p>2022-08-22</p></div></div><div class="level-item is-narrow"><div><h6>许可协议</h6><p><a class="icons" rel="noopener" target="_blank" title="Creative Commons" href="https://creativecommons.org/"><i class="icon fab fa-creative-commons"></i></a><a class="icons" rel="noopener" target="_blank" title="Attribution" href="https://creativecommons.org/licenses/by/4.0/"><i class="icon fab fa-creative-commons-by"></i></a><a class="icons" rel="noopener" target="_blank" title="Noncommercial" href="https://creativecommons.org/licenses/by-nc/4.0/"><i class="icon fab fa-creative-commons-nc"></i></a></p></div></div></div></div></div><!--!--></article></div><!--!--><div class="card"><nav class="post-navigation mt-4 level is-mobile card-content"><div class="level-start"><a class="article-nav-prev level level-item link-muted" href="/2020/07/18/%E7%BF%BB%E8%AF%91-%E6%8E%A7%E5%88%B6%E5%8F%B0%E3%80%81%E7%BB%88%E7%AB%AF%E5%92%8CShell%E7%9A%84%E5%8C%BA%E5%88%AB%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%9F/"><i class="level-item fas fa-chevron-left"></i><span class="level-item">[翻译]控制台、终端和Shell的区别是什么？</span></a></div><div class="level-end"><a class="article-nav-next level level-item link-muted" href="/2020/04/13/%E6%95%B0%E5%80%BC%E7%A7%AF%E5%88%86%E8%BE%9B%E6%99%AE%E6%A3%AE%E6%B3%95%E7%9A%84%E6%8E%A8%E5%AF%BC%E4%BB%A5%E5%8F%8AMATLAB%E5%AE%9E%E7%8E%B0/"><span class="level-item">数值积分辛普森法的推导以及MATLAB实现</span><i class="level-item fas fa-chevron-right"></i></a></div></nav></div><div class="card"><div class="card-content"><h3 class="title is-5">评论</h3><div id="comment-container"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.css"><script src="https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.min.js"></script><script>var gitalk = new Gitalk({
+            id: "6cd8bed90801769901eb520595fe33bc",
+            repo: "cyanray.github.io",
+            owner: "cyanray",
+            clientID: "53e3c578fcb7b7b1a4da",
+            clientSecret: "74433ee77d6e13fd635b82add519e143ac791726",
+            admin: ["cyanray"],
+            createIssueManually: true,
+            distractionFreeMode: false,
+            perPage: 20,
+            pagerDirection: "last",
+            
+            
+            enableHotKey: true,
+            language: "zh-CN",
+        })
+        gitalk.render('comment-container')</script></div></div></div><!--!--><div class="column column-right is-4-tablet is-4-desktop is-4-widescreen  order-3 is-sticky"><div class="card widget" id="toc" data-type="toc"><div class="card-content"><div class="menu"><h3 class="menu-label">目录</h3><ul class="menu-list"><li><a class="level is-mobile" href="#mirai-项目简介"><span class="level-left"><span class="level-item">1</span><span class="level-item">mirai 项目简介</span></span></a></li><li><a class="level is-mobile" href="#在-windows-上使用-mirai-console"><span class="level-left"><span class="level-item">2</span><span class="level-item">在 windows 上使用 mirai-console</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#准备运行环境"><span class="level-left"><span class="level-item">2.1</span><span class="level-item">准备运行环境</span></span></a></li><li><a class="level is-mobile" href="#下载-mirai-console-wrapper"><span class="level-left"><span class="level-item">2.2</span><span class="level-item">下载 mirai-console-wrapper</span></span></a></li><li><a class="level is-mobile" href="#安装插件"><span class="level-left"><span class="level-item">2.3</span><span class="level-item">安装插件</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#自动安装插件"><span class="level-left"><span class="level-item">2.3.1</span><span class="level-item">自动安装插件</span></span></a></li><li><a class="level is-mobile" href="#手动安装插件"><span class="level-left"><span class="level-item">2.3.2</span><span class="level-item">手动安装插件</span></span></a></li></ul></li></ul></li><li><a class="level is-mobile" href="#将-mirai-机器人部署到-Linux-服务器"><span class="level-left"><span class="level-item">3</span><span class="level-item">将 mirai 机器人部署到 Linux 服务器</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#准备运行环境-1"><span class="level-left"><span class="level-item">3.1</span><span class="level-item">准备运行环境</span></span></a></li><li><a class="level is-mobile" href="#开始使用"><span class="level-left"><span class="level-item">3.2</span><span class="level-item">开始使用</span></span></a></li><li><a class="level is-mobile" href="#进阶使用"><span class="level-left"><span class="level-item">3.3</span><span class="level-item">进阶使用</span></span></a></li></ul></li></ul></div></div><style>#toc .menu-list > li > a.is-active + .menu-list { display: block; }#toc .menu-list > li > a + .menu-list { display: none; }</style><script src="/js/toc.js" defer></script></div><div class="card widget" data-type="recent-posts"><div class="card-content"><h3 class="menu-label">最新文章</h3><article class="media"><div class="media-content"><p class="date"><time dateTime="2023-04-29T09:02:24.000Z">2023-04-29</time></p><p class="title"><a href="/2023/04/29/C-Concepts-%E7%9A%84%E4%B8%A4%E4%B8%AA%E6%8A%80%E5%B7%A7/">C++ Concepts 的两个技巧</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2023-03-16T17:24:21.000Z">2023-03-17</time></p><p class="title"><a href="/2023/03/17/%E7%8C%AB%E5%A8%98-NNLL-UINT128/">猫娘 NNLL - UINT128</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2023-03-06T15:23:32.000Z">2023-03-06</time></p><p class="title"><a href="/2023/03/06/Modern-CMake-%E5%AE%9E%E8%B7%B5/">Modern CMake 实践</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2023-01-07T18:40:09.000Z">2023-01-08</time></p><p class="title"><a href="/2023/01/08/%E7%89%9B%E9%A1%BF%E6%8F%92%E5%80%BC%E6%B3%95%E7%9A%84-Matlab-%E5%AE%9E%E7%8E%B0/">牛顿插值法的 Matlab 实现</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2023-01-07T18:38:42.000Z">2023-01-08</time></p><p class="title"><a href="/2023/01/08/%E5%A4%9A%E5%85%83%E7%89%9B%E9%A1%BF%E8%BF%AD%E4%BB%A3%E6%B3%95%E7%9A%84-Matlab-%E5%AE%9E%E7%8E%B0/">多元牛顿迭代法的 Matlab 实现</a></p></div></article></div></div><div class="card widget" data-type="links"><div class="card-content"><div class="menu"><h3 class="menu-label">链接</h3><ul class="menu-list"><li><a class="level is-mobile" href="https://yuanxingxing-yxx.github.io/" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">星星的博客</span></span><span class="level-right"><span class="level-item tag">yuanxingxing-yxx.github.io</span></span></a></li><li><a class="level is-mobile" href="http://quosimodo.cn/" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">卡西莫多の礼物</span></span><span class="level-right"><span class="level-item tag">quosimodo.cn</span></span></a></li><li><a class="level is-mobile" href="https://blog.icepie.net/" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">icepie&#039;s blog</span></span><span class="level-right"><span class="level-item tag">blog.icepie.net</span></span></a></li><li><a class="level is-mobile" href="https://www.cnblogs.com/sherlson" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">sherlson&#039;s blog</span></span><span class="level-right"><span class="level-item tag">www.cnblogs.com</span></span></a></li><li><a class="level is-mobile" href="http://blog.devilwst.top/" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">小生的技术成长路线</span></span><span class="level-right"><span class="level-item tag">blog.devilwst.top</span></span></a></li></ul></div></div></div></div></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/">uint128&#039;s Blog</a><p class="is-size-7"><span>&copy; 2023 uint128.com</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a></p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Creative Commons" href="https://creativecommons.org/"><i class="fab fa-creative-commons"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Attribution 4.0 International" href="https://creativecommons.org/licenses/by/4.0/"><i class="fab fa-creative-commons-by"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" async></script><script>moment.locale("zh-CN");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script src="/js/column.js"></script><script src="/js/animation.js"></script><a id="back-to-top" title="回到顶端" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script src="/js/back_to_top.js" defer></script><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js" defer></script><script>window.addEventListener("load", () => {
+      window.cookieconsent.initialise({
+        type: "info",
+        theme: "edgeless",
+        static: false,
+        position: "bottom-left",
+        content: {
+          message: "此网站使用Cookie来改善您的体验。",
+          dismiss: "知道了！",
+          allow: "允许使用Cookie",
+          deny: "拒绝",
+          link: "了解更多",
+          policy: "Cookie政策",
+          href: "https://www.cookiesandyou.com/",
+        },
+        palette: {
+          popup: {
+            background: "#edeff5",
+            text: "#838391"
+          },
+          button: {
+            background: "#4b81e8"
+          },
+        },
+      });
+    });</script><script src="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/js/lightgallery.min.js" defer></script><script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
+            if (typeof $.fn.lightGallery === 'function') {
+                $('.article').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof $.fn.justifiedGallery === 'function') {
+                if ($('.justified-gallery > p > .gallery-item').length) {
+                    $('.justified-gallery > p > .gallery-item').unwrap();
+                }
+                $('.justified-gallery').justifiedGallery();
+            }
+        });</script><!--!--><!--!--><script type="text/x-mathjax-config">MathJax.Hub.Config({
+            'HTML-CSS': {
+                matchFontHeight: false
+            },
+            SVG: {
+                matchFontHeight: false
+            },
+            CommonHTML: {
+                matchFontHeight: false
+            },
+            tex2jax: {
+                inlineMath: [
+                    ['$','$'],
+                    ['\\(','\\)']
+                ]
+            }
+        });</script><script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.9/unpacked/MathJax.js?config=TeX-MML-AM_CHTML" defer></script><!--!--><!--!--><!--!--><script src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="想要查找什么..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script src="/js/insight.js" defer></script><script>document.addEventListener('DOMContentLoaded', function () {
+            loadInsight({"contentUrl":"/content.json"}, {"hint":"想要查找什么...","untitled":"(无标题)","posts":"文章","pages":"页面","categories":"分类","tags":"标签"});
+        });</script><script type="text/javascript" src="/js/imaegoo/universe.js"></script><!-- hexo-inject:begin --><!-- hexo-inject:end --></body></html>

@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta><title>折腾IPv6的一天 - uint128&#039;s Blog</title><link rel="manifest" href="/manifest.json"><meta name="application-name" content="uint128&#039;s Blog"><meta name="msapplication-TileImage" content="/favicon.ico"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="uint128&#039;s Blog"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="description" content="不想学习的一天。"><meta property="og:type" content="blog"><meta property="og:title" content="折腾IPv6的一天"><meta property="og:url" content="https://uint128.com/2021/08/21/%E6%8A%98%E8%85%BEIPV6%E7%9A%84%E4%B8%80%E5%A4%A9/"><meta property="og:site_name" content="uint128&#039;s Blog"><meta property="og:description" content="不想学习的一天。"><meta property="og:locale" content="zh_CN"><meta property="og:image" content="https://uint128.com/2021/08/21/%E6%8A%98%E8%85%BEIPV6%E7%9A%84%E4%B8%80%E5%A4%A9/pic001.png"><meta property="og:image" content="https://uint128.com/2021/08/21/%E6%8A%98%E8%85%BEIPV6%E7%9A%84%E4%B8%80%E5%A4%A9/pic002.png"><meta property="og:image" content="https://uint128.com/2021/08/21/%E6%8A%98%E8%85%BEIPV6%E7%9A%84%E4%B8%80%E5%A4%A9/pic003.png"><meta property="og:image" content="https://uint128.com/2021/08/21/%E6%8A%98%E8%85%BEIPV6%E7%9A%84%E4%B8%80%E5%A4%A9/pic004.png"><meta property="og:image" content="https://uint128.com/2021/08/21/%E6%8A%98%E8%85%BEIPV6%E7%9A%84%E4%B8%80%E5%A4%A9/pic005.png"><meta property="og:image" content="https://uint128.com/2021/08/21/%E6%8A%98%E8%85%BEIPV6%E7%9A%84%E4%B8%80%E5%A4%A9/pic006.png"><meta property="og:image" content="https://uint128.com/2021/08/21/%E6%8A%98%E8%85%BEIPV6%E7%9A%84%E4%B8%80%E5%A4%A9/pic007.png"><meta property="og:image" content="https://uint128.com/2021/08/21/%E6%8A%98%E8%85%BEIPV6%E7%9A%84%E4%B8%80%E5%A4%A9/pic009.png"><meta property="og:image" content="https://uint128.com/2021/08/21/%E6%8A%98%E8%85%BEIPV6%E7%9A%84%E4%B8%80%E5%A4%A9/pic008.png"><meta property="article:published_time" content="2021-08-21T10:30:15.000Z"><meta property="article:modified_time" content="2022-08-22T09:11:21.035Z"><meta property="article:author" content="uint128.com"><meta property="article:tag" content="uint128"><meta property="article:tag" content="uint128&#039;s blog"><meta property="article:tag" content="uint128.com"><meta property="twitter:card" content="summary"><meta property="twitter:image" content="./pic001.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://uint128.com/2021/08/21/%E6%8A%98%E8%85%BEIPV6%E7%9A%84%E4%B8%80%E5%A4%A9/"},"headline":"uint128's Blog","image":["https://uint128.com/2021/08/21/%E6%8A%98%E8%85%BEIPV6%E7%9A%84%E4%B8%80%E5%A4%A9/pic001.png","https://uint128.com/2021/08/21/%E6%8A%98%E8%85%BEIPV6%E7%9A%84%E4%B8%80%E5%A4%A9/pic002.png","https://uint128.com/2021/08/21/%E6%8A%98%E8%85%BEIPV6%E7%9A%84%E4%B8%80%E5%A4%A9/pic003.png","https://uint128.com/2021/08/21/%E6%8A%98%E8%85%BEIPV6%E7%9A%84%E4%B8%80%E5%A4%A9/pic004.png","https://uint128.com/2021/08/21/%E6%8A%98%E8%85%BEIPV6%E7%9A%84%E4%B8%80%E5%A4%A9/pic005.png","https://uint128.com/2021/08/21/%E6%8A%98%E8%85%BEIPV6%E7%9A%84%E4%B8%80%E5%A4%A9/pic006.png","https://uint128.com/2021/08/21/%E6%8A%98%E8%85%BEIPV6%E7%9A%84%E4%B8%80%E5%A4%A9/pic007.png","https://uint128.com/2021/08/21/%E6%8A%98%E8%85%BEIPV6%E7%9A%84%E4%B8%80%E5%A4%A9/pic009.png","https://uint128.com/2021/08/21/%E6%8A%98%E8%85%BEIPV6%E7%9A%84%E4%B8%80%E5%A4%A9/pic008.png"],"datePublished":"2021-08-21T10:30:15.000Z","dateModified":"2022-08-22T09:11:21.035Z","author":{"@type":"Person","name":"uint128.com"},"publisher":{"@type":"Organization","logo":{"@type":"ImageObject"}},"description":"不想学习的一天。"}</script><link rel="canonical" href="https://uint128.com/2021/08/21/%E6%8A%98%E8%85%BEIPV6%E7%9A%84%E4%B8%80%E5%A4%A9/"><link rel="alternate" href="/atom.xml" title="uint128&#039;s Blog" type="application/atom+xml"><link rel="icon" href="/favicon.ico"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.2/css/all.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.12.0/styles/atom-one-light.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;600&amp;family=Source+Code+Pro"><link rel="stylesheet" href="/css/default.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><!--!--><!--!--><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/css/justifiedGallery.min.css"><!--!--><!--!--><!--!--><style>.pace{-webkit-pointer-events:none;pointer-events:none;-webkit-user-select:none;-moz-user-select:none;user-select:none}.pace-inactive{display:none}.pace .pace-progress{background:#3273dc;position:fixed;z-index:2000;top:0;right:100%;width:100%;height:2px}</style><script src="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js"></script><!--!--><!--!--><!-- hexo injector head_end start -->
+<!-- hexo-inject:begin --><!-- hexo-inject:end --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.6.0/katex.min.css">
+<!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.2.0"><!-- hexo-inject:begin --><!-- hexo-inject:end --></head><body class="is-2-column"><script type="text/javascript" src="/js/imaegoo/night.js"></script><canvas id="universe"></canvas><nav class="navbar navbar-main"><div class="container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/">uint128&#039;s Blog</a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">Home</a><a class="navbar-item" href="/archives">Archives</a><a class="navbar-item" href="/tags">Tags</a><a class="navbar-item" href="/about">About</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="My GitHub" href="https://github.com/cyanray"><i class="fab fa-github"></i></a><a class="navbar-item" target="_blank" rel="noopener" title="RSS" href="/atom.xml"><i class="fas fa-rss"></i></a><a class="navbar-item is-hidden-tablet catalogue" title="目录" href="javascript:;"><i class="fas fa-list-ul"></i></a><a class="navbar-item night" id="night-nav" title="Night Mode" href="javascript:;"><i class="fas fa-moon" id="night-icon"></i></a><a class="navbar-item search" title="搜索" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-8-widescreen"><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2021-08-21T10:30:15.000Z" title="2021/8/21 18:30:15">2021-08-21</time>发表</span><span class="level-item"><time dateTime="2022-08-22T09:11:21.035Z" title="2022/8/22 17:11:21">2022-08-22</time>更新</span></div></div><h1 class="title is-3 is-size-4-mobile">折腾IPv6的一天</h1><div class="content"><p>不想学习的一天。<br><span id="more"></span><br>看无聊新闻的时候得知现在IPv6已经比较成熟（个屁），家庭宽带基本上都能启用IPv6。所以就有了折腾IPv6的想法。<br>家庭宽带虽然可以启用IPv6服务，但是默认是不启用的（不知道什么原因，据说是装宽带的师傅省事？）。<br>所以要进入IPv6的世界，要自己动手配置光猫的设置。</p>
+<!-- hexo-inject:begin --><!-- hexo-inject:end --><p>我家是电信的宽带，光猫是中兴生产的。百度查了它的超级管理员账号密码是：<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">telecomadmin</span><br><span class="line">nE7jA%5m</span><br></pre></td></tr></table></figure><br>一试就直接登录进去了，这一步我进行的非常顺利。</p>
+<p>启用IPv6的步骤网上能找到，说实话这方面的资料不是很多，有的都是比较久远的贴子在讨论。</p>
+<p>进入光猫的超级管理员界面后，先看上网功能的<strong>连接名称</strong>。</p>
+<p><img src="./pic001.png" alt="连接名称"></p>
+<p>然后找到如图所示的界面，设置对应连接名称的网络连接参数。</p>
+<p>把IP模式从IPv4改为IPv4&amp;IPv6，这样光猫就同时支持IPv4和IPv6了。</p>
+<p><img src="./pic002.png" alt=""></p>
+<p>然后是IPv6方面的设置，其中<strong>获取前缀</strong>要勾上。其他的地址获取方式、前缀获取方式、DNS获取方式，我也不清楚该怎么填。我找到的教程的设置方式在我的光猫里没有对应的设置，所以我就全部弄成AutoConfigured了。</p>
+<p>搞完这些设置，点保存，然后重启光猫。再次连上网络后，我的电脑获取到了IPv6的地址，而且确定了不是局域网的IPv6地址。</p>
+<p><img src="./pic003.png" alt=""></p>
+<p>然后我就找了个IPv6的测试网址，一系列检测之后说我无法访问IPv6。</p>
+<p>这时候我是有点迷惑的，明明都获取到IPv6地址了，怎么会访问不了呢？我以为是光猫没设置对，所以又去查了一些资料。</p>
+<p>后来才发现，其实光猫设置的没错。真正原因是我的代理软件的IPv6设置没开。打开之后就可以了。</p>
+<p><img src="./pic004.png" alt=""></p>
+<p>然后我又想起路由器也有个IPv6的开关，一起开启了。</p>
+<p><img src="./pic005.png" alt=""></p>
+<p>至此，我成功通过了测试网站的检测。</p>
+<p><img src="./pic006.png" alt=""></p>
+<p>然后我就买了个IPv6 Only的vps，想要试一下是不是真的能连上。（其实我是想找现成的IPv6的网站来测试的，但是国内的纯IPv6网站我没找到，要么就是找到了几年前的信息，已经访问不了了。而国外的IPv6网站又访问不上，被墙了）</p>
+<p><img src="./pic007.png" alt=""></p>
+<p>ssh毫不意外的连上了。</p>
+<p>又装了个Nginx，解析到<a target="_blank" rel="noopener" href="http://ipv6.uint128.com/">ipv6.uint128.com</a>。看到了熟悉的 <strong>Welcome to nginx!</strong>。</p>
+<p>而且我套了一层cloudflare CDN后，发现没有IPv6的设备也是可以访问的。</p>
+<p>这个发现还挺惊喜的，这意味着IPv6 Only的服务器也是可以做Web服务器的。</p>
+<p>我又把服务器解析到<a target="_blank" rel="noopener" href="http://ipv6test.uint128.com">ipv6test.uint128.com</a>，这个地址没有经过CDN，所以可以用来测试IPv6。如果你也能看到<strong>Welcome to nginx!</strong>，那么你的网络可以访问纯IPv6网站！</p>
+<p><img src="./pic009.png" alt=""></p>
+<p>因为ssh直接连接国外的服务器实在是太卡了，操作起来很不舒服，所以我又打算装一个mosh(mobile shell)。因为mosh是基于UDP的，而且考虑了网络不佳的情况，所以会比ssh流畅一点。</p>
+<p>这期间遇到了两个奇葩问题。</p>
+<p>第一个是这个 mosh 没有 windows 客户端，所以我只能在 wsl 上用 mosh 连接，但是却出现了无法连接的情况。</p>
+<p>因为 mosh 一开始是用 ssh 进行验证，然后才用 udp 进行通信。我就试了下在 wsl 中用 ssh 连接服务器。（之前都用的powershell的ssh客户端）</p>
+<p>结果连接不上，提示：<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ssh: connect to host 2001:***:f888 port 22: Network is unreachable</span><br></pre></td></tr></table></figure></p>
+<p>很奇怪吧，我以为是系统问题，又用 ssh 连接了一台 IPv4 服务器，这 IPv4 可以很顺利的连上。</p>
+<p>所以问题就是 wsl2 无法通过 ssh + IPv6 连接服务器。我猜到是 wsl2 的问题，但是我不知道怎么解决了。</p>
+<p>我又装了个 wsl1 的系统。这次可以用 ssh + IPv6 连接服务器了。</p>
+<p>第二个奇葩问题出现了，因为 mosh 还是无法工作。</p>
+<p><img src="./pic008.png" alt=""></p>
+<p>防火墙是允许 mosh 的端口通信的，但是我试了很多次，mosh 都无法工作。</p>
+</div><div class="article-licensing box"><div class="licensing-title"><p>折腾IPv6的一天</p><p><a href="https://uint128.com/2021/08/21/折腾IPV6的一天/">https://uint128.com/2021/08/21/折腾IPV6的一天/</a></p></div><div class="licensing-meta level is-mobile"><div class="level-left"><div class="level-item is-narrow"><div><h6>作者</h6><p>uint128.com</p></div></div><div class="level-item is-narrow"><div><h6>发布于</h6><p>2021-08-21</p></div></div><div class="level-item is-narrow"><div><h6>更新于</h6><p>2022-08-22</p></div></div><div class="level-item is-narrow"><div><h6>许可协议</h6><p><a class="icons" rel="noopener" target="_blank" title="Creative Commons" href="https://creativecommons.org/"><i class="icon fab fa-creative-commons"></i></a><a class="icons" rel="noopener" target="_blank" title="Attribution" href="https://creativecommons.org/licenses/by/4.0/"><i class="icon fab fa-creative-commons-by"></i></a><a class="icons" rel="noopener" target="_blank" title="Noncommercial" href="https://creativecommons.org/licenses/by-nc/4.0/"><i class="icon fab fa-creative-commons-nc"></i></a></p></div></div></div></div></div><!--!--></article></div><!--!--><div class="card"><nav class="post-navigation mt-4 level is-mobile card-content"><div class="level-start"><a class="article-nav-prev level level-item link-muted" href="/2021/10/11/%E8%8A%B1/"><i class="level-item fas fa-chevron-left"></i><span class="level-item">花</span></a></div><div class="level-end"><a class="article-nav-next level level-item link-muted" href="/2021/05/18/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F%E4%B9%8B%E4%BC%98%E5%8C%96%E7%A8%8B%E5%BA%8F%E6%80%A7%E8%83%BD-%E7%AC%AC%E4%BA%94%E7%AB%A0-%E7%AC%94%E8%AE%B0/"><span class="level-item">《深入理解计算机系统》之优化程序性能(第五章)笔记</span><i class="level-item fas fa-chevron-right"></i></a></div></nav></div><div class="card"><div class="card-content"><h3 class="title is-5">评论</h3><div id="comment-container"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.css"><script src="https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.min.js"></script><script>var gitalk = new Gitalk({
+            id: "c98ab805abdb004e7bd3508d028ad28d",
+            repo: "cyanray.github.io",
+            owner: "cyanray",
+            clientID: "53e3c578fcb7b7b1a4da",
+            clientSecret: "74433ee77d6e13fd635b82add519e143ac791726",
+            admin: ["cyanray"],
+            createIssueManually: true,
+            distractionFreeMode: false,
+            perPage: 20,
+            pagerDirection: "last",
+            
+            
+            enableHotKey: true,
+            language: "zh-CN",
+        })
+        gitalk.render('comment-container')</script></div></div></div><!--!--><div class="column column-right is-4-tablet is-4-desktop is-4-widescreen  order-3 is-sticky"><!--!--><div class="card widget" data-type="recent-posts"><div class="card-content"><h3 class="menu-label">最新文章</h3><article class="media"><div class="media-content"><p class="date"><time dateTime="2023-04-29T09:02:24.000Z">2023-04-29</time></p><p class="title"><a href="/2023/04/29/C-Concepts-%E7%9A%84%E4%B8%A4%E4%B8%AA%E6%8A%80%E5%B7%A7/">C++ Concepts 的两个技巧</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2023-03-16T17:24:21.000Z">2023-03-17</time></p><p class="title"><a href="/2023/03/17/%E7%8C%AB%E5%A8%98-NNLL-UINT128/">猫娘 NNLL - UINT128</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2023-03-06T15:23:32.000Z">2023-03-06</time></p><p class="title"><a href="/2023/03/06/Modern-CMake-%E5%AE%9E%E8%B7%B5/">Modern CMake 实践</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2023-01-07T18:40:09.000Z">2023-01-08</time></p><p class="title"><a href="/2023/01/08/%E7%89%9B%E9%A1%BF%E6%8F%92%E5%80%BC%E6%B3%95%E7%9A%84-Matlab-%E5%AE%9E%E7%8E%B0/">牛顿插值法的 Matlab 实现</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2023-01-07T18:38:42.000Z">2023-01-08</time></p><p class="title"><a href="/2023/01/08/%E5%A4%9A%E5%85%83%E7%89%9B%E9%A1%BF%E8%BF%AD%E4%BB%A3%E6%B3%95%E7%9A%84-Matlab-%E5%AE%9E%E7%8E%B0/">多元牛顿迭代法的 Matlab 实现</a></p></div></article></div></div><div class="card widget" data-type="links"><div class="card-content"><div class="menu"><h3 class="menu-label">链接</h3><ul class="menu-list"><li><a class="level is-mobile" href="https://yuanxingxing-yxx.github.io/" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">星星的博客</span></span><span class="level-right"><span class="level-item tag">yuanxingxing-yxx.github.io</span></span></a></li><li><a class="level is-mobile" href="http://quosimodo.cn/" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">卡西莫多の礼物</span></span><span class="level-right"><span class="level-item tag">quosimodo.cn</span></span></a></li><li><a class="level is-mobile" href="https://blog.icepie.net/" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">icepie&#039;s blog</span></span><span class="level-right"><span class="level-item tag">blog.icepie.net</span></span></a></li><li><a class="level is-mobile" href="https://www.cnblogs.com/sherlson" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">sherlson&#039;s blog</span></span><span class="level-right"><span class="level-item tag">www.cnblogs.com</span></span></a></li><li><a class="level is-mobile" href="http://blog.devilwst.top/" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">小生的技术成长路线</span></span><span class="level-right"><span class="level-item tag">blog.devilwst.top</span></span></a></li></ul></div></div></div></div></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/">uint128&#039;s Blog</a><p class="is-size-7"><span>&copy; 2023 uint128.com</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a></p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Creative Commons" href="https://creativecommons.org/"><i class="fab fa-creative-commons"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Attribution 4.0 International" href="https://creativecommons.org/licenses/by/4.0/"><i class="fab fa-creative-commons-by"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" async></script><script>moment.locale("zh-CN");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script src="/js/column.js"></script><script src="/js/animation.js"></script><a id="back-to-top" title="回到顶端" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script src="/js/back_to_top.js" defer></script><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js" defer></script><script>window.addEventListener("load", () => {
+      window.cookieconsent.initialise({
+        type: "info",
+        theme: "edgeless",
+        static: false,
+        position: "bottom-left",
+        content: {
+          message: "此网站使用Cookie来改善您的体验。",
+          dismiss: "知道了！",
+          allow: "允许使用Cookie",
+          deny: "拒绝",
+          link: "了解更多",
+          policy: "Cookie政策",
+          href: "https://www.cookiesandyou.com/",
+        },
+        palette: {
+          popup: {
+            background: "#edeff5",
+            text: "#838391"
+          },
+          button: {
+            background: "#4b81e8"
+          },
+        },
+      });
+    });</script><script src="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/js/lightgallery.min.js" defer></script><script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
+            if (typeof $.fn.lightGallery === 'function') {
+                $('.article').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof $.fn.justifiedGallery === 'function') {
+                if ($('.justified-gallery > p > .gallery-item').length) {
+                    $('.justified-gallery > p > .gallery-item').unwrap();
+                }
+                $('.justified-gallery').justifiedGallery();
+            }
+        });</script><!--!--><!--!--><script type="text/x-mathjax-config">MathJax.Hub.Config({
+            'HTML-CSS': {
+                matchFontHeight: false
+            },
+            SVG: {
+                matchFontHeight: false
+            },
+            CommonHTML: {
+                matchFontHeight: false
+            },
+            tex2jax: {
+                inlineMath: [
+                    ['$','$'],
+                    ['\\(','\\)']
+                ]
+            }
+        });</script><script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.9/unpacked/MathJax.js?config=TeX-MML-AM_CHTML" defer></script><!--!--><!--!--><!--!--><script src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="想要查找什么..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script src="/js/insight.js" defer></script><script>document.addEventListener('DOMContentLoaded', function () {
+            loadInsight({"contentUrl":"/content.json"}, {"hint":"想要查找什么...","untitled":"(无标题)","posts":"文章","pages":"页面","categories":"分类","tags":"标签"});
+        });</script><script type="text/javascript" src="/js/imaegoo/universe.js"></script><!-- hexo-inject:begin --><!-- hexo-inject:end --></body></html>

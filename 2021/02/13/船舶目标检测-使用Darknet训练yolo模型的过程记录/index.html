@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta><title>船舶目标检测:使用Darknet训练yolo模型的过程记录 - uint128&#039;s Blog</title><link rel="manifest" href="/manifest.json"><meta name="application-name" content="uint128&#039;s Blog"><meta name="msapplication-TileImage" content="/favicon.ico"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="uint128&#039;s Blog"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="description" content="船舶目标检测:使用Darknet训练yolo模型的过程记录"><meta property="og:type" content="blog"><meta property="og:title" content="船舶目标检测:使用Darknet训练yolo模型的过程记录"><meta property="og:url" content="https://uint128.com/2021/02/13/%E8%88%B9%E8%88%B6%E7%9B%AE%E6%A0%87%E6%A3%80%E6%B5%8B-%E4%BD%BF%E7%94%A8Darknet%E8%AE%AD%E7%BB%83yolo%E6%A8%A1%E5%9E%8B%E7%9A%84%E8%BF%87%E7%A8%8B%E8%AE%B0%E5%BD%95/"><meta property="og:site_name" content="uint128&#039;s Blog"><meta property="og:description" content="船舶目标检测:使用Darknet训练yolo模型的过程记录"><meta property="og:locale" content="zh_CN"><meta property="og:image" content="https://uint128.com/2021/02/13/%E8%88%B9%E8%88%B6%E7%9B%AE%E6%A0%87%E6%A3%80%E6%B5%8B-%E4%BD%BF%E7%94%A8Darknet%E8%AE%AD%E7%BB%83yolo%E6%A8%A1%E5%9E%8B%E7%9A%84%E8%BF%87%E7%A8%8B%E8%AE%B0%E5%BD%95/000860.jpg"><meta property="og:image" content="https://uint128.com/2021/02/13/%E8%88%B9%E8%88%B6%E7%9B%AE%E6%A0%87%E6%A3%80%E6%B5%8B-%E4%BD%BF%E7%94%A8Darknet%E8%AE%AD%E7%BB%83yolo%E6%A8%A1%E5%9E%8B%E7%9A%84%E8%BF%87%E7%A8%8B%E8%AE%B0%E5%BD%95/001985.jpg"><meta property="og:image" content="https://uint128.com/2021/02/13/%E8%88%B9%E8%88%B6%E7%9B%AE%E6%A0%87%E6%A3%80%E6%B5%8B-%E4%BD%BF%E7%94%A8Darknet%E8%AE%AD%E7%BB%83yolo%E6%A8%A1%E5%9E%8B%E7%9A%84%E8%BF%87%E7%A8%8B%E8%AE%B0%E5%BD%95/001996.jpg"><meta property="og:image" content="https://uint128.com/2021/02/13/%E8%88%B9%E8%88%B6%E7%9B%AE%E6%A0%87%E6%A3%80%E6%B5%8B-%E4%BD%BF%E7%94%A8Darknet%E8%AE%AD%E7%BB%83yolo%E6%A8%A1%E5%9E%8B%E7%9A%84%E8%BF%87%E7%A8%8B%E8%AE%B0%E5%BD%95/train_chart.png"><meta property="og:image" content="https://uint128.com/2021/02/13/%E8%88%B9%E8%88%B6%E7%9B%AE%E6%A0%87%E6%A3%80%E6%B5%8B-%E4%BD%BF%E7%94%A8Darknet%E8%AE%AD%E7%BB%83yolo%E6%A8%A1%E5%9E%8B%E7%9A%84%E8%BF%87%E7%A8%8B%E8%AE%B0%E5%BD%95/p4.jpg"><meta property="og:image" content="https://uint128.com/2021/02/13/%E8%88%B9%E8%88%B6%E7%9B%AE%E6%A0%87%E6%A3%80%E6%B5%8B-%E4%BD%BF%E7%94%A8Darknet%E8%AE%AD%E7%BB%83yolo%E6%A8%A1%E5%9E%8B%E7%9A%84%E8%BF%87%E7%A8%8B%E8%AE%B0%E5%BD%95/p5.jpg"><meta property="og:image" content="https://uint128.com/2021/02/13/%E8%88%B9%E8%88%B6%E7%9B%AE%E6%A0%87%E6%A3%80%E6%B5%8B-%E4%BD%BF%E7%94%A8Darknet%E8%AE%AD%E7%BB%83yolo%E6%A8%A1%E5%9E%8B%E7%9A%84%E8%BF%87%E7%A8%8B%E8%AE%B0%E5%BD%95/p1.jpg"><meta property="og:image" content="https://uint128.com/2021/02/13/%E8%88%B9%E8%88%B6%E7%9B%AE%E6%A0%87%E6%A3%80%E6%B5%8B-%E4%BD%BF%E7%94%A8Darknet%E8%AE%AD%E7%BB%83yolo%E6%A8%A1%E5%9E%8B%E7%9A%84%E8%BF%87%E7%A8%8B%E8%AE%B0%E5%BD%95/p2.jpg"><meta property="og:image" content="https://uint128.com/2021/02/13/%E8%88%B9%E8%88%B6%E7%9B%AE%E6%A0%87%E6%A3%80%E6%B5%8B-%E4%BD%BF%E7%94%A8Darknet%E8%AE%AD%E7%BB%83yolo%E6%A8%A1%E5%9E%8B%E7%9A%84%E8%BF%87%E7%A8%8B%E8%AE%B0%E5%BD%95/p3.jpg"><meta property="article:published_time" content="2021-02-13T02:25:00.000Z"><meta property="article:modified_time" content="2022-08-22T09:11:21.054Z"><meta property="article:author" content="uint128.com"><meta property="article:tag" content="目标检测"><meta property="article:tag" content="yolo"><meta property="article:tag" content="船舶"><meta property="twitter:card" content="summary"><meta property="twitter:image" content="000860.jpg"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://uint128.com/2021/02/13/%E8%88%B9%E8%88%B6%E7%9B%AE%E6%A0%87%E6%A3%80%E6%B5%8B-%E4%BD%BF%E7%94%A8Darknet%E8%AE%AD%E7%BB%83yolo%E6%A8%A1%E5%9E%8B%E7%9A%84%E8%BF%87%E7%A8%8B%E8%AE%B0%E5%BD%95/"},"headline":"uint128's Blog","image":["https://uint128.com/2021/02/13/%E8%88%B9%E8%88%B6%E7%9B%AE%E6%A0%87%E6%A3%80%E6%B5%8B-%E4%BD%BF%E7%94%A8Darknet%E8%AE%AD%E7%BB%83yolo%E6%A8%A1%E5%9E%8B%E7%9A%84%E8%BF%87%E7%A8%8B%E8%AE%B0%E5%BD%95/000860.jpg","https://uint128.com/2021/02/13/%E8%88%B9%E8%88%B6%E7%9B%AE%E6%A0%87%E6%A3%80%E6%B5%8B-%E4%BD%BF%E7%94%A8Darknet%E8%AE%AD%E7%BB%83yolo%E6%A8%A1%E5%9E%8B%E7%9A%84%E8%BF%87%E7%A8%8B%E8%AE%B0%E5%BD%95/001985.jpg","https://uint128.com/2021/02/13/%E8%88%B9%E8%88%B6%E7%9B%AE%E6%A0%87%E6%A3%80%E6%B5%8B-%E4%BD%BF%E7%94%A8Darknet%E8%AE%AD%E7%BB%83yolo%E6%A8%A1%E5%9E%8B%E7%9A%84%E8%BF%87%E7%A8%8B%E8%AE%B0%E5%BD%95/001996.jpg","https://uint128.com/2021/02/13/%E8%88%B9%E8%88%B6%E7%9B%AE%E6%A0%87%E6%A3%80%E6%B5%8B-%E4%BD%BF%E7%94%A8Darknet%E8%AE%AD%E7%BB%83yolo%E6%A8%A1%E5%9E%8B%E7%9A%84%E8%BF%87%E7%A8%8B%E8%AE%B0%E5%BD%95/train_chart.png","https://uint128.com/2021/02/13/%E8%88%B9%E8%88%B6%E7%9B%AE%E6%A0%87%E6%A3%80%E6%B5%8B-%E4%BD%BF%E7%94%A8Darknet%E8%AE%AD%E7%BB%83yolo%E6%A8%A1%E5%9E%8B%E7%9A%84%E8%BF%87%E7%A8%8B%E8%AE%B0%E5%BD%95/p4.jpg","https://uint128.com/2021/02/13/%E8%88%B9%E8%88%B6%E7%9B%AE%E6%A0%87%E6%A3%80%E6%B5%8B-%E4%BD%BF%E7%94%A8Darknet%E8%AE%AD%E7%BB%83yolo%E6%A8%A1%E5%9E%8B%E7%9A%84%E8%BF%87%E7%A8%8B%E8%AE%B0%E5%BD%95/p5.jpg","https://uint128.com/2021/02/13/%E8%88%B9%E8%88%B6%E7%9B%AE%E6%A0%87%E6%A3%80%E6%B5%8B-%E4%BD%BF%E7%94%A8Darknet%E8%AE%AD%E7%BB%83yolo%E6%A8%A1%E5%9E%8B%E7%9A%84%E8%BF%87%E7%A8%8B%E8%AE%B0%E5%BD%95/p1.jpg","https://uint128.com/2021/02/13/%E8%88%B9%E8%88%B6%E7%9B%AE%E6%A0%87%E6%A3%80%E6%B5%8B-%E4%BD%BF%E7%94%A8Darknet%E8%AE%AD%E7%BB%83yolo%E6%A8%A1%E5%9E%8B%E7%9A%84%E8%BF%87%E7%A8%8B%E8%AE%B0%E5%BD%95/p2.jpg","https://uint128.com/2021/02/13/%E8%88%B9%E8%88%B6%E7%9B%AE%E6%A0%87%E6%A3%80%E6%B5%8B-%E4%BD%BF%E7%94%A8Darknet%E8%AE%AD%E7%BB%83yolo%E6%A8%A1%E5%9E%8B%E7%9A%84%E8%BF%87%E7%A8%8B%E8%AE%B0%E5%BD%95/p3.jpg"],"datePublished":"2021-02-13T02:25:00.000Z","dateModified":"2022-08-22T09:11:21.054Z","author":{"@type":"Person","name":"uint128.com"},"publisher":{"@type":"Organization","logo":{"@type":"ImageObject"}},"description":"船舶目标检测:使用Darknet训练yolo模型的过程记录"}</script><link rel="canonical" href="https://uint128.com/2021/02/13/%E8%88%B9%E8%88%B6%E7%9B%AE%E6%A0%87%E6%A3%80%E6%B5%8B-%E4%BD%BF%E7%94%A8Darknet%E8%AE%AD%E7%BB%83yolo%E6%A8%A1%E5%9E%8B%E7%9A%84%E8%BF%87%E7%A8%8B%E8%AE%B0%E5%BD%95/"><link rel="alternate" href="/atom.xml" title="uint128&#039;s Blog" type="application/atom+xml"><link rel="icon" href="/favicon.ico"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.2/css/all.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.12.0/styles/atom-one-light.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;600&amp;family=Source+Code+Pro"><link rel="stylesheet" href="/css/default.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><!--!--><!--!--><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/css/justifiedGallery.min.css"><!--!--><!--!--><!--!--><style>.pace{-webkit-pointer-events:none;pointer-events:none;-webkit-user-select:none;-moz-user-select:none;user-select:none}.pace-inactive{display:none}.pace .pace-progress{background:#3273dc;position:fixed;z-index:2000;top:0;right:100%;width:100%;height:2px}</style><script src="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js"></script><!--!--><!--!--><!-- hexo injector head_end start -->
+<!-- hexo-inject:begin --><!-- hexo-inject:end --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.6.0/katex.min.css">
+<!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.2.0"><!-- hexo-inject:begin --><!-- hexo-inject:end --></head><body class="is-2-column"><script type="text/javascript" src="/js/imaegoo/night.js"></script><canvas id="universe"></canvas><nav class="navbar navbar-main"><div class="container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/">uint128&#039;s Blog</a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">Home</a><a class="navbar-item" href="/archives">Archives</a><a class="navbar-item" href="/tags">Tags</a><a class="navbar-item" href="/about">About</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="My GitHub" href="https://github.com/cyanray"><i class="fab fa-github"></i></a><a class="navbar-item" target="_blank" rel="noopener" title="RSS" href="/atom.xml"><i class="fas fa-rss"></i></a><a class="navbar-item is-hidden-tablet catalogue" title="目录" href="javascript:;"><i class="fas fa-list-ul"></i></a><a class="navbar-item night" id="night-nav" title="Night Mode" href="javascript:;"><i class="fas fa-moon" id="night-icon"></i></a><a class="navbar-item search" title="搜索" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-8-widescreen"><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2021-02-13T02:25:00.000Z" title="2021/2/13 10:25:00">2021-02-13</time>发表</span><span class="level-item"><time dateTime="2022-08-22T09:11:21.054Z" title="2022/8/22 17:11:21">2022-08-22</time>更新</span></div></div><h1 class="title is-3 is-size-4-mobile">船舶目标检测:使用Darknet训练yolo模型的过程记录</h1><div class="content"><p>船舶目标检测:使用Darknet训练yolo模型的过程记录<br><span id="more"></span></p>
+<!-- hexo-inject:begin --><!-- hexo-inject:end --><h2 id="编译darknet"><a href="#编译darknet" class="headerlink" title="编译darknet"></a>编译darknet</h2><p>其实早就了解过yolo，但是一直没时间（也可以说没动力，没分配时间）去试一下。放假了突然就想试一下目标检测。</p>
+<p>谷歌查到了<a target="_blank" rel="noopener" href="https://pjreddie.com/darknet/yolo/">yolo作者的网站</a>，讲的很详细，跟着做就完事了，非常简单。</p>
+<p>只可惜我第一步就卡住了。</p>
+<p>根据网站的描述，第一步是下载 darknet 的源码并执行 <code>make</code> 编译。但我用的是Windows系统，作者给的 <a target="_blank" rel="noopener" href="https://github.com/pjreddie/darknet">darknet repo</a> 似乎没提供 Windows 上编译的过程。</p>
+<p>于是我又去查Windows下如何编译darknet，最后找到了 <a target="_blank" rel="noopener" href="https://github.com/AlexeyAB/darknet">AlexeyAB/darknet</a>，提供了在Windows和Linux的编译方法。</p>
+<p>不过 AlexeyAB/darknet 的文档让我有一点点疑惑。它提供了使用 vcpkg 编译 darknet 的方法，但是它的步骤似乎多了很多多余的步骤：</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">PS</span> Code\&gt;              git clone https://github.com/microsoft/vcpkg</span><br><span class="line"><span class="built_in">PS</span> Code\&gt;              <span class="built_in">cd</span> vcpkg</span><br><span class="line"><span class="built_in">PS</span> Code\vcpkg&gt;         <span class="variable">$env:VCPKG_ROOT</span>=<span class="variable">$PWD</span></span><br><span class="line"><span class="built_in">PS</span> Code\vcpkg&gt;         .\bootstrap<span class="literal">-vcpkg</span>.bat</span><br><span class="line"><span class="built_in">PS</span> Code\vcpkg&gt;         .\vcpkg install darknet[<span class="type">full</span>]:x64<span class="literal">-windows</span> <span class="comment">#replace with darknet[opencv-base,cuda,cudnn]:x64-windows for a quicker install of dependencies</span></span><br><span class="line"><span class="built_in">PS</span> Code\vcpkg&gt;         <span class="built_in">cd</span> ..</span><br><span class="line"><span class="built_in">PS</span> Code\&gt;              git clone https://github.com/AlexeyAB/darknet</span><br><span class="line"><span class="built_in">PS</span> Code\&gt;              <span class="built_in">cd</span> darknet</span><br><span class="line"><span class="built_in">PS</span> Code\darknet&gt;       powershell <span class="literal">-ExecutionPolicy</span> Bypass <span class="operator">-File</span> .\build.ps1</span><br></pre></td></tr></table></figure>
+<p>实际上，在 <code>.\vcpkg install darknet[full]:x64-windows</code> 这一步就把 darknet 编译出来了。编译出来的 darknet.exe 在 <code>vcpkg\installed\x64-windows\tools\darknet</code> 里。</p>
+<p>我花了很多时间在后面的那些指令上，因为最后一步的 powershell 脚本我执行的时候总是提示找不到 CUDA 编译器。</p>
+<p>把编译的 powershell 脚本和 CMakeLists.txt 看了又看，改了又改，都没解决问题。</p>
+<p>所以我只好倒回到 vcpkg 的步骤，检查 installed 文件夹，查看是不是哪些依赖没装好。</p>
+<p>就这么巧合地发现 darknet.exe 躺在 tools 文件夹里。</p>
+<p>我用的指令是作者推荐的 <code>vcpkg install darknet[opencv-base,cuda,cudnn]:x64-windows</code>。但是编译出来的 darknet 居然提示没有 opencv，不能直接显示预测图片，只能把预测结果保存到硬盘再查看。</p>
+<p>vcpkg 编译的结果不满意，我只能再编译一次。</p>
+<p>在找错的时候，我分析出这个 powershell 脚本就做了两件事：</p>
+<ol>
+<li>通过 VCPKG_ROOT 环境变量找到 vcpkg.exe，然后使用 vcpkg 编译依赖，并且把编译结果放到 darknet 源码的根目录（而不是 vcpkg 的 installed 文件夹）。</li>
+<li>执行 cmake，其中 CMakeLists.txt 就在 darknet 源码的根目录。</li>
+</ol>
+<p>所以我决定绕过这个 powershell 脚本，直接用 CMake-GUI 来编译。</p>
+<p>这个过程的步骤很多，但都是 CMake 的一些基本操作。</p>
+<p>很顺利地成功了，没有什么找不到 CUDA 编译器的错误。</p>
+<blockquote>
+<p>题外话：安装完 CUDA 后，我的 Visual Studio 2019 变得非常卡！一直在等待什么扩展的加载！看了下扩展菜单，多了个 Nsight 的菜单。我想把这个扩展禁用了，但是 VS 的扩展管理器里却找不到这个扩展。<br>查了 VS 的社区论坛，似乎是 Nsight 的一个 BUG，但是没人提供解决方法，只是说和 VS 没关系。在 StackOverflow 里也遇到了同样的问题，一模一样，问题已经存在一个月了，但是没有任何答案。<br>然后我就想到控制面板把整个 Nsight 给删掉试试看，发现了一项 Nsight Integration 很可疑。试着卸载它，发现问题就这样解决了。贡献了一个 <a target="_blank" rel="noopener" href="https://stackoverflow.com/a/66168896/10990271">StackOverflow 回答</a>。</p>
+</blockquote>
+<h2 id="尝试训练自己的模型"><a href="#尝试训练自己的模型" class="headerlink" title="尝试训练自己的模型"></a>尝试训练自己的模型</h2><p>体验模型还是不够过瘾的，我更想试着训练出自己的模型。</p>
+<p>我体验的模型是 PASCAL VOC 数据集的模型，都是人啊猫狗啊之类的常见对象。因为已经有了，所以这些对象我都没兴趣去训练了。</p>
+<p>我最终决定去检测船舶，一个是这和我的专业有点关系，另一个是我找到了现成的数据集，不用自己标注了（重点）。</p>
+<h3 id="训练需要做的准备"><a href="#训练需要做的准备" class="headerlink" title="训练需要做的准备"></a>训练需要做的准备</h3><p>AlexeyAB/darknet 的 README 文件说的非常详细，一步一步地指导应该修改什么文件。</p>
+<p>这里我做个简单的总结：</p>
+<ol>
+<li>修改 yolov4-custom.cfg 文件, 让它符合你的需要（这一步会设置<strong>目标检测分类的数量</strong>和<strong>神经网络的大小</strong>等参数）</li>
+<li>准备好训练用的数据集，包括<strong>图片</strong>和<strong>标注文件</strong>，图片和标注文件都放在同一个文件夹里。标注文件的文件名和图片的文件名一样，只是后缀是<strong>txt</strong>。标注文件用一个矩形描述对象所在的位置。</li>
+<li>准备 train.txt 里面是图片的路径，一行一个。(相对于 darknet.exe 的相对路径)</li>
+<li>准备 valid.txt 里面是图片的路径，同 train.txt，这里的图片用于验证。(不是必须)</li>
+<li>准备 obj.names 文件，内容是分类的名字，一行一个。</li>
+<li>准备 obj.data 文件，内容包括<strong>分类的数量</strong>、<strong>train.txt和valid.txt的路径</strong>、<strong>obj.names的路径</strong>和<strong>模型备份的目录路径</strong>。</li>
+</ol>
+<h3 id="训练的数据集"><a href="#训练的数据集" class="headerlink" title="训练的数据集"></a>训练的数据集</h3><p>训练用的数据集来自于论文 “Seaships: A large-scale precisely annotated dataset for ship detection” [1], 下载地址：<a target="_blank" rel="noopener" href="http://www.lmars.whu.edu.cn/prof_web/shaozhenfeng/datasets/SeaShips(7000">SeqShips(7000)</a>.zip)。</p>
+<p>包含六个分类：orecarrier, bulk cargo carrier, general cargo ship, container ship, fishing boat, and passenger ship。</p>
+<p>数据集里的图片长这样：</p>
+<p><img src="000860.jpg" alt="000860.jpg"><br><img src="001985.jpg" alt="001985.jpg"><br><img src="001996.jpg" alt="001996.jpg"></p>
+<p>都是来自航道监控的一些图片，很模糊。而且论文里说数据集有三万多张图，但是我只从<a target="_blank" rel="noopener" href="http://www.lmars.whu.edu.cn/prof_web/shaozhenfeng/E-publication.html">作者的网站</a>里下载到了 7000 张图片的数据集。</p>
+<h3 id="标注的格式转换"><a href="#标注的格式转换" class="headerlink" title="标注的格式转换"></a>标注的格式转换</h3><p>数据集用的标注格式是 PASCAL VOL 的格式，就是一个图片对应一个XML文件。XML文件包含图片的大小、目标的分类和目标所在的矩形区域(左上角的点(Xmin,Ymin)和右下角的点(Xmax,Ymax)，即xmin,ymin,xmax,ymax共四个值)。</p>
+<p>但是使用 darknet 进行训练，就要用 darknet 的标注格式。darknet的标注格式是一张图片对应一个txt文件，txt文件一行就是一个检测目标：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;object-class&gt; &lt;x&gt; &lt;y&gt; &lt;width&gt; &lt;height&gt;</span><br></pre></td></tr></table></figure>
+<p>所以要进行格式上的转换。</p>
+<p>实际上，yolo作者的网站也是用darknet训练 PASCAL VOL 数据集，也提到了这个转换。而且yolo作者提供了这个转换的python程序。</p>
+<p>稍微修改一下这个python程序，就能进行转换了。</p>
+<h3 id="训练模型"><a href="#训练模型" class="headerlink" title="训练模型"></a>训练模型</h3><p>按照 AlexeyAB/darknet 的文档，大概要训练 9000 iteration 会有比较好的结果。但实际上我训练了 300 iteration 就开始测试了。</p>
+<p>300 迭代的结果就是，什么结果都没有，没有检测的框框。太心急了！</p>
+<p>500 迭代我又去测试，这次终于能检测到一些船舶了。但是个别数据集的图片还是没有结果。</p>
+<p><img src="train_chart.png" alt="train_chart"></p>
+<p>评估模型完好程度的指标除了迭代次数，还有就是 darknet 的输出。</p>
+<p>输出的内容里有一个指标是 IoU，它的含义是 <em>检测的框框</em>和<em>标注的框框</em>面积的<strong>交集</strong> 与 <em>检测的框框</em>和<em>标注的框框</em>面积的<strong>并集</strong> 的<strong>比值</strong>。</p>
+<p>指标 IoU 的值介于 0~1，它越高，说明检测的结果与标注的结果越接近，一般来说 0.7 以上就是良好。</p>
+<p>结合 AlexeyAB/darknet 文档中的图片能更好地理解 IoU，我就不浪费读者的时间了。</p>
+<p>我的机器是一台办公笔记本，显卡是 MX150，训练速度非常慢，500 迭代大概花了三四个小时。</p>
+<p>后来我又换 GTX 1660s 的台式机来训练，同样是三四个小时，能够达到 1300 迭代。</p>
+<blockquote>
+<p>我的笔记本感觉要牺牲了，训练期间GPU保持在93℃。而且因为是第一次训练，经验不足，重来了几次，所以实际训练时间大概有五六个小时，这期间笔记本一直处于高温的状态，没让它休息。<br>感觉电池鼓包更严重了，触控板都突出来了。</p>
+</blockquote>
+<h3 id="预测结果展示"><a href="#预测结果展示" class="headerlink" title="预测结果展示"></a>预测结果展示</h3><p>下面两张是训练数据集的预测结果，效果还比较理想。</p>
+<p><img src="p4.jpg" alt="预测效果展示"><br><img src="p5.jpg" alt="预测效果展示"></p>
+<p>下面这三张图片都是网上另外找的，不在训练数据集里：</p>
+<p><img src="p1.jpg" alt="预测效果展示"><br><img src="p2.jpg" alt="预测效果展示"><br><img src="p3.jpg" alt="预测效果展示"></p>
+<p>船舶的位置确实是准确找出来了，但是分类几乎都是错的。这可能是因为迭代次数太少了，或者可能是训练数据集的图片太模糊了，船舶的特征不够明显。又或者，训练用的船都是内河船，测试用的船都是海船，外形差别有点大。</p>
+<p>另外，这个模型对于竖着的船，很容易就检测不出来了。这可能是因为训练的数据集里的船都是横着的。</p>
+<p>还有就是对于占图篇幅很大的船（离镜头很近），即使船舶是完整的，模型也容易识别不出来。这可能是因为数据集里的船都是离镜头很远的船，在图片里很小，训练出来的模型就不够自信了？</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>挺好玩的，训练模型很吃配置，耗时间。</p>
+<p>整个训练过程实际上最关键的一步是找到标注好的数据集，我自己是没有能力标注出那么多的图片的，很好地体会了 “人工智能时代，信息数据就是资源” 这句话。</p>
+<h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h2><blockquote>
+<p>[1] Shao, Zhenfeng, et al. “Seaships: A large-scale precisely annotated dataset for ship detection.” IEEE transactions on multimedia 20.10 (2018): 2593-2604.</p>
+</blockquote>
+</div><div class="article-licensing box"><div class="licensing-title"><p>船舶目标检测:使用Darknet训练yolo模型的过程记录</p><p><a href="https://uint128.com/2021/02/13/船舶目标检测-使用Darknet训练yolo模型的过程记录/">https://uint128.com/2021/02/13/船舶目标检测-使用Darknet训练yolo模型的过程记录/</a></p></div><div class="licensing-meta level is-mobile"><div class="level-left"><div class="level-item is-narrow"><div><h6>作者</h6><p>uint128.com</p></div></div><div class="level-item is-narrow"><div><h6>发布于</h6><p>2021-02-13</p></div></div><div class="level-item is-narrow"><div><h6>更新于</h6><p>2022-08-22</p></div></div><div class="level-item is-narrow"><div><h6>许可协议</h6><p><a class="icons" rel="noopener" target="_blank" title="Creative Commons" href="https://creativecommons.org/"><i class="icon fab fa-creative-commons"></i></a><a class="icons" rel="noopener" target="_blank" title="Attribution" href="https://creativecommons.org/licenses/by/4.0/"><i class="icon fab fa-creative-commons-by"></i></a><a class="icons" rel="noopener" target="_blank" title="Noncommercial" href="https://creativecommons.org/licenses/by-nc/4.0/"><i class="icon fab fa-creative-commons-nc"></i></a></p></div></div></div></div></div><div class="article-tags is-size-7 mb-4"><span class="mr-2">#</span><a class="link-muted mr-2" rel="tag" href="/tags/%E7%9B%AE%E6%A0%87%E6%A3%80%E6%B5%8B/">目标检测</a><a class="link-muted mr-2" rel="tag" href="/tags/yolo/">yolo</a><a class="link-muted mr-2" rel="tag" href="/tags/%E8%88%B9%E8%88%B6/">船舶</a></div><!--!--></article></div><!--!--><div class="card"><nav class="post-navigation mt-4 level is-mobile card-content"><div class="level-start"><a class="article-nav-prev level level-item link-muted" href="/2021/04/20/%E8%BF%90%E5%8A%A8%E6%89%8B%E7%8E%AF%E7%9A%84%E4%BD%BF%E7%94%A8%E4%BD%93%E9%AA%8C/"><i class="level-item fas fa-chevron-left"></i><span class="level-item">运动手环的使用体验</span></a></div><div class="level-end"><a class="article-nav-next level level-item link-muted" href="/2021/02/04/%E4%BB%8A%E6%97%A5%E6%A0%A1%E5%9B%ADAPP%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/"><span class="level-item">今日校园APP逆向分析</span><i class="level-item fas fa-chevron-right"></i></a></div></nav></div><div class="card"><div class="card-content"><h3 class="title is-5">评论</h3><div id="comment-container"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.css"><script src="https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.min.js"></script><script>var gitalk = new Gitalk({
+            id: "32ddb517725d7529473446f16abc5757",
+            repo: "cyanray.github.io",
+            owner: "cyanray",
+            clientID: "53e3c578fcb7b7b1a4da",
+            clientSecret: "74433ee77d6e13fd635b82add519e143ac791726",
+            admin: ["cyanray"],
+            createIssueManually: true,
+            distractionFreeMode: false,
+            perPage: 20,
+            pagerDirection: "last",
+            
+            
+            enableHotKey: true,
+            language: "zh-CN",
+        })
+        gitalk.render('comment-container')</script></div></div></div><!--!--><div class="column column-right is-4-tablet is-4-desktop is-4-widescreen  order-3 is-sticky"><div class="card widget" id="toc" data-type="toc"><div class="card-content"><div class="menu"><h3 class="menu-label">目录</h3><ul class="menu-list"><li><a class="level is-mobile" href="#编译darknet"><span class="level-left"><span class="level-item">1</span><span class="level-item">编译darknet</span></span></a></li><li><a class="level is-mobile" href="#尝试训练自己的模型"><span class="level-left"><span class="level-item">2</span><span class="level-item">尝试训练自己的模型</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#训练需要做的准备"><span class="level-left"><span class="level-item">2.1</span><span class="level-item">训练需要做的准备</span></span></a></li><li><a class="level is-mobile" href="#训练的数据集"><span class="level-left"><span class="level-item">2.2</span><span class="level-item">训练的数据集</span></span></a></li><li><a class="level is-mobile" href="#标注的格式转换"><span class="level-left"><span class="level-item">2.3</span><span class="level-item">标注的格式转换</span></span></a></li><li><a class="level is-mobile" href="#训练模型"><span class="level-left"><span class="level-item">2.4</span><span class="level-item">训练模型</span></span></a></li><li><a class="level is-mobile" href="#预测结果展示"><span class="level-left"><span class="level-item">2.5</span><span class="level-item">预测结果展示</span></span></a></li></ul></li><li><a class="level is-mobile" href="#总结"><span class="level-left"><span class="level-item">3</span><span class="level-item">总结</span></span></a></li><li><a class="level is-mobile" href="#参考文献"><span class="level-left"><span class="level-item">4</span><span class="level-item">参考文献</span></span></a></li></ul></div></div><style>#toc .menu-list > li > a.is-active + .menu-list { display: block; }#toc .menu-list > li > a + .menu-list { display: none; }</style><script src="/js/toc.js" defer></script></div><div class="card widget" data-type="recent-posts"><div class="card-content"><h3 class="menu-label">最新文章</h3><article class="media"><div class="media-content"><p class="date"><time dateTime="2023-04-29T09:02:24.000Z">2023-04-29</time></p><p class="title"><a href="/2023/04/29/C-Concepts-%E7%9A%84%E4%B8%A4%E4%B8%AA%E6%8A%80%E5%B7%A7/">C++ Concepts 的两个技巧</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2023-03-16T17:24:21.000Z">2023-03-17</time></p><p class="title"><a href="/2023/03/17/%E7%8C%AB%E5%A8%98-NNLL-UINT128/">猫娘 NNLL - UINT128</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2023-03-06T15:23:32.000Z">2023-03-06</time></p><p class="title"><a href="/2023/03/06/Modern-CMake-%E5%AE%9E%E8%B7%B5/">Modern CMake 实践</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2023-01-07T18:40:09.000Z">2023-01-08</time></p><p class="title"><a href="/2023/01/08/%E7%89%9B%E9%A1%BF%E6%8F%92%E5%80%BC%E6%B3%95%E7%9A%84-Matlab-%E5%AE%9E%E7%8E%B0/">牛顿插值法的 Matlab 实现</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2023-01-07T18:38:42.000Z">2023-01-08</time></p><p class="title"><a href="/2023/01/08/%E5%A4%9A%E5%85%83%E7%89%9B%E9%A1%BF%E8%BF%AD%E4%BB%A3%E6%B3%95%E7%9A%84-Matlab-%E5%AE%9E%E7%8E%B0/">多元牛顿迭代法的 Matlab 实现</a></p></div></article></div></div><div class="card widget" data-type="links"><div class="card-content"><div class="menu"><h3 class="menu-label">链接</h3><ul class="menu-list"><li><a class="level is-mobile" href="https://yuanxingxing-yxx.github.io/" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">星星的博客</span></span><span class="level-right"><span class="level-item tag">yuanxingxing-yxx.github.io</span></span></a></li><li><a class="level is-mobile" href="http://quosimodo.cn/" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">卡西莫多の礼物</span></span><span class="level-right"><span class="level-item tag">quosimodo.cn</span></span></a></li><li><a class="level is-mobile" href="https://blog.icepie.net/" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">icepie&#039;s blog</span></span><span class="level-right"><span class="level-item tag">blog.icepie.net</span></span></a></li><li><a class="level is-mobile" href="https://www.cnblogs.com/sherlson" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">sherlson&#039;s blog</span></span><span class="level-right"><span class="level-item tag">www.cnblogs.com</span></span></a></li><li><a class="level is-mobile" href="http://blog.devilwst.top/" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">小生的技术成长路线</span></span><span class="level-right"><span class="level-item tag">blog.devilwst.top</span></span></a></li></ul></div></div></div></div></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/">uint128&#039;s Blog</a><p class="is-size-7"><span>&copy; 2023 uint128.com</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a></p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Creative Commons" href="https://creativecommons.org/"><i class="fab fa-creative-commons"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Attribution 4.0 International" href="https://creativecommons.org/licenses/by/4.0/"><i class="fab fa-creative-commons-by"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" async></script><script>moment.locale("zh-CN");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script src="/js/column.js"></script><script src="/js/animation.js"></script><a id="back-to-top" title="回到顶端" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script src="/js/back_to_top.js" defer></script><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js" defer></script><script>window.addEventListener("load", () => {
+      window.cookieconsent.initialise({
+        type: "info",
+        theme: "edgeless",
+        static: false,
+        position: "bottom-left",
+        content: {
+          message: "此网站使用Cookie来改善您的体验。",
+          dismiss: "知道了！",
+          allow: "允许使用Cookie",
+          deny: "拒绝",
+          link: "了解更多",
+          policy: "Cookie政策",
+          href: "https://www.cookiesandyou.com/",
+        },
+        palette: {
+          popup: {
+            background: "#edeff5",
+            text: "#838391"
+          },
+          button: {
+            background: "#4b81e8"
+          },
+        },
+      });
+    });</script><script src="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/js/lightgallery.min.js" defer></script><script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
+            if (typeof $.fn.lightGallery === 'function') {
+                $('.article').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof $.fn.justifiedGallery === 'function') {
+                if ($('.justified-gallery > p > .gallery-item').length) {
+                    $('.justified-gallery > p > .gallery-item').unwrap();
+                }
+                $('.justified-gallery').justifiedGallery();
+            }
+        });</script><!--!--><!--!--><script type="text/x-mathjax-config">MathJax.Hub.Config({
+            'HTML-CSS': {
+                matchFontHeight: false
+            },
+            SVG: {
+                matchFontHeight: false
+            },
+            CommonHTML: {
+                matchFontHeight: false
+            },
+            tex2jax: {
+                inlineMath: [
+                    ['$','$'],
+                    ['\\(','\\)']
+                ]
+            }
+        });</script><script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.9/unpacked/MathJax.js?config=TeX-MML-AM_CHTML" defer></script><!--!--><!--!--><!--!--><script src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="想要查找什么..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script src="/js/insight.js" defer></script><script>document.addEventListener('DOMContentLoaded', function () {
+            loadInsight({"contentUrl":"/content.json"}, {"hint":"想要查找什么...","untitled":"(无标题)","posts":"文章","pages":"页面","categories":"分类","tags":"标签"});
+        });</script><script type="text/javascript" src="/js/imaegoo/universe.js"></script><!-- hexo-inject:begin --><!-- hexo-inject:end --></body></html>
