@@ -6,7 +6,7 @@
   <link href="https://uint128.com/atom.xml" rel="self"/>
   
   <link href="https://uint128.com/"/>
-  <updated>2023-07-11T17:29:25.019Z</updated>
+  <updated>2023-11-16T07:36:03.944Z</updated>
   <id>https://uint128.com/</id>
   
   <author>
@@ -15,6 +15,44 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>通过Nginx创建WebDAV服务同步Zotero文献</title>
+    <link href="https://uint128.com/2023/11/16/%E9%80%9A%E8%BF%87Nginx%E5%88%9B%E5%BB%BAWebDAV%E6%9C%8D%E5%8A%A1%E5%90%8C%E6%AD%A5Zotero%E6%96%87%E7%8C%AE/"/>
+    <id>https://uint128.com/2023/11/16/%E9%80%9A%E8%BF%87Nginx%E5%88%9B%E5%BB%BAWebDAV%E6%9C%8D%E5%8A%A1%E5%90%8C%E6%AD%A5Zotero%E6%96%87%E7%8C%AE/</id>
+    <published>2023-11-16T06:43:46.000Z</published>
+    <updated>2023-11-16T07:36:03.944Z</updated>
+    
+    <content type="html"><![CDATA[<p>Zotero 提供了免费的 300MB 同步空间，文献多了之后存不下了。好在 Zotero 还支持通过 WebDAV 的方式同步文件，这篇文章分享一下具体的部署过程。</p><span id="more"></span><h2 id="设备选择"><a href="#设备选择" class="headerlink" title="设备选择"></a>设备选择</h2><p>首先，需要一台装有 Linux 系统的电脑，云主机或者 NAS 都可以。我部署 WebDAV 的设备是一台旧办公本，装上了 Ubuntu 系统放在宿舍里 7x24h 运行着，算是一台服务器了。因为我需要同步文献的设备总是连接着校园网，所以也不需要公网 IP。</p><p>如果读者的设备不能总在同一个局域网，那么你只能考虑有公网 IP 的 NAS 或者云主机了。</p><h2 id="安装-Nginx"><a href="#安装-Nginx" class="headerlink" title="安装 Nginx"></a>安装 Nginx</h2><p>通过包管理器 apt 安装 nginx：</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get update</span><br><span class="line">sudo apt-get install nginx-full</span><br></pre></td></tr></table></figure><p>安装好之后可以通过 curl 检测下 nginx 是不是装好了。</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl http://localhost</span><br></pre></td></tr></table></figure><p>如果显示下面的内容，能找到“Welcome to nginx!”的句子，就说明安装成功了。</p><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">&gt; curl http://localhost</span><br><span class="line"><span class="meta">&lt;!DOCTYPE <span class="keyword">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">title</span>&gt;</span>Welcome to nginx!<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">style</span>&gt;</span><span class="language-css"></span></span><br><span class="line"><span class="language-css"><span class="selector-tag">html</span> &#123; <span class="attribute">color</span>-scheme: light dark; &#125;</span></span><br><span class="line"><span class="language-css"><span class="selector-tag">body</span> &#123; <span class="attribute">width</span>: <span class="number">35em</span>; <span class="attribute">margin</span>: <span class="number">0</span> auto;</span></span><br><span class="line"><span class="language-css"><span class="attribute">font-family</span>: Tahoma, Verdana, Arial, sans-serif; &#125;</span></span><br><span class="line"><span class="language-css"></span><span class="tag">&lt;/<span class="name">style</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">h1</span>&gt;</span>Welcome to nginx!<span class="tag">&lt;/<span class="name">h1</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">p</span>&gt;</span>If you see this page, the nginx web server is successfully installed and</span><br><span class="line">working. Further configuration is required.<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">p</span>&gt;</span>For online documentation and support please refer to</span><br><span class="line"><span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">&quot;http://nginx.org/&quot;</span>&gt;</span>nginx.org<span class="tag">&lt;/<span class="name">a</span>&gt;</span>.<span class="tag">&lt;<span class="name">br</span>/&gt;</span></span><br><span class="line">Commercial support is available at</span><br><span class="line"><span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">&quot;http://nginx.com/&quot;</span>&gt;</span>nginx.com<span class="tag">&lt;/<span class="name">a</span>&gt;</span>.<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">p</span>&gt;</span><span class="tag">&lt;<span class="name">em</span>&gt;</span>Thank you for using nginx.<span class="tag">&lt;/<span class="name">em</span>&gt;</span><span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure><blockquote><p>也有可能提示找不到 curl，那么可以用包管理器装一下 curl 然后再试一次。执行： <code>sudo apt-get install curl</code> 安装 curl。</p></blockquote><h2 id="配置-WebDAV"><a href="#配置-WebDAV" class="headerlink" title="配置 WebDAV"></a>配置 WebDAV</h2><p>接下来，需要使用编辑器 nano 在 Nginx 的配置文件目录中创建一个配置文件，配置 WebDAV 服务的相关设置。</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo nano /etc/nginx/conf.d/webdav.conf</span><br></pre></td></tr></table></figure><blockquote><p>如果你的 Linux 系统有 GUI 界面，可以用 VSCode 等可视化编辑器操作</p></blockquote><p>往里面填入以下配置文件内容，可以根据情况修改端口(比如 17780 可以改成别的端口)、路径等参数：</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">server &#123;</span><br><span class="line">    listen 17780;</span><br><span class="line">    listen [::]:17780;</span><br><span class="line"></span><br><span class="line">    location / &#123;</span><br><span class="line">        root /var/www/dav/webdav_root;</span><br><span class="line"></span><br><span class="line">        <span class="comment"># dav allowed method</span></span><br><span class="line">        dav_methods     PUT DELETE MKCOL COPY MOVE;</span><br><span class="line">        <span class="comment"># Allow current scope perform specified DAV method</span></span><br><span class="line">        dav_ext_methods PROPFIND OPTIONS;</span><br><span class="line"></span><br><span class="line">        dav_access     user:rw group:rw all:r;</span><br><span class="line"></span><br><span class="line">        <span class="comment"># Temporary folder</span></span><br><span class="line">        client_body_temp_path   /var/www/dav/tmp;</span><br><span class="line"></span><br><span class="line">        <span class="comment"># MAX size of uploaded file, 0 mean unlimited</span></span><br><span class="line">        client_max_body_size    0;</span><br><span class="line"></span><br><span class="line">        <span class="comment"># Allow autocreate folder here if necessary</span></span><br><span class="line">        create_full_put_path    on;</span><br><span class="line"></span><br><span class="line">        auth_basic “Restricted”;</span><br><span class="line">        auth_basic_user_file /var/www/dav/.htpasswd;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><p>按下快捷键 Ctrl+O 保存退出。</p><p>执行以下指令，让 Nginx 重新载入所有配置文件。如果没有任何输出，说明配置文件的内容正确。</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo nginx -s reload</span><br></pre></td></tr></table></figure><p>现在，需要创建一些目录。这里的 <code>-p</code> 参数的作用是递归地创建目录，能够同时创建一条路径里所有不存在的目录。</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo <span class="built_in">mkdir</span> -p /var/www/dav/tmp</span><br><span class="line">sudo <span class="built_in">mkdir</span> -p /var/www/dav/webdav_root</span><br></pre></td></tr></table></figure><p>然后，需要改变这些目录的拥有者为 www-data。</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo <span class="built_in">chown</span> -R www-data /var/www/dav/tmp</span><br><span class="line">sudo <span class="built_in">chown</span> -R www-data /var/www/dav/webdav_root</span><br></pre></td></tr></table></figure><h2 id="创建认证用户"><a href="#创建认证用户" class="headerlink" title="创建认证用户"></a>创建认证用户</h2><p>这里要用到 Apache Utils，通过包管理器安装：</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install apache2-utils</span><br></pre></td></tr></table></figure><p>执行下面的指令，他会创建一个 .htpasswd 文件。其中 exampleuser 是用户名，将它改成你自己的英文名字。回车执行之后，会提示你输入两次密码，这是认证用的密码。</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo htpasswd -c /var/www/dav/.htpasswd exampleuser</span><br></pre></td></tr></table></figure><p>如果一切顺利，执行下面的指令，可以看到一对用冒号分隔的用户名和密码哈希。</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo <span class="built_in">cat</span> /var/www/dav/.htpasswd</span><br></pre></td></tr></table></figure><p>内容结构类似于：</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">login:password</span><br></pre></td></tr></table></figure><h2 id="在-Zotero-中测试"><a href="#在-Zotero-中测试" class="headerlink" title="在 Zotero 中测试"></a>在 Zotero 中测试</h2><p>最后在 Zotero 里同步方式选择 WebDAV 就好了。</p><p>如果 Zotero 的同步没有反应（表现在没有新文件出现在 <code>/var/www/dav/webdav_root</code> 里），需要关闭 Zotero 的自动同步，然后手动点击同步按钮同步一次，这样可以强制 Zotero 进行一次完全同步。同步完成后再把自动同步开回来。</p><h2 id="错误排查"><a href="#错误排查" class="headerlink" title="错误排查"></a>错误排查</h2><p>上面 WebDAV 服务所涉及的目录都需要有执行权限，你可以通过 chmod 指令给相关目录赋予执行权限。</p><p>比如我的相关目录都改到了 /home/ubuntu 中：</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sudo <span class="built_in">chmod</span> +x /home/ubuntu/dav</span><br><span class="line">sudo <span class="built_in">chmod</span> +x /home/ubuntu/dav/tmp</span><br><span class="line">sudo <span class="built_in">chmod</span> +x /home/ubuntu/dav/webdav_root</span><br></pre></td></tr></table></figure><p>如果还有其他错误，可以通过查看 Nginx 的错误日志进一步排查。</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo <span class="built_in">cat</span> /var/log/nginx/error.log</span><br></pre></td></tr></table></figure>]]></content>
+    
+    
+    <summary type="html">&lt;p&gt;Zotero 提供了免费的 300MB 同步空间，文献多了之后存不下了。好在 Zotero 还支持通过 WebDAV 的方式同步文件，这篇文章分享一下具体的部署过程。&lt;/p&gt;</summary>
+    
+    
+    
+    
+  </entry>
+  
+  <entry>
+    <title>纯真而不欠闻达，善良而不失坚强</title>
+    <link href="https://uint128.com/2023/11/02/%E7%BA%AF%E7%9C%9F%E8%80%8C%E4%B8%8D%E6%AC%A0%E9%97%BB%E8%BE%BE%EF%BC%8C%E5%96%84%E8%89%AF%E8%80%8C%E4%B8%8D%E5%A4%B1%E5%9D%9A%E5%BC%BA/"/>
+    <id>https://uint128.com/2023/11/02/%E7%BA%AF%E7%9C%9F%E8%80%8C%E4%B8%8D%E6%AC%A0%E9%97%BB%E8%BE%BE%EF%BC%8C%E5%96%84%E8%89%AF%E8%80%8C%E4%B8%8D%E5%A4%B1%E5%9D%9A%E5%BC%BA/</id>
+    <published>2023-11-02T15:56:51.000Z</published>
+    <updated>2023-11-16T06:42:36.578Z</updated>
+    
+    <content type="html"><![CDATA[<p>纯真而不欠闻达，善良而不失坚强，把生命高举在尘俗之上，又融化于社会之中。</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;纯真而不欠闻达，善良而不失坚强，把生命高举在尘俗之上，又融化于社会之中。&lt;/p&gt;
+</summary>
+      
+    
+    
+    
+    
+  </entry>
   
   <entry>
     <title>基于ObjectARX .NET的AutoCAD二次开发：项目配置</title>
@@ -342,40 +380,6 @@
     
     
     <summary type="html">&lt;p&gt;使用Fiddler在WSA(Windows安卓子系统)上抓包。&lt;br&gt;</summary>
-    
-    
-    
-    
-  </entry>
-  
-  <entry>
-    <title>UWP程序开发的一些心得体验</title>
-    <link href="https://uint128.com/2021/10/23/UWP%E7%A8%8B%E5%BA%8F%E5%BC%80%E5%8F%91%E7%9A%84%E4%B8%80%E4%BA%9B%E5%BF%83%E5%BE%97%E4%BD%93%E9%AA%8C/"/>
-    <id>https://uint128.com/2021/10/23/UWP%E7%A8%8B%E5%BA%8F%E5%BC%80%E5%8F%91%E7%9A%84%E4%B8%80%E4%BA%9B%E5%BF%83%E5%BE%97%E4%BD%93%E9%AA%8C/</id>
-    <published>2021-10-23T07:52:07.000Z</published>
-    <updated>2022-08-22T09:11:21.019Z</updated>
-    
-    <content type="html"><![CDATA[<p>因为想要一个为自己量身定制的英汉字典程序，所以就开始了自己的第一次UWP程序开发。<br><span id="more"></span></p><h1 id="动机"><a href="#动机" class="headerlink" title="动机"></a>动机</h1><p>我的需求其实非常简单，有一个软件能够查词就行了，包括英汉释义和英英释义，最好来点例句。但是我的查词习惯是随时可能查词，查完就关掉软件，所以很多巨无霸词典软件我都不喜欢，启动速度太慢了，还给我来几个弹窗广告。</p><p>我最常用的英汉词典程序是<strong>微软必应词典(UWP)</strong>，它的启动速度、查词速度都非常快，而且没有广告，没有弹窗，完美符合我的需求。</p><p>非常可惜的是，微软必应词典很久没更新了，它的 UI 实在是太丑了(在 Win11 带来最新的设计之后，我已经看不下去它的设计了)。</p><p>所以我就打算偷必应词典的API，自己做个词典程序。因为我的需求本身比较简单，所以这个程序难度不算很大。</p><p>我希望这个词典程序有 Win11 Style 的设计，所以选择其实不多，有三个：WinUI 2(UWP) 或者 WinUI 3(WindowsAppSdk、MAUI)。</p><p>在我项目开始的时候，WinUI 3 才刚出 Preview 1，还没有带来 Win11 Style，所以这个方案不能选，只能使用 UWP 方案了。</p><h1 id="流畅的开发体验"><a href="#流畅的开发体验" class="headerlink" title="流畅的开发体验"></a>流畅的开发体验</h1><p>我之前开发过 WPF 程序和 Xamarin 程序，所以对 XAML 这一套还是比较熟悉的。这三套方案都用 XAML 来描述 UI 布局，虽然语法一样，但是细节还是有些不同。比如 UWP 就没有 DockPanel 这样的布局，比如 Xamarin 和 UWP 的 Grid 用法略有不同。</p><p>要了解这些，主要还是看微软的文档。微软的文档写的很详细，所以文档上有的内容基本没遇到问题，大多符合直觉。</p><h2 id="主题支持"><a href="#主题支持" class="headerlink" title="主题支持"></a>主题支持</h2><p>未完待续。。。</p><h2 id="多语言支持"><a href="#多语言支持" class="headerlink" title="多语言支持"></a>多语言支持</h2><p>未完待续。。。</p><h1 id="遇到的一些问题"><a href="#遇到的一些问题" class="headerlink" title="遇到的一些问题"></a>遇到的一些问题</h1><p>当然还是会有问题的啦。</p><h2 id="自定义标题栏处无法修改窗口大小"><a href="#自定义标题栏处无法修改窗口大小" class="headerlink" title="自定义标题栏处无法修改窗口大小"></a>自定义标题栏处无法修改窗口大小</h2><p>这个问题的具体表现是设置自定义标题栏区域后，无法通过顶部那块区域修改窗口的大小。我换了很多种关键词去搜索，都没搜到类似的问题，就好像我是全网第一个遇到这个问题的人。我又是抄的微软文档的代码，所以我就先入为主觉得代码是没问题的，以为是哪里不兼容。于是我先把 WinUI 库降级，又降级了很多库，问题依旧。</p><p>最后我发现，微软文档提供的代码让自定义标题栏区域顶部多了 8 个单位的 Margin。自定义标题栏顶部和窗口边缘没挨在一起，所以不能通过自定义标题栏修改窗口大小。</p><h2 id="不知道如何自定义主题"><a href="#不知道如何自定义主题" class="headerlink" title="不知道如何自定义主题"></a>不知道如何自定义主题</h2><p>也就是 DarkTheme、LightTheme 的设置。默认是自动跟随系统的，但是很多软件都支持自定义主题，所以我也想加入这个功能，但是找了半天没有找到相关的文档。</p><p>这个问题的解决方法是抄微软开源的计算器的代码(<a href="https://github.com/microsoft/calculator">Calculator</a>)。</p><h2 id="。"><a href="#。" class="headerlink" title="。"></a>。</h2><p>未完待续。。。</p>]]></content>
-    
-    
-    <summary type="html">&lt;p&gt;因为想要一个为自己量身定制的英汉字典程序，所以就开始了自己的第一次UWP程序开发。&lt;br&gt;</summary>
-    
-    
-    
-    
-  </entry>
-  
-  <entry>
-    <title>花</title>
-    <link href="https://uint128.com/2021/10/11/%E8%8A%B1/"/>
-    <id>https://uint128.com/2021/10/11/%E8%8A%B1/</id>
-    <published>2021-10-11T01:55:31.000Z</published>
-    <updated>2022-08-22T09:11:21.054Z</updated>
-    
-    <content type="html"><![CDATA[<p>花<br><span id="more"></span><br><img src="DSC05395.jpg" alt="花"></p>]]></content>
-    
-    
-    <summary type="html">&lt;p&gt;花&lt;br&gt;</summary>
     
     
     
